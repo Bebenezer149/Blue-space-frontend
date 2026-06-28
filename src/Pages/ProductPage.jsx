@@ -2,6 +2,7 @@ import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ViewProduct from "./ViewProduct";
+import DeletePrompt from "../Components/Prompts/DeletePrompt";
 import EditProduct from "./EditProduct";
 
 function ProductPage() {
@@ -9,6 +10,9 @@ function ProductPage() {
   const [searchText, setSearchText] = useState("");
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
   const [productDetails, setProductDetails] = useState({
     id: "",
     product_name: "",
@@ -22,7 +26,8 @@ function ProductPage() {
 
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
+  function fetchProducts() {
+    setIsRefreshing(true);
     fetch("http://127.0.0.1:8000/api/products", {
       method: "GET",
       headers: {
@@ -33,27 +38,24 @@ function ProductPage() {
       .then((res) => res.json())
       .then((res) => {
         setProducts(res.products || []);
+        console.log(res);
+        setIsRefreshing(false);
       })
       .catch((err) => {
         alert("Something went wrong");
         console.log(err);
+        setIsRefreshing(false);
       });
+  }
+
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
-  function DeleteProduct(id) {
-    fetch(`http://127.0.0.1:8000/api/delete-product?id=${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        setProducts((prev) => prev.filter((p) => p.id !== id));
-      })
-      .catch((err) => console.log(err));
-  }
+  // Handle successful deletion - remove from local state
+  const handleProductDeleted = (deletedId) => {
+    setProducts((prev) => prev.filter((p) => p.id !== deletedId));
+  };
 
   const filteredProducts = products.filter((product) =>
     product.product_name.toLowerCase().includes(searchText.toLowerCase()),
@@ -62,7 +64,7 @@ function ProductPage() {
   const showProducts = searchText ? filteredProducts : products;
 
   return (
-    <div className="bg-gray-100 h-screen">
+    <div className="bg-gray-100 min-h-screen">
       <Header />
 
       <div className="p-5 flex flex-col gap-8">
@@ -77,7 +79,6 @@ function ProductPage() {
               className="outline-none px-2 flex-1"
               placeholder="Search products"
             />
-
             <button className="border-l p-1 px-3 bg-blue-400 text-white">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -117,22 +118,31 @@ function ProductPage() {
           </Link>
         </div>
 
-        <div className="rounded-t-lg border border-gray-200">
+        <div className="rounded-t-lg border border-gray-200 overflow-x-auto">
           <table className="w-full bg-white">
             <thead>
               <tr className="bg-gray-100 border-b">
-                <th className="p-4">ID</th>
-                <th className="p-4">Image</th>
-                <th className="p-4">Name</th>
-                <th className="p-4">Price</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Date</th>
-                <th className="p-4">Action</th>
+                <th className="p-4 text-left">ID</th>
+                <th className="p-4 text-left">Image</th>
+                <th className="p-4 text-left">Name</th>
+                <th className="p-4 text-left">Price</th>
+                <th className="p-4 text-left">Status</th>
+                <th className="p-4 text-left">Date</th>
+                <th className="p-4 text-left">Action</th>
               </tr>
             </thead>
 
             <tbody>
-              {showProducts.length === 0 ? (
+              {isRefreshing ? (
+                <tr>
+                  <td colSpan="7" className="text-center py-8">
+                    <div className="flex justify-center items-center gap-2">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                      <span className="text-gray-500">Loading products...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : showProducts.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="text-center py-8 text-gray-500">
                     No products available
@@ -144,21 +154,21 @@ function ProductPage() {
                     key={data.id}
                     className="border-b border-b-gray-200 hover:bg-gray-50"
                   >
-                    <td className="p-4 text-center">{data.id}</td>
+                    <td className="p-4">{data.id}</td>
 
-                    <td className="p-4 text-center">
+                    <td className="p-4">
                       <img
                         src={data.img}
                         alt={data.product_name}
-                        className="h-12 w-12 rounded-md object-cover mx-auto"
+                        className="h-12 w-12 rounded-md object-cover"
                       />
                     </td>
 
-                    <td className="p-4 text-center">{data.product_name}</td>
+                    <td className="p-4">{data.product_name}</td>
 
-                    <td className="p-4 text-center">GH₵ {data.price}</td>
+                    <td className="p-4">GH₵ {data.price}</td>
 
-                    <td className="p-4 text-center">
+                    <td className="p-4">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium ${
                           data.status === "AVAILABLE"
@@ -170,18 +180,19 @@ function ProductPage() {
                       </span>
                     </td>
 
-                    <td className="p-4 text-center">
+                    <td className="p-4">
                       {new Date(data.created_at).toLocaleDateString()}
                     </td>
 
-                    <td className="p-4 text-center">
-                      <div className="flex justify-center gap-3">
+                    <td className="p-4">
+                      <div className="flex gap-3">
                         <button
                           onClick={() => {
                             setEditOpen(true);
-                            setProductDetails(data)
+                            setProductDetails(data);
                           }}
-                          className=" cursor-pointer py-1  text-blue-600 rounded"
+                          className="cursor-pointer text-blue-600 hover:text-blue-800"
+                          title="Edit"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -198,12 +209,14 @@ function ProductPage() {
                             />
                           </svg>
                         </button>
+
                         <button
                           onClick={() => {
                             setViewOpen(true);
                             setProductDetails(data);
                           }}
-                          className=" cursor-pointer py-1  text-green-600 rounded"
+                          className="cursor-pointer text-green-600 hover:text-green-800"
+                          title="View"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -227,8 +240,13 @@ function ProductPage() {
                         </button>
 
                         <button
-                          onClick={() => DeleteProduct(data.id)}
-                          className="py-1 cursor-pointer text-red-600 rounded"
+                          onClick={() => {
+                            setProductToDelete(data.id);
+                            setProductDetails(data);
+                            setDeleteOpen(true);
+                          }}
+                          className="cursor-pointer text-red-600 hover:text-red-800"
+                          title="Delete"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -254,15 +272,31 @@ function ProductPage() {
           </table>
         </div>
       </div>
-      <div>
-        {viewOpen && (
-          <ViewProduct
-            productDetails={productDetails}
-            setViewOpen={setViewOpen}
-          />
-        )}
-      </div>
-      <div>{editOpen && <EditProduct setEditOpen={setEditOpen} productDetails={productDetails} />}</div>
+
+      {/* Modals */}
+      {viewOpen && (
+        <ViewProduct
+          productDetails={productDetails}
+          setViewOpen={setViewOpen}
+        />
+      )}
+
+      {editOpen && (
+        <EditProduct
+          setEditOpen={setEditOpen}
+          productDetails={productDetails}
+          onProductRefresh={fetchProducts}
+        />
+      )}
+
+      {deleteOpen && (
+        <DeletePrompt
+          setDeleteOpen={setDeleteOpen}
+          productId={productToDelete}
+          productName={productDetails.product_name || "Product"}
+          onSuccess={handleProductDeleted}
+        />
+      )}
     </div>
   );
 }

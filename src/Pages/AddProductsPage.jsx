@@ -6,42 +6,42 @@ const AddProductPage = () => {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [status, setStatus] = useState("Available");
-  const [image, setImage] = useState(""); // Will store base64 string
+  const [image, setImage] = useState(null); // Will store base64 string
   const [imagePreview, setImagePreview] = useState(""); // For preview
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useState(false);
-  const [success, setSuccess]= useState(false)
-  const [errorMessage, setErrorMessage]=useState(false)
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
 
-  const data = {
-    product_name: productName,
-    price: price,
-    quantity: quantity,
-    status: status,
-    img: image, // This will be the base64 string
-    description: description,
-  };
+  //
 
   const token = localStorage.getItem("token");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    const formData = new FormData();
+
+    formData.append("product_name", productName);
+    formData.append("price", price);
+    formData.append("quantity", quantity);
+    formData.append("status", status);
+    formData.append("img", image);
+    formData.append("description", description);
 
     fetch("http://127.0.0.1:8000/api/create-product", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: formData,
     })
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        setSuccess(true)
+        setSuccess(true);
         setLoading(false);
         setDisable(true);
         setProductName("");
@@ -57,38 +57,43 @@ const AddProductPage = () => {
       .catch((err) => {
         console.log(err);
         setLoading(false);
-        setErrorMessage(true)
+        setErrorMessage(true);
       });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validate file size (5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("File size must be less than 5MB");
-        e.target.value = "";
-        return;
-      }
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     // Validate file size (5MB)
+  //     if (file.size > 5 * 1024 * 1024) {
+  //       alert("File size must be less than 5MB");
+  //       e.target.value = "";
+  //       return;
+  //     }
 
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        alert("Please select a valid image (JPEG, PNG, GIF, WEBP)");
-        e.target.value = "";
-        return;
-      }
+  //     // Validate file type
+  //     const allowedTypes = [
+  //       "image/jpeg",
+  //       "image/png",
+  //       "image/gif",
+  //       "image/webp",
+  //     ];
+  //     if (!allowedTypes.includes(file.type)) {
+  //       alert("Please select a valid image (JPEG, PNG, GIF, WEBP)");
+  //       e.target.value = "";
+  //       return;
+  //     }
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result;
-        setImage(base64String); // Store base64 for API
-        setImagePreview(base64String); // Store base64 for preview
-        console.log("Image converted to base64");
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       const base64String = reader.result;
+  //       // setImage(base64String); // Store base64 for API
+  //       setImagePreview(base64String); // Store base64 for preview
+  //       console.log("Image converted to base64");
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   return (
     <div className="p-6 min-h-screen flex items-center justify-center w-full bg-gradient-to-br from-blue-400 to-blue-600">
@@ -117,11 +122,10 @@ const AddProductPage = () => {
           </Link>
         </div>
 
-        {
-           success && (
+        {success && (
           <div className="p-2 mx-32 border w-1/2   rounded-lg border-green-500 bg-green-200  text-green-500 my-4">
             <h1 className="flex gap-2 justify-between">
-               Product Added Successfully 
+              Product Added Successfully
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -138,10 +142,8 @@ const AddProductPage = () => {
               </svg>
             </h1>
           </div>
-           )
-        }
-        {
-            errorMessage && (
+        )}
+        {errorMessage && (
           <div className="p-2 border mx-32 w-1/2  rounded-lg border-red-500 bg-red-200  text-red-500">
             <h1 className="flex gap-2">
               Something went wrong
@@ -161,8 +163,7 @@ const AddProductPage = () => {
               </svg>
             </h1>
           </div>
-        )
-        }
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Product Name */}
@@ -229,7 +230,6 @@ const AddProductPage = () => {
                 onChange={(e) => setStatus(e.target.value)}
               >
                 <option value="Available">Available</option>
-              
               </select>
             </div>
 
@@ -241,25 +241,25 @@ const AddProductPage = () => {
                 type="file"
                 accept="image/*"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                onChange={handleImageChange}
+                onChange={(e) => setImage(e.target.files[0])}
               />
               <p className="text-xs text-gray-500 mt-1">
                 Accepted formats: JPEG, PNG, JPG, GIF, WEBP (Max 5MB)
               </p>
-              
-              {/* Image Preview - Fixed */}
+
+              {/* Image Preview - Fixed
               {imagePreview && (
                 <div className="mt-2">
-                  <img 
-                    src={imagePreview} 
-                    alt="Preview" 
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
                     className="h-16 w-16 object-cover rounded border"
                   />
                   <p className="text-xs text-green-600 mt-1">
                     ✓ Image selected
                   </p>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 

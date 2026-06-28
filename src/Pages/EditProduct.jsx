@@ -1,51 +1,90 @@
 import { useState } from "react";
 
-function EditProduct({ setEditOpen, productDetails }) {
+function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const data = {
-    product_name: productName,
-    price: price,
-    quantity: quantity,
-    description: description,
-    status: status,
-    image: image,
-  };
 
   const token = localStorage.getItem("token");
 
   function updateProduct(e) {
-    e.preventDefault(); // Prevent page refresh
+    e.preventDefault();
     setLoading(true);
 
+    const formData = new FormData();
+
+    formData.append("product_name", productName);
+    formData.append("price", price);
+    formData.append("quantity", quantity);
+    formData.append("description", description);
+    formData.append("status", status);
+
+    if (image) {
+      formData.append("img", image);
+    }
+
+    formData.append("_method", "PUT");
+
     fetch(`http://127.0.0.1:8000/api/update-product?id=${productDetails.id}`, {
-      method: "PUT",
+      method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: formData,
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to update product");
+        }
+        return res.json();
+      })
       .then((res) => {
         console.log(res);
-        alert("Updated successfully");
+        alert("✅ Product updated successfully!");
         setLoading(false);
+        if (onProductRefresh) {
+          onProductRefresh();
+        }
         setEditOpen(false);
       })
       .catch((err) => {
         console.log(err);
-        alert("Something went wrong");
+        alert("❌ Failed to update product");
         setLoading(false);
       });
   }
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) {
+      setImage(null);
+      setImagePreview(null);
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size must be less than 5MB");
+      e.target.value = "";
+      return;
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Please select a valid image (JPEG, PNG, GIF, WEBP)");
+      e.target.value = "";
+      return;
+    }
+
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -152,35 +191,48 @@ function EditProduct({ setEditOpen, productDetails }) {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => setImage(URL.createObjectURL(e.target.files[0]))}
+                onChange={handleImageChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all"
               />
               <p className="text-xs text-gray-500 mt-1">
-                Leave empty to keep current image
+                Leave empty to keep current image (Max 5MB)
               </p>
             </div>
           </div>
 
-          {/* Current Image Preview */}
+          {/* Image Preview */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Current Image
+              {imagePreview ? "New Image Preview" : "Current Image"}
             </label>
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-gray-200">
                 <img
-                  src={productDetails.img}
-                  alt="Current product"
+                  src={imagePreview || productDetails.img}
+                  alt={imagePreview ? "New product image" : "Current product"}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-medium text-gray-700">
-                  {productDetails.image_name || "product-image.jpg"}
-                </span>
-                <span className="text-xs text-gray-500">
-                  {productDetails.image_size || "2.4 MB"}
-                </span>
+                {imagePreview ? (
+                  <>
+                    <span className="text-sm font-medium text-green-600">
+                      ✓ New image selected
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      Ready to upload
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-sm font-medium text-gray-700">
+                      {productDetails.image_name || "product-image.jpg"}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {productDetails.image_size || "2.4 MB"}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -209,7 +261,14 @@ function EditProduct({ setEditOpen, productDetails }) {
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {loading ? "Updating..." : "Update Product"}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Updating...
+                </span>
+              ) : (
+                "Update Product"
+              )}
             </button>
             <button
               type="button"
