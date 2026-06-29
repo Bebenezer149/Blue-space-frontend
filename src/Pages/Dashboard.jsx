@@ -8,8 +8,10 @@ function Dashboard() {
     const userName = localStorage.getItem("first_name");
 
     const [statistics, setStatistics] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         fetch("http://127.0.0.1:8000/api/dashboard", {
             method: "GET",
             headers: {
@@ -21,14 +23,35 @@ function Dashboard() {
             .then((res) => {
                 console.log(res);
                 setStatistics(res);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Error fetching dashboard data:", error);
+                setLoading(false);
             });
     }, []);
 
     const StatData = [
-        { title: "Total Products", value: statistics.total_products },
-        { title: "Total Orders", value: statistics.total_orders },
-        { title: "Delivered Orders", value: statistics.delivered_orders },
-        { title: "Total Revenue", value: `GHS ${statistics.total_revenue}` },
+        { 
+            title: "Total Products", 
+            value: !statistics.total_products ? '0': statistics.total_products,
+            loading: loading 
+        },
+        { 
+            title: "Total Orders", 
+            value: !statistics.total_orders ? '0': statistics.total_orders,
+            loading: loading 
+        },
+        { 
+            title: "Delivered Orders", 
+            value: !statistics.delivered_orders ?'0': statistics.delivered_orders,
+            loading: loading 
+        },
+        { 
+            title: "Total Revenue", 
+            value: `GHS ${ !statistics.total_revenue ? '0.00' : statistics.total_revenue}`,
+            loading: loading 
+        },
     ];
 
     return (

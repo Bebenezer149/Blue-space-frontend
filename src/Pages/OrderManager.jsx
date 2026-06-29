@@ -21,6 +21,7 @@ function OrderManager() {
   });
 
   const token = localStorage.getItem("token");
+  const slug= localStorage.getItem("slug")
 
   function fetchOrders() {
     setIsRefreshing(true);
@@ -101,7 +102,7 @@ function OrderManager() {
           <div className="flex items-center justify-center sm:justify-end">
             <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-sm text-gray-600 truncate max-w-full">
               <span className="font-medium">Store Link:</span>{" "}
-              <span className="text-blue-600">//store/name-of-business</span>
+              <span className="text-blue-600">//{slug}</span>
             </div>
           </div>
         </div>

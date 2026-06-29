@@ -12,7 +12,6 @@ function ProductPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
   const [productDetails, setProductDetails] = useState({
     id: "",
     product_name: "",
@@ -52,10 +51,28 @@ function ProductPage() {
     fetchProducts();
   }, []);
 
-  // Handle successful deletion - remove from local state
-  const handleProductDeleted = (deletedId) => {
-    setProducts((prev) => prev.filter((p) => p.id !== deletedId));
-  };
+  function DeleteProduct(id) {
+    if (!window.confirm("Are you sure you want to delete this product?")) {
+      return;
+    }
+
+    fetch(`http://127.0.0.1:8000/api/delete-product?id=${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+        alert("Product deleted successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Failed to delete product");
+      });
+  }
 
   const filteredProducts = products.filter((product) =>
     product.product_name.toLowerCase().includes(searchText.toLowerCase()),
@@ -241,9 +258,9 @@ function ProductPage() {
 
                         <button
                           onClick={() => {
-                            setProductToDelete(data.id);
-                            setProductDetails(data);
-                            setDeleteOpen(true);
+                            setDeleteOpen(true)
+                            DeleteProduct(data.id);
+                            
                           }}
                           className="cursor-pointer text-red-600 hover:text-red-800"
                           title="Delete"
@@ -289,14 +306,7 @@ function ProductPage() {
         />
       )}
 
-      {deleteOpen && (
-        <DeletePrompt
-          setDeleteOpen={setDeleteOpen}
-          productId={productToDelete}
-          productName={productDetails.product_name || "Product"}
-          onSuccess={handleProductDeleted}
-        />
-      )}
+     {deleteOpen && ( <DeletePrompt setDeleteOpen={setDeleteOpen}/>)}
     </div>
   );
 }

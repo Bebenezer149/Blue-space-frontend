@@ -87,7 +87,7 @@ function ViewProduct({productDetails, setViewOpen}) {
               <label className="text-sm font-medium text-gray-500 block mb-1">
                 Date Added
               </label>
-              <p className="text-gray-600">{ productDetails.created_at ? new Date(productDetails.created_at).toLocaleDateString():"N/A"}</p>
+              <p className="text-gray-600">{ productDetails.created_at ? "Loading date...":new Date(productDetails.created_at).toLocaleDateString()}</p>
             </div>
 
             {/* Product ID */}

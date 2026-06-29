@@ -8,7 +8,8 @@ function ViewOrder({ setIsOpen, orderDetails }) {
   const [error, setError] = useState(false);
   const [disable, setDisable] = useState(false);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [rejectLoading, setRejectLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -67,13 +68,13 @@ function ViewOrder({ setIsOpen, orderDetails }) {
   }, [success, error]);
 
   function confirmStatus() {
-    setLoading(true);
+    setConfirmLoading(true);
     setSuccess(false);
     setError(false);
     
     const confirmedStatus = {
       id: orderDetails.id,
-      status: "CONFIRMED" // Use uppercase to match backend enum
+      status: "CONFIRMED"
     };
     
     fetch(`http://127.0.0.1:8000/api/update-status?id=${orderDetails.id}`, {
@@ -91,12 +92,8 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         if (res.message) {
           setSuccess(true);
           setMessage(res.message || "Order Confirmed Successfully");
-          // Update the status
           setStatus("CONFIRMED");
-          // Refresh order details
           fetchOrderDetails();
-          // Close modal after success (optional)
-          // setTimeout(() => setIsOpen(false), 2000);
         }
       })
       .catch((err) => {
@@ -105,18 +102,18 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         setMessage("Something went wrong. Please try again.");
       })
       .finally(() => {
-        setLoading(false);
+        setConfirmLoading(false);
       });
   }
 
   function cancelledStatus() {
-    setLoading(true);
+    setRejectLoading(true);
     setSuccess(false);
     setError(false);
     
     const cancelledStatus = {
       id: orderDetails.id,
-      status: "CANCELLED" // Use uppercase to match backend enum
+      status: "CANCELLED"
     };
     
     fetch(`http://127.0.0.1:8000/api/update-status?id=${orderDetails.id}`, {
@@ -134,9 +131,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         if (res.message) {
           setSuccess(true);
           setMessage(res.message || "Order Cancelled Successfully");
-          // Update the status
           setStatus("CANCELLED");
-          // Refresh order details
           fetchOrderDetails();
         }
       })
@@ -146,7 +141,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         setMessage("Something went wrong. Please try again.");
       })
       .finally(() => {
-        setLoading(false);
+        setRejectLoading(false);
       });
   }
 
@@ -237,7 +232,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
               Total Amount
             </label>
             <p className="text-blue-600 font-bold text-lg mt-1">
-              GH₵ {order.total_amount}
+              GH₵ {!order.total_amount ? 0 : order.total_amount}
             </p>
           </div>
 
@@ -248,7 +243,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
             <p className="text-gray-800 font-medium mt-1">
               {order.created_at
                 ? new Date(order.created_at).toLocaleString()
-                : "N/A"}
+                : "Date Loading..."}
             </p>
           </div>
 
@@ -307,25 +302,46 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-200">
           <button
             onClick={cancelledStatus}
-            disabled={disable || loading}
+            disabled={disable || rejectLoading || confirmLoading}
             className={`px-6 py-2 border rounded-lg transition-colors cursor-pointer font-medium ${
-              disable || loading
+              disable || rejectLoading || confirmLoading
                 ? "border-gray-300 text-gray-400 cursor-not-allowed"
                 : "border-red-300 text-red-600 hover:bg-red-50"
             }`}
           >
-            {loading ? "Processing..." : "Reject"}
+            {rejectLoading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Rejecting...
+              </span>
+            ) : (
+              "Reject"
+            )}
           </button>
+          
           <button
-            disabled={disable || loading}
+            disabled={disable || confirmLoading || rejectLoading}
             onClick={confirmStatus}
             className={`px-6 py-2 rounded-lg transition-colors cursor-pointer font-medium ${
-              disable || loading
+              disable || confirmLoading || rejectLoading
                 ? "bg-gray-400 cursor-not-allowed text-white"
                 : "bg-green-600 hover:bg-green-700 text-white"
             }`}
           >
-            {loading ? "Processing..." : "Confirm Order"}
+            {confirmLoading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Confirming...
+              </span>
+            ) : (
+              "Confirm Order"
+            )}
           </button>
         </div>
       </div>

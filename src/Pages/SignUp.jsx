@@ -67,7 +67,8 @@ function SignUp() {
         setPasswordConfirmation("");
         localStorage.setItem("token", res.token);
         localStorage.setItem("first_name", res.user.first_name);
-        setMessage("Account created successfully! 🎉");
+        localStorage.setItem('slug', res.user.link)
+        setMessage("Account created successfully! ");
         setSuccess(true);
         setLoading(false);
         

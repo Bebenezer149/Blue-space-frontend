@@ -7,7 +7,7 @@ function SalesTable() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLoading(true);
+   
     fetch("http://127.0.0.1:8000/api/orders", {
       method: "GET",
       headers: {

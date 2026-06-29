@@ -13,6 +13,7 @@ import ProductPage from "./Pages/ProductPage";
 import AddProductPage from "./Pages/AddProductsPage";
 import OrderManager from "./Pages/OrderManager";
 import ViewOrder from "./Pages/ViewOrder";
+import Store from "./Pages/Store";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/add-products" element={<AddProductPage />} />
         <Route path="/order-manager" element={<OrderManager/>}/>
         <Route path="/preview-order" element={<ViewOrder/>}/>
+        <Route path="/store/:slug" element={<Store/>}/>
 
       </Routes>
     </>

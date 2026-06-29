@@ -179,8 +179,8 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all"
               >
                 <option value="Available">Available</option>
-                <option value="Out of Stock">Out of Stock</option>
-                <option value="Discontinued">Discontinued</option>
+                <option value="Out_Of_Stock">Out_Of_Stock</option>
+               
               </select>
             </div>
 
