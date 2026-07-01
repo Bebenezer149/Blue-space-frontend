@@ -41,6 +41,8 @@ function Login() {
         setUser(res.user.first_name);
         localStorage.setItem("token", res.token);
         localStorage.setItem("first_name", res.user.first_name);
+        localStorage.setItem("slug", res.user.link)
+        localStorage.setItem('business', res.user.business_name)
         setLoading(false);
         
         // Small delay before navigation to show success message

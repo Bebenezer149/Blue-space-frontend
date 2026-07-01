@@ -1,22 +1,57 @@
-function ProductCard(){
-    return(
-        <div className="border  border-gray-300 rounded-lg w-[360px] shadow-md">
-           <div>
-            <img className="object-cover rounded-t-lg h-full w-full" src="https://plus.unsplash.com/premium_photo-1678739395192-bfdd13322d34?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmFnfGVufDB8fDB8fHww" alt="" />
-           </div>
-           <div className="p-2 px-3 flex justify-between">
-                <h1 className="text-xl font-semibold">Gucci Bag</h1>
-                <div className=" border py-1 px-3 rounded-full bg-green-200 text-green-500 font-semibold">
-                    <h1>Available</h1>
-                </div>
-           </div>
-           <div className="px-3 text-xl font-bold text-blue-500">
-            <h1>GHS 55.00</h1>
-           </div>
-           <div className="border px-3 py-2 mx-3 my-3 rounded-md bg-blue-500 text-white">
-            <button className="flex text-center px-24 font-semibold">Add to Cart</button>
-           </div>
+function ProductCard({
+  data,
+  img,
+  title,
+  price,
+  status,
+  setCount,
+  setAddToCart,
+
+}) {
+  return (
+    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white w-full max-w-[360px]">
+      <div className="h-48 md:h-56 overflow-hidden bg-gray-100">
+        <img
+          className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+          src={img}
+          alt={title}
+        />
+      </div>
+      <div className="p-3">
+        <div className="flex justify-between items-start gap-2">
+          <h1 className="text-lg md:text-xl font-semibold text-gray-800 truncate">
+            {title || "Product Name"}
+          </h1>
+          <div
+            className={`py-1 px-3 rounded-full text-xs font-semibold whitespace-nowrap ${
+              status === "AVAILABLE"
+                ? "bg-green-100 text-green-600"
+                : status === "Ou_Of_Stock"
+                  ? "bg-red-100 text-red-600"
+                  : "bg-yellow-100 text-yellow-600"
+            }`}
+          >
+            <h1>{status || "Available"}</h1>
+          </div>
         </div>
-    )
+        <div className="mt-2 text-xl md:text-2xl font-bold text-blue-600">
+          <h1>GH₵ {parseFloat(price).toFixed(2) || "0.00"}</h1>
+        </div>
+        <div className="mt-3">
+          <button
+            onClick={() => {
+              setCount((prev) => prev + 1);
+              setAddToCart(data);
+              
+            }}
+            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg transition-colors duration-200 cursor-pointer"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
-export default ProductCard
+
+export default ProductCard;

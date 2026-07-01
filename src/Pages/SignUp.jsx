@@ -68,6 +68,7 @@ function SignUp() {
         localStorage.setItem("token", res.token);
         localStorage.setItem("first_name", res.user.first_name);
         localStorage.setItem('slug', res.user.link)
+        localStorage.setItem('business', res.user.business_name)
         setMessage("Account created successfully! ");
         setSuccess(true);
         setLoading(false);

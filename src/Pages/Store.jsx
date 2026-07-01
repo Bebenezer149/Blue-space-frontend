@@ -1,9 +1,31 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProductCard from "../Components/Cards/ProductCard";
+import Cart from "../Components/Cart/Cart";
 
 function Store() {
   const { slug } = useParams();
+  const [products, setProducts] = useState([]);
+  const [storeData, setStoreData] = useState(null);
+  const [count, setCount]= useState(0)
+  const [addToCart, setAddToCart]=useState([])
+  const [openCart, setOpenCart]=useState(false)
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/show-products?link=${slug}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setProducts(res.products || []);
+        setStoreData(res.store || null);
+      })
+      .catch((err) => console.log(err));
+  }, [slug]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -20,7 +42,7 @@ function Store() {
             <div className="h-[150px] w-[150px] md:h-[200px] md:w-[200px] rounded-full border-4 border-white/30 shadow-2xl overflow-hidden bg-white p-1">
               <img
                 className="h-full w-full object-cover rounded-full"
-                src="https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={storeData?.logo || "https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
                 alt={slug}
               />
             </div>
@@ -31,7 +53,7 @@ function Store() {
           {/* Store Details */}
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">
-              {slug || "Store Name"}
+              {storeData?.name || slug || "Store Name"}
             </h1>
 
             {/* Contact Information */}
@@ -51,7 +73,7 @@ function Store() {
                     d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
                   />
                 </svg>
-                +233 539278827
+                {storeData?.phone || "+233 539278827"}
               </h1>
 
               <h1 className="flex gap-2 text-sm md:text-base font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
@@ -69,7 +91,7 @@ function Store() {
                     d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
                   />
                 </svg>
-                me@me.com
+                {storeData?.email || "me@me.com"}
               </h1>
             </div>
 
@@ -89,7 +111,7 @@ function Store() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-white font-semibold">2.5K</span>
+                  <span className="text-white font-semibold">{storeData?.subscribers || "2.5K"}</span>
                 </div>
                 <span className="text-white/70 text-sm">Subscribers</span>
               </div>
@@ -103,9 +125,9 @@ function Store() {
                   >
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
-                  <span className="text-white font-semibold">4.8</span>
+                  <span className="text-white font-semibold">{storeData?.rating || "4.8"}</span>
                 </div>
-                <span className="text-white/70 text-sm">(2.5K Reviews)</span>
+                <span className="text-white/70 text-sm">({storeData?.reviews || "2.5K"} Reviews)</span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -122,7 +144,7 @@ function Store() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-white font-semibold">50</span>
+                  <span className="text-white font-semibold">{products.length}</span>
                 </div>
                 <span className="text-white/70 text-sm">Products</span>
               </div>
@@ -144,26 +166,26 @@ function Store() {
                 </svg>
                 Subscribe
               </button>
-             
             </div>
           </div>
         </div>
       </div>
 
-      <div className="border border-gray-300 justify-between h-16 items-center flex gap-3 px-8 font-semibold">
-        <div className="flex gap-4">
-          <button className=" py-2 px-2 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100">
+      {/* Filter Navigation */}
+      <div className="border border-gray-300 justify-between h-16 items-center flex gap-3 px-4 md:px-8 font-semibold bg-white">
+        <div className="flex gap-2 md:gap-4 overflow-x-auto">
+          <button className="py-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
             All Products
           </button>
-          <button className="  py-2 px-2 shadow-sm rounded-lg text-blue-400  cursor-pointer hover:bg-gray-100">
+          <button className="py-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
             Available
           </button>
-          <button className=" py-2 px-2 shadow-sm rounded-lg text-blue-400  cursor-pointer hover:bg-gray-100">
+          <button className="py-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
             Out Of Stock
           </button>
         </div>
-        <div className="flex">
-          <button className=" p-2 text-blue-400 rounded-md shadow-md cursor-pointer hover:bg-gray-100">
+        <div className="flex items-center">
+          <button onClick={()=>setOpenCart(true)} className="p-2 text-blue-400 rounded-md shadow-md cursor-pointer hover:bg-gray-100">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -179,14 +201,46 @@ function Store() {
               />
             </svg>
           </button>
-          <div className="border h-6 rounded-full mb-5 mx-1 bg-red-500 text-white flex items-center px-2 ">
-            <h1>1</h1>
+          <div className="border h-6 rounded-full mb-5 mx-1 bg-red-500 text-white flex items-center px-2">
+            <h1>{count}</h1>
           </div>
         </div>
       </div>
-      <div className=" mx-auto px-4 py-8">
-        <ProductCard/>
+
+      {/* Product Grid - Fixed Arrangement */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {products.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 justify-items-center">
+            {products.map((data) => (
+              <ProductCard 
+                key={data.id} 
+                data={data}
+                img={data.img} 
+                title={data.product_name} 
+                price={data.price} 
+                status={data.status}
+                setCount={setCount}
+                setAddToCart={setAddToCart}
+                setOpenCart={setOpenCart}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <h3 className="text-lg font-medium text-gray-600">No products found</h3>
+            <p className="text-gray-400">This store doesn't have any products yet.</p>
+          </div>
+        )}
+        {
+          console.log(addToCart)
+        }
       </div>
+     {
+      openCart && ( <Cart setOpenCart={setOpenCart}/>)
+     }
     </div>
   );
 }
