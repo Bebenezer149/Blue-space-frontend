@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 function DeletePrompt({ 
   setDeleteOpen, 
@@ -32,7 +33,7 @@ function DeletePrompt({
         console.log(res);
         setLoading(false);
         setDeleteOpen(false);
-        alert("Product deleted successfully!");
+        toast.success("Product deleted successfully!");
         
         // Call the success callback if provided
         if (onSuccess) {

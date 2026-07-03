@@ -7,9 +7,10 @@ function Store() {
   const { slug } = useParams();
   const [products, setProducts] = useState([]);
   const [storeData, setStoreData] = useState(null);
-  const [count, setCount]= useState(0)
-  const [addToCart, setAddToCart]=useState([])
+  const [cart, setCart]=useState([])
   const [openCart, setOpenCart]=useState(false)
+
+  
 
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/api/show-products?link=${slug}`, {
@@ -27,10 +28,25 @@ function Store() {
       .catch((err) => console.log(err));
   }, [slug]);
 
+ 
+  function addToCart(cartData)
+  {
+    setCart((prev)=>{
+
+      const exists = prev.find((item)=>item.id===cartData.id)
+      if(exists)
+      {
+        return prev.map((item)=>
+          item.id === cartData.id ? {...item, quantity:item.quantity+1}: item
+        )
+      }
+      return  [...prev, {...cartData, quantity:1 }]
+    })
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Store Banner */}
-      <div className="relative bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 p-8 md:p-12 h-auto md:h-[320px] overflow-hidden">
+      <div className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 p-8 md:p-12 h-auto md:h-80 overflow-hidden">
         {/* Decorative Background Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48"></div>
@@ -38,8 +54,8 @@ function Store() {
 
         <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-10">
           {/* Store Logo */}
-          <div className="relative flex-shrink-0">
-            <div className="h-[150px] w-[150px] md:h-[200px] md:w-[200px] rounded-full border-4 border-white/30 shadow-2xl overflow-hidden bg-white p-1">
+          <div className="relative shrink-0">
+            <div className="h-37.5 w-37.5 md:h-50 md:w-50 rounded-full border-4 border-white/30 shadow-2xl overflow-hidden bg-white p-1">
               <img
                 className="h-full w-full object-cover rounded-full"
                 src={storeData?.logo || "https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
@@ -202,7 +218,7 @@ function Store() {
             </svg>
           </button>
           <div className="border h-6 rounded-full mb-5 mx-1 bg-red-500 text-white flex items-center px-2">
-            <h1>{count}</h1>
+            <h1>{cart.length}</h1>
           </div>
         </div>
       </div>
@@ -219,8 +235,7 @@ function Store() {
                 title={data.product_name} 
                 price={data.price} 
                 status={data.status}
-                setCount={setCount}
-                setAddToCart={setAddToCart}
+                addToCart={addToCart} 
                 setOpenCart={setOpenCart}
               />
             ))}
@@ -234,12 +249,12 @@ function Store() {
             <p className="text-gray-400">This store doesn't have any products yet.</p>
           </div>
         )}
-        {
-          console.log(addToCart)
-        }
+       {
+        console.log(cart)
+       }
       </div>
      {
-      openCart && ( <Cart setOpenCart={setOpenCart}/>)
+      openCart && ( <Cart cart={cart} setCart={setCart} setOpenCart={setOpenCart} storeData={storeData}/>)
      }
     </div>
   );

@@ -1,6 +1,7 @@
 import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import ViewProduct from "./ViewProduct";
 import DeletePrompt from "../Components/Prompts/DeletePrompt";
 import EditProduct from "./EditProduct";
@@ -12,6 +13,7 @@ function ProductPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  // const [openAddProduct , setOpenAddProduct]= usetate(false)
   const [productDetails, setProductDetails] = useState({
     id: "",
     product_name: "",
@@ -41,7 +43,7 @@ function ProductPage() {
         setIsRefreshing(false);
       })
       .catch((err) => {
-        alert("Something went wrong");
+        toast.error("Failed to fetch products");
         console.log(err);
         setIsRefreshing(false);
       });
@@ -66,11 +68,11 @@ function ProductPage() {
       .then((res) => {
         console.log(res);
         setProducts((prev) => prev.filter((p) => p.id !== id));
-        alert("Product deleted successfully");
+        toast.success("Product deleted successfully");
       })
       .catch((err) => {
         console.log(err);
-        alert("Failed to delete product");
+        toast.error("Failed to delete product");
       });
   }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 function ViewOrder({ setIsOpen, orderDetails }) {
   const [order, setOrder] = useState({});
@@ -14,7 +14,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
   const token = localStorage.getItem("token");
 
   // Fetch order details
-  const fetchOrderDetails = () => {
+  const fetchOrderDetails = useCallback(() => {
     fetch(`http://127.0.0.1:8000/api/get-one-order?id=${orderDetails.id}`, {
       method: "GET",
       headers: {
@@ -40,11 +40,11 @@ function ViewOrder({ setIsOpen, orderDetails }) {
       .catch((error) => {
         console.error("Error fetching order:", error);
       });
-  };
+  }, [orderDetails.id, token]);
 
   useEffect(() => {
     fetchOrderDetails();
-  }, []);
+  }, [fetchOrderDetails]);
 
   // Update disable state when status changes
   useEffect(() => {
@@ -147,7 +147,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-[700px] max-w-[95vw] p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-175 max-w-[95vw] p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h1 className="font-bold text-2xl text-gray-800">Order Details</h1>

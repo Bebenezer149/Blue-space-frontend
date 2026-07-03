@@ -5,6 +5,7 @@
 // import './App.css'
 import { Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login";
+import { ToastContainer } from "react-toastify";
 // import Header from "./Components/Header";
 // import Store from "./Pages/Store";
 import SignUp from "./Pages/SignUp";
@@ -18,6 +19,17 @@ import Store from "./Pages/Store";
 function App() {
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       {/* <Header/> */}
       <Routes>
         <Route path="/" element={<Login />} />

@@ -4,12 +4,10 @@ function ProductCard({
   title,
   price,
   status,
-  setCount,
-  setAddToCart,
-
+  addToCart
 }) {
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white w-full max-w-[360px]">
+    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white w-full max-w-90">
       <div className="h-48 md:h-56 overflow-hidden bg-gray-100">
         <img
           className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
@@ -26,7 +24,7 @@ function ProductCard({
             className={`py-1 px-3 rounded-full text-xs font-semibold whitespace-nowrap ${
               status === "AVAILABLE"
                 ? "bg-green-100 text-green-600"
-                : status === "Ou_Of_Stock"
+                : status === "Out_Of_Stock"
                   ? "bg-red-100 text-red-600"
                   : "bg-yellow-100 text-yellow-600"
             }`}
@@ -39,11 +37,7 @@ function ProductCard({
         </div>
         <div className="mt-3">
           <button
-            onClick={() => {
-              setCount((prev) => prev + 1);
-              setAddToCart(data);
-              
-            }}
+            onClick={()=>addToCart(data)}
             className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg transition-colors duration-200 cursor-pointer"
           >
             Add to Cart

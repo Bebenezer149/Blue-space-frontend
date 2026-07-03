@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [productName, setProductName] = useState("");
@@ -46,7 +47,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
       })
       .then((res) => {
         console.log(res);
-        alert("✅ Product updated successfully!");
+        toast.success("Product updated successfully!");
         setLoading(false);
         if (onProductRefresh) {
           onProductRefresh();
@@ -55,7 +56,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
       })
       .catch((err) => {
         console.log(err);
-        alert("❌ Failed to update product");
+        toast.error("Failed to update product");
         setLoading(false);
       });
   }
@@ -70,14 +71,14 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("File size must be less than 5MB");
+      toast.error("File size must be less than 5MB");
       e.target.value = "";
       return;
     }
 
     const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
-      alert("Please select a valid image (JPEG, PNG, GIF, WEBP)");
+      toast.error("Please select a valid image (JPEG, PNG, GIF, WEBP)");
       e.target.value = "";
       return;
     }

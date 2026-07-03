@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdate }) {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -51,7 +52,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
       })
       .catch((err) => {
         console.error("Error updating status:", err);
-        alert("Failed to update status. Please try again.");
+        toast.error("Failed to update status. Please try again.");
       })
       .finally(() => {
         setTimeout(() => setIsUpdating(false), 500);
