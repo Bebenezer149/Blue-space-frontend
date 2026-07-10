@@ -11,7 +11,7 @@ function OrderManager() {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [copy] = useState(`http://localhost:5174/${slug}`);
+  const [copy] = useState(`${window.location.origin}/store/${slug}`);
   const [orderDetails, setOrderDetails] = useState({
     id: "",
     customer_name: "",
