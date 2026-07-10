@@ -59,7 +59,7 @@ function Dashboard() {
         <div className="min-h-screen bg-gray-100">
             <Header />
 
-            <div className="p-4 sm:p-6 lg:p-8">
+            <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                 {/* Header */}
                 <h1 className="font-semibold text-2xl sm:text-3xl lg:text-4xl text-gray-800">
                     Welcome {userName}!

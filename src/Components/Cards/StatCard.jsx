@@ -80,7 +80,7 @@ function StatCard({ data, icon: Icon, color = "blue" }) {
       relative overflow-hidden
       border border-gray-200 
       w-full flex flex-col gap-3 
-      p-6 py-8 
+      p-5 sm:p-6 py-6 sm:py-8 
       rounded-xl 
       bg-white
       transition-all duration-300 
@@ -118,7 +118,7 @@ function StatCard({ data, icon: Icon, color = "blue" }) {
 
       {/* Main value */}
       <div className="relative z-10">
-        <h1 className="text-3xl font-bold text-gray-800 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight truncate">
           {isNumeric ? (
             <>
               {data.currency && <span className="text-lg text-gray-500 mr-1">{data.currency}</span>}

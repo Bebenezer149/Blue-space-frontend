@@ -11,14 +11,14 @@ function Header() {
     navigate("/");
   }
   return (
-    <div className="bg-white border-b border-b-gray-400">
-      <div className="p-4 flex justify-between items-center">
+    <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto p-4 flex justify-between items-center">
         <h1 className="font-bold text-2xl md:text-3xl text-blue-400">
           Blue Space
         </h1>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center text-lg text-gray-700 gap-10">
+        <div className="hidden md:flex items-center text-base lg:text-lg text-gray-700 gap-6 lg:gap-10">
           <Link to={"/dashboard"}>
             <button className="cursor-pointer hover:text-blue-400">Home</button>
           </Link>
@@ -30,7 +30,7 @@ function Header() {
           </Link>
           <Link to={"/order-manager"}>
             <button className="cursor-pointer hover:text-blue-400">
-              Order
+              Orders
             </button>
           </Link>
           <Link to={"/report-center"}>
@@ -110,7 +110,7 @@ function Header() {
           </Link>
           <Link to={"/order-manager"}>
             <button className="cursor-pointer hover:text-blue-400">
-              Store
+              Orders
             </button>
           </Link>
           <Link to={"/report-center"}>

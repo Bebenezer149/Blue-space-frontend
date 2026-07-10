@@ -96,12 +96,11 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
   const shipping = 0;
   const total = (parseFloat(subtotal) + parseFloat(shipping)).toFixed(2);
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black/50 backdrop-blur-sm z-50">
-      {/* Cart Modal Container */}
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 flex justify-center items-center bg-black/50 backdrop-blur-sm z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
             <span className="text-blue-600">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -137,21 +136,21 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
             {cart.map((data, index) => (
               <div
                 key={data.id || index}
-                className="flex items-center gap-4 border-b border-gray-100 pb-4"
+                className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 border-b border-gray-100 pb-4"
               >
-                <div className="w-20 h-20 bg-gray-200 rounded-lg shrink-0">
+                <div className="w-full sm:w-20 h-40 sm:h-20 bg-gray-200 rounded-lg shrink-0 overflow-hidden">
                   <img
-                    className="h-full w-full rounded-lg"
+                    className="h-full w-full object-cover"
                     src={data.img}
-                    alt=""
+                    alt={data.product_name}
                   />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-800">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-gray-800 truncate">
                     {data.product_name}
                   </h3>
-                  <p className="text-sm text-gray-500">{data.description}</p>
-                  <div className="flex items-center justify-between mt-2">
+                  <p className="text-sm text-gray-500 line-clamp-2">{data.description}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
                     <span className="text-lg font-bold text-blue-600">
                       GHS {data.price}
                     </span>
@@ -254,7 +253,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Payment Method <span className="text-red-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <label className="relative flex items-center justify-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50">
                     <input
                       type="radio"

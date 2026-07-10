@@ -149,11 +149,11 @@ function ViewOrder({ setIsOpen, orderDetails }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-175 max-w-[95vw] p-6 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="font-bold text-2xl text-gray-800">Order Details</h1>
+        <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
+          <h1 className="font-bold text-xl sm:text-2xl text-gray-800">Order Details</h1>
           <button
             onClick={() => setIsOpen(false)}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
@@ -175,9 +175,10 @@ function ViewOrder({ setIsOpen, orderDetails }) {
           </button>
         </div>
 
+        <div className="p-5 sm:p-6">
         {/* Status Badge */}
-        <div className="flex justify-between items-center mb-6 p-3 bg-gray-50 rounded-lg">
-          <span className="text-sm font-medium text-gray-600">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6 p-3 bg-gray-50 rounded-lg">
+          <span className="text-sm font-medium text-gray-600 truncate">
             Order #ORD-{order.id}
           </span>
           <span
@@ -211,7 +212,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         )}
 
         {/* Order Info Grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-gray-50 rounded-lg p-4">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Customer Name
@@ -271,7 +272,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
           </div>
 
           {/* Items Bought */}
-          <div className="bg-gray-50 rounded-lg p-4 col-span-2">
+          <div className="bg-gray-50 rounded-lg p-4 sm:col-span-2">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Items Bought
             </label>
@@ -291,7 +292,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
           </div>
 
           {/* Additional Notes */}
-          <div className="bg-gray-50 rounded-lg p-4 col-span-2">
+          <div className="bg-gray-50 rounded-lg p-4 sm:col-span-2">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Additional Notes
             </label>
@@ -302,7 +303,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-200">
+        <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-gray-200">
           <button
             onClick={cancelledStatus}
             disabled={disable || rejectLoading || confirmLoading}
@@ -346,6 +347,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
               "Confirm Order"
             )}
           </button>
+        </div>
         </div>
       </div>
     </div>

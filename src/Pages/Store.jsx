@@ -59,7 +59,7 @@ function Store() {
         <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-10">
           {/* Store Logo */}
           <div className="relative shrink-0">
-            <div className="h-37.5 w-37.5 md:h-50 md:w-50 rounded-full border-4 border-white/30 shadow-2xl overflow-hidden bg-white p-1">
+            <div className="h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 rounded-full border-4 border-white/30 shadow-2xl overflow-hidden bg-white p-1">
               <img
                 className="h-full w-full object-cover rounded-full"
                 src={storeData?.logo || "https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
@@ -192,8 +192,8 @@ function Store() {
       </div>
 
       {/* Filter Navigation */}
-      <div className="border border-gray-300 justify-between h-16 items-center flex gap-3 px-4 md:px-8 font-semibold bg-white">
-        <div className="flex gap-2 md:gap-4 overflow-x-auto">
+      <div className="border-b border-gray-200 justify-between min-h-16 py-3 items-center flex gap-3 px-4 md:px-8 font-semibold bg-white">
+        <div className="flex gap-2 md:gap-4 overflow-x-auto flex-1 min-w-0">
           <button className="py-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
             All Products
           </button>
@@ -204,8 +204,8 @@ function Store() {
             Out Of Stock
           </button>
         </div>
-        <div className="flex items-center">
-          <button onClick={()=>setOpenCart(true)} className="p-2 text-blue-400 rounded-md shadow-md cursor-pointer hover:bg-gray-100">
+        <div className="flex items-center gap-2 shrink-0">
+          <button onClick={()=>setOpenCart(true)} className="relative p-2 text-blue-500 rounded-md shadow-sm cursor-pointer hover:bg-gray-100">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -220,17 +220,19 @@ function Store() {
                 d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
               />
             </svg>
+            {cart.length > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
+                {cart.length}
+              </span>
+            )}
           </button>
-          <div className="border h-6 rounded-full mb-5 mx-1 bg-red-500 text-white flex items-center px-2">
-            <h1>{cart.length}</h1>
-          </div>
         </div>
       </div>
 
       {/* Product Grid - Fixed Arrangement */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 justify-items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {products.map((data) => (
               <ProductCard 
                 onClick={()=>setOpenViewCard(true)}
@@ -256,9 +258,6 @@ function Store() {
             <p className="text-gray-400">This store doesn't have any products yet.</p>
           </div>
         )}
-       {
-        console.log(cart)
-       }
       </div>
      {
       openCart && ( <Cart cart={cart} setCart={setCart} setOpenCart={setOpenCart} storeData={storeData}/>)

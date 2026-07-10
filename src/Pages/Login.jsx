@@ -66,7 +66,7 @@ function Login() {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
       </div>
 
-      <div className="relative bg-white/95 backdrop-blur-sm w-[460px] rounded-2xl shadow-2xl p-8 transform transition-all duration-300 hover:shadow-3xl">
+      <div className="relative bg-white/95 backdrop-blur-sm w-full max-w-md rounded-2xl shadow-2xl p-6 sm:p-8 transform transition-all duration-300">
         {/* Logo/Icon */}
         <div className="flex justify-center mb-6">
           <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -87,7 +87,7 @@ function Login() {
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">Welcome Back!</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-2">Welcome Back!</h1>
         <p className="text-center text-gray-500 text-sm mb-8">Sign in to continue to your dashboard</p>
 
         {/* Success Message */}

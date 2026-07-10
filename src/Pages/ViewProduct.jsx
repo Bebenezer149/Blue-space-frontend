@@ -1,10 +1,10 @@
 function ViewProduct({productDetails, setViewOpen}) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
-          <h2 className="text-2xl font-bold text-gray-800">View Product</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">View Product</h2>
           <button onClick={()=>setViewOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@ function ViewProduct({productDetails, setViewOpen}) {
         <div className="p-6 space-y-6">
           {/* Product Image */}
           <div className="flex justify-center">
-            <div className="w-full h-60 rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-md">
+            <div className="w-full h-48 sm:h-60 rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-md">
               <img
                 src={productDetails.img}
                 alt="Product"

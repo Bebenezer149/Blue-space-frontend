@@ -7,7 +7,7 @@ function ProductCard({
   addToCart
 }) {
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white w-full max-w-90">
+    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white w-full h-full flex flex-col">
       <div className="h-48 md:h-56 overflow-hidden bg-gray-100">
         <img
           className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
@@ -15,7 +15,7 @@ function ProductCard({
           alt={title}
         />
       </div>
-      <div className="p-3">
+      <div className="p-3 flex flex-col flex-1">
         <div className="flex justify-between items-start gap-2">
           <h1 className="text-lg md:text-xl font-semibold text-gray-800 truncate">
             {title || "Product Name"}
@@ -35,7 +35,7 @@ function ProductCard({
         <div className="mt-2 text-xl md:text-2xl font-bold text-blue-600">
           <h1>GH₵ {parseFloat(price).toFixed(2) || "0.00"}</h1>
         </div>
-        <div className="mt-3">
+        <div className="mt-auto pt-3">
           <button
             onClick={()=>addToCart(data)}
             className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg transition-colors duration-200 cursor-pointer"

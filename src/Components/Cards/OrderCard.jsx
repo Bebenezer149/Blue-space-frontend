@@ -58,7 +58,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
   }
 
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.002] p-6 relative">
+    <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 relative">
       {/* Close button - positioned at top right corner */}
       <button
         onClick={() => clearCard(order.id)}
@@ -85,7 +85,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
         {/* Left Section */}
         <div className="flex flex-col gap-3 flex-1">
           <div>
-            <h2 className="font-bold text-lg pr-10 transition-colors duration-300">
+            <h2 className="font-bold text-base sm:text-lg pr-10">
               {currentStatus === "DELIVERED" 
                 ? " Order Delivered" 
                 : currentStatus === "CANCELLED"
@@ -96,21 +96,21 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
           </div>
 
           <div className="space-y-1 text-gray-700">
-            <p className="transition-colors duration-300 hover:text-gray-900">
+            <p className="text-sm text-gray-700 truncate">
               <span className="font-semibold">Customer:</span>{" "}
               {order.customer_name}
             </p>
 
-            <p className="transition-colors duration-300 hover:text-gray-900">
+            <p className="text-sm text-gray-700">
               <span className="font-semibold">Phone:</span> {order.phone_number}
             </p>
 
-            <p className="transition-colors duration-300 hover:text-gray-900">
+            <p className="text-sm text-gray-700">
               <span className="font-semibold">Total:</span>{" "}
               <span className="font-bold text-blue-600">GH₵ {order.total_amount}</span>
             </p>
 
-            <p className="transition-colors duration-300 hover:text-gray-900">
+            <p className="text-sm text-gray-700">
               <span className="font-semibold">Date:</span>{" "}
               {new Date(order.created_at).toLocaleString()}
             </p>

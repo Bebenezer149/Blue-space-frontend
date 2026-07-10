@@ -115,14 +115,14 @@ const AddProductPage = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen flex items-center justify-center w-full bg-gradient-to-br from-blue-400 to-blue-600">
-      <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-2xl justify-between">
-        <div className="flex justify-between">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <div className="p-4 sm:p-6 min-h-screen flex items-center justify-center w-full bg-gradient-to-br from-blue-400 to-blue-600">
+      <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 w-full max-w-2xl">
+        <div className="flex justify-between items-start gap-4 mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
             Add New Product
           </h2>
           <Link to={"/products"}>
-            <button className="mb-6 cursor-pointer font-bold">
+            <button className="cursor-pointer text-gray-500 hover:text-gray-700 p-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -142,8 +142,8 @@ const AddProductPage = () => {
         </div>
 
         {success && (
-          <div className="p-2 mx-32 border w-1/2   rounded-lg border-green-500 bg-green-200  text-green-500 my-4">
-            <h1 className="flex gap-2 justify-between">
+          <div className="w-full p-4 rounded-lg border border-green-400 bg-green-50 text-green-700 my-4">
+            <h1 className="flex gap-2 items-center justify-between text-sm sm:text-base">
               Product Added Successfully
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -163,8 +163,8 @@ const AddProductPage = () => {
           </div>
         )}
         {errorMessage && (
-          <div className="p-2 border mx-32 w-1/2  rounded-lg border-red-500 bg-red-200  text-red-500">
-            <h1 className="flex gap-2">
+          <div className="w-full p-4 rounded-lg border border-red-400 bg-red-50 text-red-700 my-4">
+            <h1 className="flex gap-2 items-center text-sm sm:text-base">
               Something went wrong
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -302,11 +302,11 @@ const AddProductPage = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
               disabled={disable}
-              className={`flex-1 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors ${
+              className={`flex-1 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium ${
                 disable ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
@@ -315,7 +315,7 @@ const AddProductPage = () => {
 
             <button
               type="reset"
-              className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+              className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
               onClick={() => {
                 setProductName("");
                 setPrice("");
