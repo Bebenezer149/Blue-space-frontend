@@ -1,5 +1,9 @@
 const BACKEND_API = "https://makola-2.onrender.com/api";
 
+// Netlify Functions provide Node globals, but some eslint setups may complain.
+/* global Buffer */
+/* eslint-disable no-undef */
+
 const SKIP_REQUEST_HEADERS = new Set([
   "host",
   "connection",
@@ -34,9 +38,16 @@ exports.handler = async (event) => {
 
   const headers = {};
   for (const [key, value] of Object.entries(event.headers || {})) {
-    if (!SKIP_REQUEST_HEADERS.has(key.toLowerCase())) {
+    const lowerKey = key.toLowerCase();
+    if (SKIP_REQUEST_HEADERS.has(lowerKey)) continue;
+
+    // Keep Content-Type especially for multipart/form-data with boundary.
+    if (lowerKey === "content-type") {
       headers[key] = value;
+      continue;
     }
+
+    headers[key] = value;
   }
 
   const fetchOptions = {
@@ -50,6 +61,12 @@ exports.handler = async (event) => {
       : event.body;
   }
 
+  // If we already have a content-type (e.g. multipart/form-data),
+  // do not let underyling fetch try to auto-set it from other inputs.
+  if (event.httpMethod !== "GET" && event.httpMethod !== "HEAD" && !headers["content-type"] && headers["Content-Type"]) {
+    headers["content-type"] = headers["Content-Type"];
+  }
+
   try {
     const response = await fetch(targetUrl, fetchOptions);
     const body = Buffer.from(await response.arrayBuffer());
@@ -61,11 +78,16 @@ exports.handler = async (event) => {
       }
     });
 
+    // Encode body correctly depending on response type.
+    // JSON/text should be returned as UTF-8 string, binary as base64.
+    const contentType = response.headers.get("content-type") || "";
+    const isTextual = contentType.includes("application/json") || contentType.startsWith("text/");
+
     return {
       statusCode: response.status,
       headers: responseHeaders,
-      body: body.toString("base64"),
-      isBase64Encoded: true,
+      body: isTextual ? body.toString("utf8") : body.toString("base64"),
+      isBase64Encoded: !isTextual,
     };
   } catch (error) {
     console.error("API proxy error:", error);
