@@ -53,13 +53,21 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
       },
       body: formData,
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res.status === 413) {
           throw new Error("Image is too large. Try a smaller photo.");
         }
+
+        const contentType = res.headers.get("content-type") || "";
+
         if (!res.ok) {
-          throw new Error("Failed to update product");
+          if (contentType.includes("application/json")) {
+            const data = await res.json();
+            throw new Error(data.message || "Failed to update product");
+          }
+          throw new Error(`Server error (${res.status}). Please try again.`);
         }
+
         return res.json();
       })
       .then((res) => {
