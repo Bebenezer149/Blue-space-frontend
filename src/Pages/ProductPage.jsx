@@ -2,6 +2,7 @@ import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
 import ViewProduct from "./ViewProduct";
 import DeletePrompt from "../Components/Prompts/DeletePrompt";
 import EditProduct from "./EditProduct";
@@ -12,8 +13,9 @@ function ProductPage() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [id,setId]=useState(null)
   const [isRefreshing, setIsRefreshing] = useState(false);
-  // const [openAddProduct , setOpenAddProduct]= usetate(false)
+  // const [openAddProduct , setOpenAddProduct]= useState(false)
   const [productDetails, setProductDetails] = useState({
     id: "",
     product_name: "",
@@ -29,7 +31,7 @@ function ProductPage() {
 
   function fetchProducts() {
     setIsRefreshing(true);
-    fetch("http://127.0.0.1:8000/api/products", {
+    fetch(`${API_URL}/products`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -54,11 +56,8 @@ function ProductPage() {
   }, []);
 
   function DeleteProduct(id) {
-    if (!window.confirm("Are you sure you want to delete this product?")) {
-      return;
-    }
 
-    fetch(`http://127.0.0.1:8000/api/delete-product?id=${id}`, {
+    fetch(`${API_URL}/delete-product?id=${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -261,7 +260,8 @@ function ProductPage() {
                         <button
                           onClick={() => {
                             setDeleteOpen(true)
-                            DeleteProduct(data.id);
+                            setId(data.id)
+                           
                             
                           }}
                           className="cursor-pointer text-red-600 hover:text-red-800"
@@ -308,7 +308,7 @@ function ProductPage() {
         />
       )}
 
-     {deleteOpen && ( <DeletePrompt setDeleteOpen={setDeleteOpen}/>)}
+     {deleteOpen && ( <DeletePrompt id={id} deleteProduct={ DeleteProduct} setDeleteOpen={setDeleteOpen}/>)}
     </div>
   );
 }

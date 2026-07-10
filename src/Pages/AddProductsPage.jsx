@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { API_URL } from "../config";
 
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
@@ -7,7 +9,7 @@ const AddProductPage = () => {
   const [quantity, setQuantity] = useState("");
   const [status, setStatus] = useState("Available");
   const [image, setImage] = useState(null); // Will store base64 string
-  const [imagePreview, setImagePreview] = useState(""); // For preview
+  // const [imagePreview, setImagePreview] = useState(""); // For preview
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useState(false);
@@ -15,50 +17,63 @@ const AddProductPage = () => {
   const [errorMessage, setErrorMessage] = useState(false);
 
   //
-
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    const formData = new FormData();
 
-    formData.append("product_name", productName);
-    formData.append("price", price);
-    formData.append("quantity", quantity);
-    formData.append("status", status);
-    formData.append("img", image);
-    formData.append("description", description);
+    if (
+      productName === "" ||
+      price === "" ||
+      quantity === "" ||
+      image === null ||
+      description === ""
+    ) {
+      toast.error("Every Field must be filled");
+    } else {
+      setLoading(true);
+      const formData = new FormData();
 
-    fetch("http://127.0.0.1:8000/api/create-product", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        setSuccess(true);
-        setLoading(false);
-        setDisable(true);
-        setProductName("");
-        setPrice("");
-        setQuantity("");
-        setStatus("Available");
-        setImage("");
-        setImagePreview("");
-        setDescription("");
-        // Reset file input
-        document.querySelector('input[type="file"]').value = "";
+      formData.append("product_name", productName);
+      formData.append("price", price);
+      formData.append("quantity", quantity);
+      formData.append("status", status);
+      formData.append("img", image);
+      formData.append("description", description);
+
+      fetch(`${API_URL}/create-product`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
       })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        setErrorMessage(true);
-      });
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          setSuccess(true);
+          setLoading(false);
+          setDisable(true);
+          setProductName("");
+          setPrice("");
+          setQuantity("");
+          setStatus("Available");
+          setImage("");
+          setDescription("");
+          navigate("/products");
+          toast.success("Product created ");
+          // Reset file input
+          document.querySelector('input[type="file"]').value = "";
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+          toast.error("Something went wrong");
+          setErrorMessage(true);
+        });
+    }
   };
 
   // const handleImageChange = (e) => {

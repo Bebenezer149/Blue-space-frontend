@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdate }) {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -15,10 +16,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
   function deliveredStatus() {
     if (isUpdating || disable) return;
     
-    // Show confirmation before updating
-    if (!window.confirm(`Mark order #${order.id} as delivered?`)) {
-      return;
-    }
+  
     
     setIsUpdating(true);
     const deliveredStatus = {
@@ -26,7 +24,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
       status: "DELIVERED",
     };
     
-    fetch(`http://127.0.0.1:8000/api/update-status?id=${deliveredStatus.id}`, {
+    fetch(`${API_URL}/update-status?id=${deliveredStatus.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

@@ -1,7 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ProductCard from "../Components/Cards/ProductCard";
+import ViewProduct from "./ViewProduct";
 import Cart from "../Components/Cart/Cart";
+import { API_URL } from "../config";
 
 function Store() {
   const { slug } = useParams();
@@ -9,11 +11,13 @@ function Store() {
   const [storeData, setStoreData] = useState(null);
   const [cart, setCart]=useState([])
   const [openCart, setOpenCart]=useState(false)
+  const [openViewCard, setOpenViewCard]=useState(false)
+  const [productDetails, setProductDetails]=useState(null)
 
   
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/show-products?link=${slug}`, {
+    fetch(`${API_URL}/show-products?link=${slug}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
@@ -229,6 +233,7 @@ function Store() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 justify-items-center">
             {products.map((data) => (
               <ProductCard 
+                onClick={()=>setOpenViewCard(true)}
                 key={data.id} 
                 data={data}
                 img={data.img} 
@@ -238,7 +243,9 @@ function Store() {
                 addToCart={addToCart} 
                 setOpenCart={setOpenCart}
               />
-            ))}
+            )
+            
+            )}
           </div>
         ) : (
           <div className="text-center py-12">
@@ -255,6 +262,9 @@ function Store() {
       </div>
      {
       openCart && ( <Cart cart={cart} setCart={setCart} setOpenCart={setOpenCart} storeData={storeData}/>)
+     }
+     {
+      openViewCard && (<ViewProduct/>)
      }
     </div>
   );

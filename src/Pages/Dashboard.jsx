@@ -2,6 +2,7 @@ import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import StatCard from "../Components/Cards/StatCard";
 import SalesTable from "../Components/Tables/SalesTable";
+import { API_URL } from "../config";
 
 function Dashboard() {
     const token = localStorage.getItem("token");
@@ -12,7 +13,7 @@ function Dashboard() {
 
     useEffect(() => {
         setLoading(true);
-        fetch("http://127.0.0.1:8000/api/dashboard", {
+        fetch(`${API_URL}/dashboard`, {
             method: "GET",
             headers: {
                 Accept: "application/json",

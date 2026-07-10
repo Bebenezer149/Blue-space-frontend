@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -42,7 +43,7 @@ function SignUp() {
       password_confirmation: passwordConfirmation,
     };
 
-    fetch("http://127.0.0.1:8000/api/register", {
+    fetch(`${API_URL}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

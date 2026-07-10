@@ -1,0 +1,2 @@
+export const API_URL =
+    "https://makola-2.onrender.com/api";

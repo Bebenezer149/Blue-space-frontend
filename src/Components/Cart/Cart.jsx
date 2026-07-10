@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 const Cart = ({ setOpenCart, cart, setCart }) => {
   const [customer, setCustomer] = useState("");
@@ -40,7 +41,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       items,
     };
     console.log(data);
-    fetch("http://127.0.0.1:8000/api/create-order", {
+    fetch(`${API_URL}/create-order`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

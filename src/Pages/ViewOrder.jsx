@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
+// import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { API_URL } from "../config";
 
 function ViewOrder({ setIsOpen, orderDetails }) {
   const [order, setOrder] = useState({});
@@ -15,7 +18,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
 
   // Fetch order details
   const fetchOrderDetails = useCallback(() => {
-    fetch(`http://127.0.0.1:8000/api/get-one-order?id=${orderDetails.id}`, {
+      fetch(`${API_URL}/get-one-order?id=${orderDetails.id}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -77,7 +80,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
       status: "CONFIRMED"
     };
     
-    fetch(`http://127.0.0.1:8000/api/update-status?id=${orderDetails.id}`, {
+    fetch(`${API_URL}/update-status?id=${orderDetails.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -116,7 +119,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
       status: "CANCELLED"
     };
     
-    fetch(`http://127.0.0.1:8000/api/update-status?id=${orderDetails.id}`, {
+    fetch(`${API_URL}/update-status?id=${orderDetails.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

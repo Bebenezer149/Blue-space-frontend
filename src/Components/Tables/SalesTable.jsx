@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../../config";
 
 function SalesTable() {
   const [sales, setSales] = useState([]);
@@ -8,7 +9,7 @@ function SalesTable() {
   useEffect(() => {
     const token = localStorage.getItem("token");
    
-    fetch("http://127.0.0.1:8000/api/orders", {
+    fetch(`${API_URL}/orders`, {
       method: "GET",
       headers: {
         Accept: "application/json",

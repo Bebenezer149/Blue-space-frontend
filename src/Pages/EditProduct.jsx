@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
 
 function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [productName, setProductName] = useState("");
@@ -13,17 +14,28 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
 
   const token = localStorage.getItem("token");
 
+  
+  useEffect(() => {
+    if (productDetails) {
+      setProductName(productDetails.product_name || "");
+      setPrice(productDetails.price || "");
+      setQuantity(productDetails.quantity || "");
+      setDescription(productDetails.description || "");
+      setStatus(productDetails.status || "Available");
+    }
+  }, [productDetails]);
+
   function updateProduct(e) {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData();
 
-    formData.append("product_name", productName);
-    formData.append("price", price);
-    formData.append("quantity", quantity);
-    formData.append("description", description);
-    formData.append("status", status);
+    formData.append("product_name", productName || productDetails.product_name);
+    formData.append("price", price || productDetails.price);
+    formData.append("quantity", quantity || productDetails.quantity);
+    formData.append("description", description || productDetails.description);
+    formData.append("status", status || productDetails.status);
 
     if (image) {
       formData.append("img", image);
@@ -31,7 +43,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
 
     formData.append("_method", "PUT");
 
-    fetch(`http://127.0.0.1:8000/api/update-product?id=${productDetails.id}`, {
+    fetch(`${API_URL}/update-product?id=${productDetails.id}`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -124,8 +136,8 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
             <input
               type="text"
               name="product_name"
+              value={productName}
               onChange={(e) => setProductName(e.target.value)}
-              defaultValue={productDetails.product_name}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               placeholder="Enter product name"
               required
@@ -141,8 +153,8 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
               <input
                 type="number"
                 name="price"
+                value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                defaultValue={productDetails.price}
                 step="0.01"
                 min="0"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -158,8 +170,8 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
               <input
                 type="number"
                 name="quantity"
+                value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
-                defaultValue={productDetails.quantity}
                 min="0"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="0"
@@ -175,8 +187,8 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
               </label>
               <select
                 name="status"
+                value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                defaultValue={productDetails.status}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all"
               >
                 <option value="Available">Available</option>
@@ -208,11 +220,17 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
             </label>
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-gray-200">
-                <img
-                  src={imagePreview || productDetails.img}
-                  alt={imagePreview ? "New product image" : "Current product"}
-                  className="w-full h-full object-cover"
-                />
+                {imagePreview || productDetails.img ? (
+                  <img
+                    src={imagePreview || productDetails.img}
+                    alt={imagePreview ? "New product image" : "Current product"}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                    <span className="text-gray-400 text-xs">No image</span>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col">
                 {imagePreview ? (
@@ -246,8 +264,8 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
             <textarea
               name="description"
               rows="4"
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
-              defaultValue={productDetails.description}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y transition-all"
               placeholder="Enter product description"
             />
