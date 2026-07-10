@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_URL } from "../config";
+import { compressImage } from "../utils/compressImage";
 
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
@@ -12,6 +13,7 @@ const AddProductPage = () => {
   // const [imagePreview, setImagePreview] = useState(""); // For preview
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
   const [disable, setDisable] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
@@ -50,7 +52,15 @@ const AddProductPage = () => {
         },
         body: formData,
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === 413) {
+            throw new Error("Image is too large. Try a smaller photo.");
+          }
+          if (!res.ok) {
+            throw new Error("Failed to create product");
+          }
+          return res.json();
+        })
         .then((res) => {
           console.log(res);
           setSuccess(true);
@@ -70,45 +80,31 @@ const AddProductPage = () => {
         .catch((err) => {
           console.log(err);
           setLoading(false);
-          toast.error("Something went wrong");
+          toast.error(err.message || "Something went wrong");
           setErrorMessage(true);
         });
     }
   };
 
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     // Validate file size (5MB)
-  //     if (file.size > 5 * 1024 * 1024) {
-  //       alert("File size must be less than 5MB");
-  //       e.target.value = "";
-  //       return;
-  //     }
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      setImage(null);
+      return;
+    }
 
-  //     // Validate file type
-  //     const allowedTypes = [
-  //       "image/jpeg",
-  //       "image/png",
-  //       "image/gif",
-  //       "image/webp",
-  //     ];
-  //     if (!allowedTypes.includes(file.type)) {
-  //       alert("Please select a valid image (JPEG, PNG, GIF, WEBP)");
-  //       e.target.value = "";
-  //       return;
-  //     }
-
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       const base64String = reader.result;
-  //       // setImage(base64String); // Store base64 for API
-  //       setImagePreview(base64String); // Store base64 for preview
-  //       console.log("Image converted to base64");
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
+    setCompressing(true);
+    try {
+      const compressed = await compressImage(file);
+      setImage(compressed);
+    } catch (err) {
+      toast.error(err.message || "Failed to process image");
+      e.target.value = "";
+      setImage(null);
+    } finally {
+      setCompressing(false);
+    }
+  };
 
   return (
     <div className="p-6 min-h-screen flex items-center justify-center w-full bg-gradient-to-br from-blue-400 to-blue-600">
@@ -256,10 +252,13 @@ const AddProductPage = () => {
                 type="file"
                 accept="image/*"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                onChange={(e) => setImage(e.target.files[0])}
+                onChange={handleImageChange}
+                disabled={compressing}
               />
               <p className="text-xs text-gray-500 mt-1">
-                Accepted formats: JPEG, PNG, JPG, GIF, WEBP (Max 5MB)
+                {compressing
+                  ? "Compressing image..."
+                  : "JPEG, PNG, GIF, WEBP — large photos are compressed automatically"}
               </p>
 
               {/* Image Preview - Fixed
@@ -314,8 +313,7 @@ const AddProductPage = () => {
                 setPrice("");
                 setQuantity("");
                 setStatus("Available");
-                setImage("");
-                setImagePreview("");
+                setImage(null);
                 setDescription("");
                 document.querySelector('input[type="file"]').value = "";
               }}

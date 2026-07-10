@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { API_URL } from "../config";
+import { compressImage } from "../utils/compressImage";
 
 function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [productName, setProductName] = useState("");
@@ -11,6 +12,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -52,6 +54,9 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
       body: formData,
     })
       .then((res) => {
+        if (res.status === 413) {
+          throw new Error("Image is too large. Try a smaller photo.");
+        }
         if (!res.ok) {
           throw new Error("Failed to update product");
         }
@@ -68,12 +73,12 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
       })
       .catch((err) => {
         console.log(err);
-        toast.error("Failed to update product");
+        toast.error(err.message || "Failed to update product");
         setLoading(false);
       });
   }
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
 
     if (!file) {
@@ -82,21 +87,19 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size must be less than 5MB");
+    setCompressing(true);
+    try {
+      const compressed = await compressImage(file);
+      setImage(compressed);
+      setImagePreview(URL.createObjectURL(compressed));
+    } catch (err) {
+      toast.error(err.message || "Failed to process image");
       e.target.value = "";
-      return;
+      setImage(null);
+      setImagePreview(null);
+    } finally {
+      setCompressing(false);
     }
-
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
-      toast.error("Please select a valid image (JPEG, PNG, GIF, WEBP)");
-      e.target.value = "";
-      return;
-    }
-
-    setImage(file);
-    setImagePreview(URL.createObjectURL(file));
   };
 
   return (
@@ -208,7 +211,9 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all"
               />
               <p className="text-xs text-gray-500 mt-1">
-                Leave empty to keep current image (Max 5MB)
+                {compressing
+                  ? "Compressing image..."
+                  : "Leave empty to keep current image — large photos are compressed automatically"}
               </p>
             </div>
           </div>
