@@ -1,1 +1,1 @@
-export const API_URL = "/api";
+export const API_URL = "https://blue-space-app.netlify.app/api";
