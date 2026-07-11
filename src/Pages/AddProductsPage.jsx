@@ -2,7 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_URL } from "../config";
-import { compressImage } from "../utils/compressImage";
+
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+
+
 
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
@@ -13,7 +16,8 @@ const AddProductPage = () => {
   // const [imagePreview, setImagePreview] = useState(""); // For preview
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const [compressing, setCompressing] = useState(false);
+  // const [compressing, setCompressing] = useState(false);
+
   const [disable, setDisable] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
@@ -101,17 +105,15 @@ const AddProductPage = () => {
       return;
     }
 
-    setCompressing(true);
-    try {
-      const compressed = await compressImage(file);
-      setImage(compressed);
-    } catch (err) {
-      toast.error(err.message || "Failed to process image");
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      toast.error("Image must be less than 5MB");
       e.target.value = "";
       setImage(null);
-    } finally {
-      setCompressing(false);
+      return;
     }
+
+    // No compression: upload the original file
+    setImage(file);
   };
 
   return (
@@ -261,12 +263,11 @@ const AddProductPage = () => {
                 accept="image/*"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={handleImageChange}
-                disabled={compressing}
+                disabled={false}
+
               />
               <p className="text-xs text-gray-500 mt-1">
-                {compressing
-                  ? "Compressing image..."
-                  : "JPEG, PNG, GIF, WEBP — large photos are compressed automatically"}
+                Upload an image less than 5MB
               </p>
 
               {/* Image Preview - Fixed
