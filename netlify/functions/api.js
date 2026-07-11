@@ -22,13 +22,20 @@ const SKIP_REQUEST_HEADERS = new Set([
 ]);
 
 function getApiPath(event) {
-  const fromFunctionPath = event.path.replace(/^\/\.netlify\/functions\/api\/?/, "");
-  if (fromFunctionPath) {
-    return fromFunctionPath;
+  // If the path starts with the function route prefix, strip it first.
+  let cleanedPath = event.path;
+  if (cleanedPath.startsWith("/.netlify/functions/api")) {
+    cleanedPath = cleanedPath.slice("/.netlify/functions/api".length);
   }
-
-  const fromApiPath = event.path.replace(/^\/api\/?/, "");
-  return fromApiPath;
+  // If the remaining path starts with /api, strip it as well.
+  if (cleanedPath.startsWith("/api")) {
+    cleanedPath = cleanedPath.slice("/api".length);
+  }
+  // Strip any leading slash to avoid double slashes when joining with BACKEND_API
+  if (cleanedPath.startsWith("/")) {
+    cleanedPath = cleanedPath.slice(1);
+  }
+  return cleanedPath;
 }
 
 export const handler = async (event) => {
