@@ -1,4 +1,5 @@
-// Vercel serverless function proxy.
+// (unused) Previously attempted Vercel proxy. Replaced by api/[...path].js
+// Vercel serverless function proxy (deprecated)
 // Deploy this file as an API route via Vercel's "api" folder conventions.
 // Endpoint: /api/{path*}
 

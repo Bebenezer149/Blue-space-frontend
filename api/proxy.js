@@ -1,3 +1,4 @@
+// (unused) Previously attempted Express proxy. Replaced by api/[...path].js
 import express from 'express';
 
 // On Node 18+, global fetch exists.
