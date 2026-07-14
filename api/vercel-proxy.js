@@ -3,11 +3,11 @@
 // Deploy this file as an API route via Vercel's "api" folder conventions.
 // Endpoint: /api/{path*}
 
-export const config = {
-  runtime: 'nodejs18.x',
-};
+// NOTE: deprecated file; Vercel should use api/[...path].js instead.
+// Keep this file free of unsupported Vercel config.
 
-const BACKEND_API = process.env.BACKEND_API || 'https://makola-2.onrender.com/api';
+
+const BACKEND_API = 'https://makola-2.onrender.com/api';
 
 function getWildcardPath(req) {
   // Vercel sets `req.query` keys for dynamic routes.

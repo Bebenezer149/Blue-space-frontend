@@ -26,6 +26,7 @@ export default async function handler(req, res) {
     return res.status(204).set(corsHeaders()).end();
   }
 
+
   try {
     const apiPath = getWildcardPath(req);
     const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
