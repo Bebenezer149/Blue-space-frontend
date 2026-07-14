@@ -22,16 +22,38 @@ const SKIP_REQUEST_HEADERS = new Set([
 ]);
 
 function getApiPath(event) {
-  const fromFunctionPath = event.path.replace(/^\/\.netlify\/functions\/api\/?/, "");
-  if (fromFunctionPath) {
-    return fromFunctionPath;
+  // If the path starts with the function route prefix, strip it first.
+  let cleanedPath = event.path;
+  if (cleanedPath.startsWith("/.netlify/functions/api")) {
+    cleanedPath = cleanedPath.slice("/.netlify/functions/api".length);
   }
-
-  const fromApiPath = event.path.replace(/^\/api\/?/, "");
-  return fromApiPath;
+  // If the remaining path starts with /api, strip it as well.
+  if (cleanedPath.startsWith("/api")) {
+    cleanedPath = cleanedPath.slice("/api".length);
+  }
+  // Strip any leading slash to avoid double slashes when joining with BACKEND_API
+  if (cleanedPath.startsWith("/")) {
+    cleanedPath = cleanedPath.slice(1);
+  }
+  return cleanedPath;
 }
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
+  // CORS preflight headers
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept, X-Requested-With",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers: corsHeaders,
+      body: "",
+    };
+  }
+
   const apiPath = getApiPath(event);
   const query = event.rawQuery ? `?${event.rawQuery}` : "";
   const targetUrl = `${BACKEND_API}/${apiPath}${query}`;
@@ -71,9 +93,20 @@ exports.handler = async (event) => {
     const response = await fetch(targetUrl, fetchOptions);
     const body = Buffer.from(await response.arrayBuffer());
 
-    const responseHeaders = {};
+    const responseHeaders = {
+      ...corsHeaders,
+    };
+
     response.headers.forEach((value, key) => {
-      if (key.toLowerCase() !== "transfer-encoding") {
+      const lowerKey = key.toLowerCase();
+      if (
+        lowerKey !== "transfer-encoding" &&
+        lowerKey !== "content-encoding" &&
+        lowerKey !== "content-length" &&
+        lowerKey !== "access-control-allow-origin" &&
+        lowerKey !== "access-control-allow-headers" &&
+        lowerKey !== "access-control-allow-methods"
+      ) {
         responseHeaders[key] = value;
       }
     });
@@ -94,7 +127,10 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 502,
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        ...corsHeaders,
+      },
       body: JSON.stringify({ message: "Unable to reach API server." }),
     };
   }
