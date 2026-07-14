@@ -69,8 +69,9 @@ export default async function handler(req, res) {
     const contentType = backendRes.headers.get('content-type') || '';
     const isTextual = contentType.includes('application/json') || contentType.startsWith('text/');
 
-    res.status(backendRes.status);
-    res.set(corsHeaders());
+    res.statusCode = backendRes.status;
+    for (const [k, v] of Object.entries(corsHeaders())) res.setHeader(k, v);
+
 
     backendRes.headers.forEach((value, key) => {
       const lk = key.toLowerCase();
@@ -84,6 +85,7 @@ export default async function handler(req, res) {
       res.status(backendRes.status);
       return res.send(text);
     }
+
 
     // For binary responses, send bytes without referencing Buffer.
     const ab = await backendRes.arrayBuffer();
