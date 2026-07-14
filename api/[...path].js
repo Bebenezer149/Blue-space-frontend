@@ -35,15 +35,30 @@ export default async function handler(req, res) {
     const targetUrl = `${BACKEND_API}/${apiPath}${query}`;
 
     const headers = { ...req.headers };
+
+    // Hop-by-hop + computed headers can break Undici's strict request handling.
     delete headers.host;
-    delete headers['content-length'];
+    delete headers.connection;
+    delete headers['transfer-encoding'];
 
+    // Remove content-length regardless of casing.
+    for (const key of Object.keys(headers)) {
+      if (key.toLowerCase() === 'content-length') delete headers[key];
+    }
 
-    // Forward body as-is for non-GET methods.
-    // For JSON requests, Vercel already parses to object; fetch can send object.
-    // For multipart, Vercel typically provides raw body only in more advanced configs.
-    // This proxy is primarily to unblock CORS for JSON endpoints.
-    const body = method === 'GET' || method === 'HEAD' ? undefined : req.body;
+    // Normalize body to a type Undici can measure accurately.
+    let body;
+    if (method !== 'GET' && method !== 'HEAD') {
+      const contentType = headers['content-type'] || headers['Content-Type'] || '';
+
+      if (contentType.includes('application/json') && req.body && typeof req.body === 'object' && !(req.body instanceof ArrayBuffer) && !(ArrayBuffer.isView(req.body)) ) {
+        body = JSON.stringify(req.body);
+        // Ensure Content-Type is set for the JSON string.
+        headers['content-type'] = 'application/json';
+      } else {
+        body = req.body;
+      }
+    }
 
     const backendRes = await fetch(targetUrl, {
       method,
