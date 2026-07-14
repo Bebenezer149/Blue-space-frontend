@@ -23,17 +23,21 @@ export default async function handler(req, res) {
 
   // Preflight
   if (method === 'OPTIONS') {
-    return res.status(204).set(corsHeaders()).end();
+    const ch = corsHeaders();
+    for (const [k, v] of Object.entries(ch)) res.setHeader(k, v);
+    return res.status(204).end();
   }
 
-
   try {
+
     const apiPath = getWildcardPath(req);
     const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
     const targetUrl = `${BACKEND_API}/${apiPath}${query}`;
 
     const headers = { ...req.headers };
     delete headers.host;
+    delete headers['content-length'];
+
 
     // Forward body as-is for non-GET methods.
     // For JSON requests, Vercel already parses to object; fetch can send object.
@@ -62,16 +66,23 @@ export default async function handler(req, res) {
 
     if (isTextual) {
       const text = await backendRes.text();
+      res.status(backendRes.status);
       return res.send(text);
     }
 
-    // For binary responses, fall back to arrayBuffer without referencing Buffer.
+    // For binary responses, send bytes without referencing Buffer.
     const ab = await backendRes.arrayBuffer();
-    return res.status(backendRes.status).send(new Uint8Array(ab));
+    res.status(backendRes.status);
+    return res.send(new Uint8Array(ab));
+
+
 
   } catch (e) {
     console.error(e);
-    res.status(502).set(corsHeaders()).json({ message: 'Unable to reach API server.' });
+    const ch = corsHeaders();
+    for (const [k, v] of Object.entries(ch)) res.setHeader(k, v);
+    return res.status(502).json({ message: 'Unable to reach API server.' });
   }
+
 }
 
