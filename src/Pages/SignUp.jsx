@@ -51,9 +51,22 @@ function SignUp() {
       },
       body: JSON.stringify(data),
     })
-      .then((res) => {
+      .then(async (res) => {
         if (!res.ok) {
-          throw new Error("Registration failed");
+          // Try to read backend error payload so we can show a meaningful message.
+          let detail = '';
+          try {
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+              const data = await res.json();
+              detail = data?.message || data?.error || JSON.stringify(data);
+            } else {
+              detail = await res.text();
+            }
+          } catch {
+            // ignore parsing errors
+          }
+          throw new Error(`Registration failed${detail ? `: ${detail}` : ''}`);
         }
         return res.json();
       })

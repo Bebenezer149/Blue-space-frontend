@@ -75,7 +75,8 @@ export default async function handler(req, res) {
 
     backendRes.headers.forEach((value, key) => {
       const lk = key.toLowerCase();
-      if (!['transfer-encoding', 'content-length'].includes(lk)) {
+      // Avoid forwarding encoding/length headers that can break browser decoding.
+      if (!['transfer-encoding', 'content-length', 'content-encoding'].includes(lk)) {
         res.setHeader(key, value);
       }
     });
