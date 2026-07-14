@@ -92,9 +92,7 @@ function OrderManager() {
             </p>
           </div>
 
-          <button className="bg-red-500 hover:bg-red-600 text-white px-4 sm:px-5 py-2 rounded-lg text-sm sm:text-base transition-colors duration-200 w-full sm:w-auto">
-            Clear Notifications
-          </button>
+         
         </div>
 
         {/* Search and Store Link */}
@@ -125,7 +123,7 @@ function OrderManager() {
             />
           </div>
           <div className="flex items-center justify-center sm:justify-end">
-            <div className="bg-blue-50 border border-blue-200 flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-gray-600 truncate max-w-full">
+            <div className="bg-blue-50 border border-blue-200 flex items-center overflow-auto gap-2 rounded-lg px-4 py-2 text-sm text-gray-600 truncate max-w-full">
               <span className="text-blue-600">{copy}</span>
               <button onClick={copyToClipboard}>
                 <svg
