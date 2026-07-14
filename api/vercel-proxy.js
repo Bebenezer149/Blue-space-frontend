@@ -61,8 +61,10 @@ export default async function handler(req, res) {
       return res.send(txt);
     }
 
-    const buf = Buffer.from(await response.arrayBuffer());
-    res.send(buf);
+    // Avoid Buffer usage (prevents lint/runtime issues in some environments)
+    const ab = await response.arrayBuffer();
+    return res.send(new Uint8Array(ab));
+
   } catch (e) {
     console.error(e);
     return res.status(502).json({ message: 'Unable to reach API server.' });
