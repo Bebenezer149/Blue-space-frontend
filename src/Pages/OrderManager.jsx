@@ -75,6 +75,7 @@ function OrderManager() {
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(copy);
     toast.info("Copied to clipboard");
+    setTick(true)
   };
 
   return (
