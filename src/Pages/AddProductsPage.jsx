@@ -32,8 +32,7 @@ const AddProductPage = () => {
     if (
       productName === "" ||
       price === "" ||
-      quantity === "" ||
-      image === null ||
+      quantity === "" || 
       description === ""
     ) {
       toast.error("Every Field must be filled");
