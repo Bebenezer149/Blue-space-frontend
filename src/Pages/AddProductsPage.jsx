@@ -5,100 +5,95 @@ import { API_URL } from "../config";
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
-
-
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [status, setStatus] = useState("Available");
-  const [image, setImage] = useState(null); // Will store base64 string
-  // const [imagePreview, setImagePreview] = useState(""); // For preview
+  const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  // const [compressing, setCompressing] = useState(false);
 
   const [disable, setDisable] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
-  //
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (
-      productName === "" ||
-      price === "" ||
-      quantity === "" || 
-      description === ""
-    ) {
-      toast.error("Every Field must be filled");
-    } else {
-      setLoading(true);
-      const formData = new FormData();
-
-      formData.append("product_name", productName);
-      formData.append("price", price);
-      formData.append("quantity", quantity);
-      formData.append("status", status);
-      formData.append("img", image);
-      formData.append("description", description);
-
-      fetch(`${API_URL}/create-product`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      })
-        .then(async (res) => {
-          if (res.status === 413) {
-            throw new Error("Image is too large. Try a smaller photo.");
-          }
-
-          const contentType = res.headers.get("content-type") || "";
-
-          if (!res.ok) {
-            if (contentType.includes("application/json")) {
-              const data = await res.json();
-              throw new Error(data.message || "Failed to create product");
-            }
-            throw new Error(`Server error (${res.status}). Please try again.`);
-          }
-
-          return res.json();
-        })
-        .then((res) => {
-          console.log(res);
-          setSuccess(true);
-          setLoading(false);
-          setDisable(true);
-          setProductName("");
-          setPrice("");
-          setQuantity("");
-          setStatus("Available");
-          setImage("");
-          setDescription("");
-          navigate("/products");
-          toast.success("Product created ");
-          // Reset file input
-          document.querySelector('input[type="file"]').value = "";
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-          toast.error(err.message || "Something went wrong");
-          setErrorMessage(true);
-        });
+    // Image is optional
+    if (!productName || !price || !quantity || !description) {
+      toast.error("Please fill in all required fields");
+      return;
     }
+
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("product_name", productName);
+    formData.append("price", price);
+    formData.append("quantity", quantity);
+    formData.append("status", status);
+    if (image) formData.append("img", image);
+    formData.append("description", description);
+
+    fetch(`${API_URL}/create-product`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    })
+      .then(async (res) => {
+        if (res.status === 413) {
+          throw new Error("Image is too large. Try a smaller photo.");
+        }
+
+        const contentType = res.headers.get("content-type") || "";
+
+        if (!res.ok) {
+          if (contentType.includes("application/json")) {
+            const data = await res.json();
+            throw new Error(data.message || "Failed to create product");
+          }
+          throw new Error(`Server error (${res.status}). Please try again.`);
+        }
+
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+        setSuccess(true);
+        setLoading(false);
+        setDisable(true);
+
+        setProductName("");
+        setPrice("");
+        setQuantity("");
+        setStatus("Available");
+        setImage(null);
+        setDescription("");
+
+        navigate("/products");
+        toast.success("Product created");
+
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) fileInput.value = "";
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+        toast.error(err.message || "Something went wrong");
+        setErrorMessage(true);
+      });
   };
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
     if (!file) {
       setImage(null);
       return;
@@ -111,7 +106,6 @@ const AddProductPage = () => {
       return;
     }
 
-    // No compression: upload the original file
     setImage(file);
   };
 
@@ -119,9 +113,8 @@ const AddProductPage = () => {
     <div className="p-4 sm:p-6 min-h-screen flex items-center justify-center w-full bg-gradient-to-br from-blue-400 to-blue-600">
       <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 w-full max-w-2xl">
         <div className="flex justify-between items-start gap-4 mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-            Add New Product
-          </h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Add New Product</h2>
+
           <Link to={"/products"}>
             <button className="cursor-pointer text-gray-500 hover:text-gray-700 p-1">
               <svg
@@ -132,11 +125,7 @@ const AddProductPage = () => {
                 stroke="currentColor"
                 className="size-6"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
               </svg>
             </button>
           </Link>
@@ -154,15 +143,12 @@ const AddProductPage = () => {
                 stroke="currentColor"
                 className="size-6"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m4.5 12.75 6 6 9-13.5"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
               </svg>
             </h1>
           </div>
         )}
+
         {errorMessage && (
           <div className="w-full p-4 rounded-lg border border-red-400 bg-red-50 text-red-700 my-4">
             <h1 className="flex gap-2 items-center text-sm sm:text-base">
@@ -186,11 +172,8 @@ const AddProductPage = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Product Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Product Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
             <input
               type="text"
               name="product_name"
@@ -202,12 +185,9 @@ const AddProductPage = () => {
             />
           </div>
 
-          {/* Price and Quantity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price (GH₵)
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Price (GH₵)</label>
               <input
                 type="number"
                 name="price"
@@ -222,9 +202,7 @@ const AddProductPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Stock Quantity
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
               <input
                 type="number"
                 name="quantity"
@@ -237,12 +215,9 @@ const AddProductPage = () => {
             </div>
           </div>
 
-          {/* Status and Image */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Status
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
               <select
                 name="status"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
@@ -254,42 +229,19 @@ const AddProductPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Product Image
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
               <input
                 type="file"
                 accept="image/*"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={handleImageChange}
-                disabled={false}
-
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Upload an image less than 5MB
-              </p>
-
-              {/* Image Preview - Fixed
-              {imagePreview && (
-                <div className="mt-2">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="h-16 w-16 object-cover rounded border"
-                  />
-                  <p className="text-xs text-green-600 mt-1">
-                    ✓ Image selected
-                  </p>
-                </div>
-              )} */}
+              <p className="text-xs text-gray-500 mt-1">Upload an image less than 5MB (optional)</p>
             </div>
           </div>
 
-          {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
               name="description"
               rows="4"
@@ -301,7 +253,6 @@ const AddProductPage = () => {
             />
           </div>
 
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
@@ -323,7 +274,9 @@ const AddProductPage = () => {
                 setStatus("Available");
                 setImage(null);
                 setDescription("");
-                document.querySelector('input[type="file"]').value = "";
+
+                const fileInput = document.querySelector('input[type="file"]');
+                if (fileInput) fileInput.value = "";
               }}
             >
               Clear
@@ -336,3 +289,4 @@ const AddProductPage = () => {
 };
 
 export default AddProductPage;
+
