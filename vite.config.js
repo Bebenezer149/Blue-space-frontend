@@ -7,11 +7,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    proxy: {
-      "/api": {
-        target: "https://makola-2.onrender.com",
-        changeOrigin: true,
-      },
-    },
+    // Manual deployment: proxy disabled by default.
+    // Configure your own API routing externally (or add a proxy for local dev).
+    proxy: {},
   },
 })
+
