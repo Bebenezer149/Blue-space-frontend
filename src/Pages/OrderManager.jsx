@@ -74,8 +74,10 @@ function OrderManager() {
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(copy);
+    setTick(true);
     toast.info("Copied to clipboard");
-    setTick(true)
+   
+    
   };
 
   return (
@@ -133,7 +135,7 @@ function OrderManager() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="size-6"
+                    className="size-4 text-blue-400"
                   >
                     <path
                       strokeLinecap="round"
