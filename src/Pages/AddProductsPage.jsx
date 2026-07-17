@@ -37,13 +37,13 @@ const AddProductPage = () => {
     formData.append("price", price);
     formData.append("quantity", quantity);
     formData.append("status", status);
-    if (image) formData.append("img", image);
+    image && formData.append("img", image);
     formData.append("description", description);
 
     fetch(`${API_URL}/create-product`, {
       method: "POST",
       headers: {
-        Accept: "application/json",
+        Accept: "'multipart/form-data'",
         Authorization: `Bearer ${token}`,
       },
       body: formData,
@@ -58,7 +58,7 @@ const AddProductPage = () => {
         if (!res.ok) {
           if (contentType.includes("application/json")) {
             const data = await res.json();
-            throw new Error(data.message || "Failed to create product");
+            throw new Error(data.message);
           }
           throw new Error(`Server error (${res.status}). Please try again.`);
         }
