@@ -11,6 +11,7 @@ const AddProductPage = () => {
   const [quantity, setQuantity] = useState("");
   const [status, setStatus] = useState("Available");
   const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl]=useState("")
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -32,12 +33,33 @@ const AddProductPage = () => {
 
     setLoading(true);
 
+    if(image){
+      const cloudName=import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+      const cloudPreset=import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+
+      const cloudData = new FormData('file',image)
+      cloudData.append('upload_preset',cloudPreset)
+
+      fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`)
+      .then((cloudResponse)=>cloudResponse.json())
+      .then((res)=>{
+        if(!res.ok){
+          throw new Error("Couldn't upload to Cloudinary")
+        }
+        setImageUrl(res.secure_url)
+      })
+      .catch((err)=>{
+        console.log(err)
+        toast.error("Couldn't upload image")
+      })
+    }
+
     const formData = new FormData();
     formData.append("product_name", productName);
     formData.append("price", price);
     formData.append("quantity", quantity);
     formData.append("status", status);
-    image && formData.append("img", image);
+    imageUrl && formData.append("img", imageUrl);
     formData.append("description", description);
 
     fetch(`${API_URL}/create-product`, {
