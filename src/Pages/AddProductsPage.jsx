@@ -144,13 +144,6 @@ const AddProductPage = () => {
       return;
     }
 
-    if (file.size > MAX_IMAGE_SIZE_BYTES) {
-      toast.error("Image must be less than 5MB");
-      e.target.value = "";
-      setImage(null);
-      return;
-    }
-
     setImage(file);
   };
 
