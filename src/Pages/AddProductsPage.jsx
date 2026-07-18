@@ -11,7 +11,7 @@ const AddProductPage = () => {
   const [quantity, setQuantity] = useState("");
   const [status, setStatus] = useState("Available");
   const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl]=useState("")
+
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,99 +22,119 @@ const AddProductPage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Image is optional
+    setSuccess(false);
+    setErrorMessage(false);
+    setDisable(false);
+
+    // Image is required
     if (!productName || !price || !quantity || !image || !description) {
       toast.error("Please fill in all required fields");
       return;
     }
 
+    const parsedPrice = Number(price);
+    const parsedQuantity = Number(quantity);
+
+    if (Number.isNaN(parsedPrice) || Number.isNaN(parsedQuantity)) {
+      toast.error("Price and Stock Quantity must be valid numbers");
+      return;
+    }
+
     setLoading(true);
 
-    if(image){
-      const cloudName=import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-      const cloudPreset=import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+    let uploadedImageUrl = "";
+    if (image) {
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+      const cloudPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-      const cloudData = new FormData('file',image)
-      cloudData.append('upload_preset',cloudPreset)
+      const cloudData = new FormData();
+      cloudData.append("file", image);
+      cloudData.append("upload_preset", cloudPreset);
 
-      fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,{
-        method:'POST',
-        body:cloudData
-      })
-      .then((cloudResponse)=>cloudResponse.json())
-      .then((res)=>{
-        if(!res.ok){
-          throw new Error("Couldn't upload to Cloudinary")
+      try {
+        const cloudResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: cloudData,
+          },
+        );
+
+        const res = await cloudResponse.json();
+
+        if (!cloudResponse.ok || !res?.secure_url) {
+          throw new Error("Couldn't upload to Cloudinary");
         }
-        setImageUrl(res.secure_url)
-      })
-      .catch((err)=>{
-        console.log(err)
-        toast.error("Couldn't upload image")
-      })
+
+        uploadedImageUrl = res.secure_url;
+
+      } catch (err) {
+        console.log(err);
+        toast.error("Couldn't upload image");
+        setLoading(false);
+        return;
+      }
     }
 
     const formData = new FormData();
     formData.append("product_name", productName);
-    formData.append("price", price);
-    formData.append("quantity", quantity);
+    formData.append("price", String(parsedPrice));
+    formData.append("quantity", String(parsedQuantity));
     formData.append("status", status);
-    imageUrl && formData.append("img", imageUrl);
+    if (uploadedImageUrl) formData.append("img", uploadedImageUrl);
     formData.append("description", description);
 
-    fetch(`${API_URL}/create-product`, {
-      method: "POST",
-      headers: {
-        Accept: "'multipart/form-data'",
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    })
-      .then(async (res) => {
-        if (res.status === 413) {
-          throw new Error("Image is too large. Try a smaller photo.");
-        }
-
-        const contentType = res.headers.get("content-type") || "";
-
-        if (!res.ok) {
-          if (contentType.includes("application/json")) {
-            const data = await res.json();
-            throw new Error(data.message);
-          }
-          throw new Error(`Server error (${res.status}). Please try again.`);
-        }
-
-        return res.json();
-      })
-      .then((res) => {
-        console.log(res);
-        setSuccess(true);
-        setLoading(false);
-        setDisable(true);
-
-        setProductName("");
-        setPrice("");
-        setQuantity("");
-        setStatus("Available");
-        setImage(null);
-        setDescription("");
-
-        navigate("/products");
-        toast.success("Product created");
-
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput) fileInput.value = "";
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        toast.error(err.message || "Something went wrong");
-        setErrorMessage(true);
+    try {
+      const res = await fetch(`${API_URL}/create-product`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
       });
+
+      if (res.status === 413) {
+        throw new Error("Image is too large. Try a smaller photo.");
+      }
+
+      const contentType = res.headers.get("content-type") || "";
+
+      if (!res.ok) {
+        if (contentType.includes("application/json")) {
+          const data = await res.json();
+          throw new Error(data.message || "Failed to create product");
+        }
+        throw new Error(`Server error (${res.status}). Please try again.`);
+      }
+
+      await res.json();
+
+      setSuccess(true);
+      setLoading(false);
+      setDisable(true);
+
+      setProductName("");
+      setPrice("");
+      setQuantity("");
+      setStatus("Available");
+      setImage(null);
+      setDescription("");
+
+
+      navigate("/products");
+      toast.success("Product created");
+
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = "";
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      toast.error(err?.message || "Something went wrong");
+      setErrorMessage(true);
+    }
   };
 
   const handleImageChange = (e) => {

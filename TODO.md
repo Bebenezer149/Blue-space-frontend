@@ -1,5 +1,7 @@
-- [x] Update netlify redirect for /api/* to not force status=200
-- [x] Fix netlify/functions/api.js response encoding (avoid unconditional base64 for JSON/text)
-- [x] Improve header forwarding for multipart/form-data requests
-- [x] Verify POST /api/create-product no longer returns 500 and check response details
+- [ ] Fix AddProductsPage: make image truly optional (match UI)
+- [ ] Fix Cloudinary upload flow: await upload before calling backend
+- [ ] Remove incorrect multipart Accept header
+- [ ] Normalize numeric inputs (price/quantity) before appending to FormData
+- [ ] Remove image compressions (none currently in AddProductsPage; keep as-is)
+- [ ] Verify build passes and smoke test add-product with/without image
 
