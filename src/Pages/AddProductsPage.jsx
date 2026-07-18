@@ -9,7 +9,7 @@ const AddProductPage = () => {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [status, setStatus] = useState("Available");
+  const [status, setStatus] = useState("AVAILABLE");
   const [image, setImage] = useState(null);
 
   const [description, setDescription] = useState("");
@@ -269,7 +269,7 @@ const AddProductPage = () => {
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
               >
-                <option value="Available">Available</option>
+                <option value="AVAILABLE">Available</option>
               </select>
             </div>
 
