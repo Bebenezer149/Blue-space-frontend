@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_URL } from "../config";
 
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+
 
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
