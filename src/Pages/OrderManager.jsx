@@ -62,15 +62,18 @@ function OrderManager() {
 
   // Statistics
   const totalOrders = orders.length;
-  const pendingOrders = orders.filter(
-    (order) => order.status === "PENDING",
+const pendingOrders = orders.filter(
+    (order) => order.status === "PENDING" || order.status === "Pending",
   ).length;
+
   const confirmedOrders = orders.filter(
-    (order) => order.status === "CONFIRMED",
+    (order) => order.status === "Confirmed" || order.status === "CONFIRMED",
   ).length;
+
   const deliveredOrders = orders.filter(
-    (order) => order.status === "DELIVERED",
+    (order) => order.status === "Delivered" || order.status === "DELIVERED",
   ).length;
+
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(copy);
