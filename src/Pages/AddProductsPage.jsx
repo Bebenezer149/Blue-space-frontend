@@ -26,7 +26,7 @@ const AddProductPage = () => {
     e.preventDefault();
 
     // Image is optional
-    if (!productName || !price || !quantity || !description) {
+    if (!productName || !price || !quantity || !image || !description) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -40,7 +40,10 @@ const AddProductPage = () => {
       const cloudData = new FormData('file',image)
       cloudData.append('upload_preset',cloudPreset)
 
-      fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`)
+      fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,{
+        method:'POST',
+        body:cloudData
+      })
       .then((cloudResponse)=>cloudResponse.json())
       .then((res)=>{
         if(!res.ok){
