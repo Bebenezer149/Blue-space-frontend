@@ -36,7 +36,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       phone_number: phone,
       delivery_to: deliveryTo,
       additional_notes: notes,
-      status: "PENDING",
+      status: 'PENDING',
       payment_method: paymentMethod,
       items,
     };
