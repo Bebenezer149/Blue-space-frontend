@@ -51,6 +51,9 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
     })
       .then((res) => res.json())
       .then((res) => {
+        if(!res.ok){
+          throw new Error("Cannot Place Order")
+        }
         console.log(res);
         setLoading(false);
         setOpenCart(false)
