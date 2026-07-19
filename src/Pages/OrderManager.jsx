@@ -50,7 +50,7 @@ function OrderManager() {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [isOpen]);
 
   const filteredOrders = orders.filter((order) =>
     order.customer_name.toLowerCase().includes(search.toLowerCase()),
