@@ -101,17 +101,10 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
               {order.customer_name}
             </p>
 
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold">Phone:</span> {order.phone_number}
-            </p>
+           
 
             <p className="text-sm text-gray-700">
-              <span className="font-semibold">Total:</span>{" "}
-              <span className="font-bold text-blue-600">GH₵ {order.total_amount}</span>
-            </p>
-
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold">Date:</span>{" "}
+              <span className="font-semibold">Time of Delivery:</span>{" "}
               {new Date(order.created_at).toLocaleString()}
             </p>
           </div>
