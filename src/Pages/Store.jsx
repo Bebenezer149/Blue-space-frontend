@@ -16,7 +16,7 @@ function Store() {
   const [openDropdown, setOpenDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  const businessName = localStorage.getItem("business");
+  const [businessName,setBusinessName] = useState("");
 
   useEffect(() => {
     fetch(`${API_URL}/show-products?link=${slug}`, {
@@ -29,6 +29,7 @@ function Store() {
       .then((res) => {
         setProducts(res.products || []);
         setStoreData(res.store || null);
+        setBusinessName(res.business_name)
       })
       .catch((err) => console.log(err));
   }, [slug]);
