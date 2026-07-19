@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ProductCard from "../Components/Cards/ProductCard";
 import ViewProduct from "./ViewProduct";
 import Cart from "../Components/Cart/Cart";
@@ -13,8 +13,10 @@ function Store() {
   const [openCart, setOpenCart] = useState(false);
   const [openViewCard, setOpenViewCard] = useState(false);
 
-  const businessName = localStorage.getItem("business")
-  // const [productDetails, setProductDetails]=useState(null)
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const businessName = localStorage.getItem("business");
 
   useEffect(() => {
     fetch(`${API_URL}/show-products?link=${slug}`, {
@@ -25,12 +27,31 @@ function Store() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setProducts(res.products || []);
         setStoreData(res.store || null);
       })
       .catch((err) => console.log(err));
   }, [slug]);
+
+  useEffect(() => {
+    function onDocMouseDown(e) {
+      if (!openDropdown) return;
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpenDropdown(false);
+      }
+    }
+
+    function onKeyDown(e) {
+      if (e.key === "Escape") setOpenDropdown(false);
+    }
+
+    document.addEventListener("mousedown", onDocMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onDocMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [openDropdown]);
 
   function addToCart(cartData) {
     setCart((prev) => {
@@ -50,7 +71,6 @@ function Store() {
     <div className="min-h-screen bg-gray-50">
       {/* Store Banner */}
       <div className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 p-8 md:p-12 h-auto md:h-80 overflow-hidden">
-        {/* Decorative Background Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
@@ -61,11 +81,13 @@ function Store() {
             <div className="h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 rounded-full border-4 border-white/30 shadow-2xl overflow-hidden bg-white p-1">
               <img
                 className="h-full w-full object-cover rounded-full"
-                src={storeData?.logo || "https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
+                src={
+                  storeData?.logo ||
+                  "https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                }
                 alt={slug}
               />
             </div>
-            {/* Online Status Indicator */}
             <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3 bg-green-500 w-5 h-5 md:w-6 md:h-6 rounded-full border-4 border-white shadow-lg"></div>
           </div>
 
@@ -75,7 +97,6 @@ function Store() {
               {storeData?.name || businessName}
             </h1>
 
-            {/* Contact Information */}
             <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-6 items-center mb-3">
               <h1 className="flex gap-2 text-sm md:text-base font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
                 <svg
@@ -114,33 +135,7 @@ function Store() {
               </h1>
             </div>
 
-            {/* Stats */}
             <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 mb-4">
-              {/* <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 text-white">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                    <path
-                      fillRule="evenodd"
-                      d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="text-white font-semibold">{storeData?.subscribers || "2.5K"}</span>
-                </div>
-                <span className="text-white/70 text-sm">Subscribers</span>
-              </div> */}
-
-              {/* <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 text-yellow-400">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <span className="text-white font-semibold">{storeData?.rating || "4.8"}</span>
-                </div>
-                <span className="text-white/70 text-sm">({storeData?.reviews || "2.5K"} Reviews)</span>
-              </div> */}
-
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-white">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -156,37 +151,62 @@ function Store() {
                 <span className="text-white/70 text-sm">Products</span>
               </div>
             </div>
-
-            {/* Subscribe Button */}
-            {/* <div className="flex flex-wrap justify-center md:justify-start gap-3">
-              <button className="flex cursor-pointer items-center gap-2 border-2 border-white/30 px-6 py-2.5 bg-white text-blue-600 font-semibold rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-lg">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Subscribe
-              </button>
-            </div> */}
           </div>
         </div>
       </div>
 
       {/* Filter Navigation */}
-      <div className="border-b border-gray-200 h-20 justify-between  py-3  sticky top-0 z-40 items-center flex gap-3 px-4 md:px-8 font-semibold bg-gray-100">
-        <div className="flex gap-4 md:gap-4 overflow-x-auto  flex-1 min-w-0">
-          <button className="py-2 bg-white border mb-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
-            All Products
+      <div className="border-b border-gray-200 h-20 justify-between py-3 sticky top-0 z-40 items-center flex gap-3 px-4 md:px-8 font-semibold bg-gray-100">
+        <div ref={dropdownRef} className="relative">
+          <button
+            type="button"
+            className="inline-flex bg-white  items-center justify-center rounded-md text-blue-400 border  hover:bg-brand-strong  focus:ring-blue-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+            onClick={() => setOpenDropdown((v) => !v)}
+          >
+            Categories
+            <svg
+              className="w-4 h-4 ms-1.5 -me-0.5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m19 9-7 7-7-7"
+              />
+            </svg>
           </button>
-          <button className="py-2 bg-white mb-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
-            Available
-          </button>
-          <button className="py-2 bg-white mb-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
-            Out Of Stock
-          </button>
+
+          {openDropdown && (
+            <div className="absolute left-0 mt-2 z-10 bg-white text-center shadow-md rounded-lg border-default-medium rounded-base shadow-lg w-44">
+              <ul className="p-2 text-sm text-gray-600 text-body  font-medium" aria-label="Store dropdown">
+                <li className=" hover:bg-gray-100 rounded-lg">
+                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                    All Products
+                  </a>
+                </li>
+                <li className=" hover:bg-gray-100 rounded-lg">
+                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                   Available
+                  </a>
+                </li>
+                <li className=" hover:bg-gray-100 rounded-lg">
+                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                   Out of Stock
+                  </a>
+                </li>
+               
+              </ul>
+            </div>
+          )}
         </div>
+
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setOpenCart(true)}
@@ -253,8 +273,14 @@ function Store() {
           </div>
         )}
       </div>
+
       {openCart && (
-        <Cart cart={cart} setCart={setCart} setOpenCart={setOpenCart} storeData={storeData} />
+        <Cart
+          cart={cart}
+          setCart={setCart}
+          setOpenCart={setOpenCart}
+          storeData={storeData}
+        />
       )}
       {openViewCard && <ViewProduct />}
     </div>
