@@ -14,7 +14,7 @@ function DeletePrompt({
     setIsLoading(true);
     try {
       await deleteProduct(id);
-      toast.success("Product deleted successfully");
+     
       setDeleteOpen(false);
     } catch (error) {
       toast.error("Failed to delete product");
