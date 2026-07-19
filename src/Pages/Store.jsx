@@ -175,22 +175,22 @@ function Store() {
       </div>
 
       {/* Filter Navigation */}
-      <div className="border-b border-gray-200 justify-between min-h-16 py-3 items-center flex gap-3 px-4 md:px-8 font-semibold bg-white">
-        <div className="flex gap-2 md:gap-4 overflow-x-auto flex-1 min-w-0">
-          <button className="py-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
+      <div className="border-b static border-gray-200 h-20 justify-between  py-3 items-center flex gap-3 px-4 md:px-8 font-semibold bg-gray-100">
+        <div className="flex gap-4 md:gap-4 overflow-x-hidden flex-1 min-w-0">
+          <button className="py-2 bg-white border mb-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
             All Products
           </button>
-          <button className="py-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
+          <button className="py-2 bg-white mb-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
             Available
           </button>
-          <button className="py-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
+          <button className="py-2 bg-white mb-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
             Out Of Stock
           </button>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setOpenCart(true)}
-            className="relative p-2 text-blue-500 rounded-md shadow-sm cursor-pointer hover:bg-gray-100"
+            className="relative p-3 mb-2 bg-white text-blue-500 rounded-md shadow-sm cursor-pointer hover:bg-gray-100"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
