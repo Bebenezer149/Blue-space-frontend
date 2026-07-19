@@ -36,7 +36,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       phone_number: phone,
       delivery_to: deliveryTo,
       additional_notes: notes,
-      status: 'PENDING',
+      status: "PENDING",
       payment_method: paymentMethod,
       items,
     };
@@ -51,12 +51,11 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        
         console.log(res);
         setLoading(false);
-        setOpenCart(false)
-        setCart([])
-        toast.success("Order Placed Successfully")
+        setOpenCart(false);
+        setCart([]);
+        toast.success("Order Placed Successfully");
       })
       .catch((err) => {
         console.log(err);
@@ -150,7 +149,9 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                   <h3 className="font-semibold text-gray-800 truncate">
                     {data.product_name}
                   </h3>
-                  <p className="text-sm text-gray-500 line-clamp-2">{data.description}</p>
+                  <p className="text-sm text-gray-500 line-clamp-2">
+                    {data.description}
+                  </p>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
                     <span className="text-lg font-bold text-blue-600">
                       GHS {data.price}
@@ -319,12 +320,17 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
             onClick={handleSubmit}
             className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer"
           >
-            <span>{loading ? (
-              <div>
-              <span>Placing Order</span>
-              <span className=" animate-spin"></span>
-              </div>
-            ) : "Checkout"}</span>
+            <span>
+              {loading ? (
+                <div className="flex gap-4">
+                  <span>Placing Order</span>
+                  <div class="h-5 w-5 animate-spin rounded-full border-4 border-gray-100 border-t-transparent"></div>
+
+                </div>
+              ) : (
+                "Checkout"
+              )}
+            </span>
           </button>
         </div>
       </div>
