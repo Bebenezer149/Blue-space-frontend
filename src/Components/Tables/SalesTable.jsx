@@ -196,8 +196,8 @@ function SalesTable() {
             <div key={sale.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <span className="text-sm font-medium text-gray-500">Order #</span>
-                  <span className="text-sm font-semibold text-gray-800 ml-1">#{sale.id}</span>
+                  <span className="text-sm font-medium text-gray-500">Order </span>
+                  <span className="text-sm font-semibold text-gray-800 ml-1">{sale.id}</span>
                 </div>
                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(sale.status)}`}>
                   {sale.status}

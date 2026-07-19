@@ -92,7 +92,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
                   ? " Order Cancelled"
                   : " Order Received"}
             </h2>
-            <p className="text-gray-500 text-sm">Order #{order.id}</p>
+            <p className="text-gray-500 text-sm">Order {order.id}</p>
           </div>
 
           <div className="space-y-1 text-gray-700">
