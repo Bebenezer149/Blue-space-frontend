@@ -127,10 +127,13 @@ const pendingOrders = orders.filter(
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 bg-white"
             />
           </div>
-          <div className="flex items-center justify-center sm:justify-end">
-            <div className="bg-blue-50 border border-blue-200 flex items-center overflow-auto gap-2 rounded-lg px-4 py-2 text-sm text-gray-600 truncate max-w-full">
+          <div className="flex items-center justify-center bg-blue-50  border border-blue-200 rounded-lg sm:justify-end">
+            <div className=" flex items-center overflow-auto gap-2  px-3 py-2 text-sm text-gray-600 truncate max-w-full">
               <span className="text-blue-600">{copy}</span>
-              <button onClick={copyToClipboard}>
+              
+            </div>
+            <div className="flex justify-center items-center px-2 ">
+              <button onClick={copyToClipboard} className="text-center">
                 {tick ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +141,7 @@ const pendingOrders = orders.filter(
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="size-4 text-blue-400"
+                    className="size-4.5 text-blue-400 "
                   >
                     <path
                       strokeLinecap="round"
