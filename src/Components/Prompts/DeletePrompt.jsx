@@ -6,7 +6,7 @@ function DeletePrompt({
   setDeleteOpen, 
   id, 
   deleteProduct, 
-  productName = "Product" 
+  productName  
 }) {
   const [isLoading, setIsLoading] = useState(false);
 

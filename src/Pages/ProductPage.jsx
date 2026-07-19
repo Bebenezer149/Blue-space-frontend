@@ -15,6 +15,7 @@ function ProductPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [id,setId]=useState(null)
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [productName, setProductName]=useState("")
   // const [openAddProduct , setOpenAddProduct]= useState(false)
   const [productDetails, setProductDetails] = useState({
     id: "",
@@ -236,6 +237,7 @@ function ProductPage() {
                           onClick={() => {
                             setDeleteOpen(true);
                             setId(data.id);
+                            setProductName(data.product_name)
                           }}
                           className="cursor-pointer text-red-600 hover:text-red-800 p-1"
                           title="Delete"
@@ -332,7 +334,7 @@ function ProductPage() {
         />
       )}
 
-     {deleteOpen && ( <DeletePrompt id={id} deleteProduct={ DeleteProduct} setDeleteOpen={setDeleteOpen}/>)}
+     {deleteOpen && ( <DeletePrompt id={id} productName={productName} deleteProduct={ DeleteProduct} setDeleteOpen={setDeleteOpen}/>)}
     </div>
   );
 }
