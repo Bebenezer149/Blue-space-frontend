@@ -27,7 +27,7 @@ function ViewProduct({productDetails, setViewOpen}) {
         <div className="p-6 space-y-6">
           {/* Product Image */}
           <div className="flex justify-center">
-            <div className="w-full h-48 sm:h-60 rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-md">
+            <div className="w-48 sm:w-60 h-48 sm:h-60 rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-md">
               <img
                 src={productDetails.img}
                 alt="Product"
