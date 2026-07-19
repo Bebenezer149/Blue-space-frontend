@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   const [openMenu, setOpenMenu] = useState(false);
+  // const [active, setActive]=useState(false)
   const navigate = useNavigate();
   function Logout() {
     localStorage.removeItem("token");
@@ -20,24 +21,24 @@ function Header() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center text-base lg:text-lg text-gray-700 gap-6 lg:gap-10">
           <Link to={"/dashboard"}>
-            <button className="cursor-pointer hover:text-blue-400">Home</button>
+            <button  className="cursor-pointer hover:text-blue-400">Home</button>
           </Link>
 
           <Link to={"/products"}>
-            <button className="cursor-pointer hover:text-blue-400">
+            <button  className="cursor-pointer hover:text-blue-400">
               Products
             </button>
           </Link>
           <Link to={"/order-manager"}>
-            <button className="cursor-pointer hover:text-blue-400">
+            <button  className="cursor-pointer hover:text-blue-400">
               Orders
             </button>
           </Link>
-          <Link to={"/report-center"}>
+          {/* <Link to={"/report-center"}>
             <button className="cursor-pointer hover:text-blue-400">
               Report Center
             </button>
-          </Link>
+          </Link> */}
         </div>
 
         {/* Desktop Actions */}
@@ -113,11 +114,11 @@ function Header() {
               Orders
             </button>
           </Link>
-          <Link to={"/report-center"}>
+          {/* <Link to={"/report-center"}>
             <button className="cursor-pointer hover:text-blue-400">
               Report Center
             </button>
-          </Link>
+          </Link> */}
           <div className="flex items-center justify-between pt-2">
             <button
               onClick={Logout}

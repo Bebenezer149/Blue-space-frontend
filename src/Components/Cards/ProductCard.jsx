@@ -8,7 +8,7 @@ function ProductCard({
 }) {
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white w-full h-full flex flex-col">
-      <div className="h-48 md:h-56 overflow-hidden bg-gray-100">
+      <div className="h-50 md:h-60 overflow-hidden bg-gray-100">
         <img
           className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
           src={img}
