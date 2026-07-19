@@ -99,7 +99,7 @@ function Header() {
 
       {/* Mobile Menu */}
       {openMenu && (
-        <div className="md:hidden flex flex-col gap-4 p-4 border-t">
+        <div className="md:hidden flex flex-col gap-4 p-4 border-t border-gray-300">
           <Link to={"/dashboard"}>
             <button className="cursor-pointer hover:text-blue-400">Home</button>
           </Link>
