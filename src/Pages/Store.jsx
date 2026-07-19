@@ -79,7 +79,7 @@ function Store() {
         <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-10">
           {/* Store Logo */}
           <div className="relative shrink-0">
-            <div className="h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 rounded-full border-4 border-white/30 shadow-2xl overflow-hidden bg-white p-1">
+            <div className="h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 rounded-full border-1 border-white/30 shadow-2xl overflow-hidden p-0.5 bg-gray-100">
               <img
                 className="h-full w-full object-cover rounded-full"
                 src={
@@ -89,7 +89,7 @@ function Store() {
                 alt={slug}
               />
             </div>
-            <div className="absolute bottom-2 right-2 md:bottom-3 md:right-3 bg-green-500 w-5 h-5 md:w-6 md:h-6 rounded-full border-4 border-white shadow-lg"></div>
+            {/* <div className="absolute  right-2 md:bottom-3 md:right-3 bg-green-500 w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-white shadow-lg"></div> */}
           </div>
 
           {/* Store Details */}
