@@ -9,19 +9,17 @@ function Store() {
   const { slug } = useParams();
   const [products, setProducts] = useState([]);
   const [storeData, setStoreData] = useState(null);
-  const [cart, setCart]=useState([])
-  const [openCart, setOpenCart]=useState(false)
-  const [openViewCard, setOpenViewCard]=useState(false)
-  const [productDetails, setProductDetails]=useState(null)
-
-  
+  const [cart, setCart] = useState([]);
+  const [openCart, setOpenCart] = useState(false);
+  const [openViewCard, setOpenViewCard] = useState(false);
+  // const [productDetails, setProductDetails]=useState(null)
 
   useEffect(() => {
     fetch(`${API_URL}/show-products?link=${slug}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Accept': 'application/json'
-      }
+        Accept: "application/json",
+      },
     })
       .then((res) => res.json())
       .then((res) => {
@@ -32,21 +30,20 @@ function Store() {
       .catch((err) => console.log(err));
   }, [slug]);
 
- 
-  function addToCart(cartData)
-  {
-    setCart((prev)=>{
-
-      const exists = prev.find((item)=>item.id===cartData.id)
-      if(exists)
-      {
-        return prev.map((item)=>
-          item.id === cartData.id ? {...item, quantity:item.quantity+1}: item
-        )
+  function addToCart(cartData) {
+    setCart((prev) => {
+      const exists = prev.find((item) => item.id === cartData.id);
+      if (exists) {
+        return prev.map((item) =>
+          item.id === cartData.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        );
       }
-      return  [...prev, {...cartData, quantity:1 }]
-    })
+      return [...prev, { ...cartData, quantity: 1 }];
+    });
   }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Store Banner */}
@@ -119,11 +116,7 @@ function Store() {
             <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 mb-4">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-white">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                     <path
                       fillRule="evenodd"
@@ -138,11 +131,7 @@ function Store() {
 
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-yellow-400">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   <span className="text-white font-semibold">{storeData?.rating || "4.8"}</span>
@@ -152,11 +141,7 @@ function Store() {
 
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-white">
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                     <path
                       fillRule="evenodd"
@@ -173,11 +158,7 @@ function Store() {
             {/* Subscribe Button */}
             <div className="flex flex-wrap justify-center md:justify-start gap-3">
               <button className="flex cursor-pointer items-center gap-2 border-2 border-white/30 px-6 py-2.5 bg-white text-blue-600 font-semibold rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-lg">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
@@ -205,7 +186,10 @@ function Store() {
           </button>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <button onClick={()=>setOpenCart(true)} className="relative p-2 text-blue-500 rounded-md shadow-sm cursor-pointer hover:bg-gray-100">
+          <button
+            onClick={() => setOpenCart(true)}
+            className="relative p-2 text-blue-500 rounded-md shadow-sm cursor-pointer hover:bg-gray-100"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -234,39 +218,46 @@ function Store() {
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {products.map((data) => (
-              <ProductCard 
-                onClick={()=>setOpenViewCard(true)}
-                key={data.id} 
+              <ProductCard
+                onClick={() => setOpenViewCard(true)}
+                key={data.id}
                 data={data}
-                img={data.img} 
-                title={data.product_name} 
-                price={data.price} 
+                img={data.img}
+                title={data.product_name}
+                price={data.price}
                 status={data.status}
-                addToCart={addToCart} 
+                addToCart={addToCart}
                 setOpenCart={setOpenCart}
               />
-            )
-            
-            )}
+            ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            <svg
+              className="w-16 h-16 mx-auto text-gray-300 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
             </svg>
             <h3 className="text-lg font-medium text-gray-600">No products found</h3>
             <p className="text-gray-400">This store doesn't have any products yet.</p>
           </div>
         )}
       </div>
-     {
-      openCart && ( <Cart cart={cart} setCart={setCart} setOpenCart={setOpenCart} storeData={storeData}/>)
-     }
-     {
-      openViewCard && (<ViewProduct/>)
-     }
+      {openCart && (
+        <Cart cart={cart} setCart={setCart} setOpenCart={setOpenCart} storeData={storeData} />
+      )}
+      {openViewCard && <ViewProduct />}
     </div>
   );
 }
 
 export default Store;
+

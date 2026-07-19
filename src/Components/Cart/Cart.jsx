@@ -255,7 +255,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                   Payment Method <span className="text-red-500">*</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label className="relative flex items-center justify-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50">
+                  <label className="relative flex  items-center justify-between  p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50">
                     <input
                       type="radio"
                       name="payment"
@@ -266,7 +266,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                       <span className="font-medium">Mobile Money</span>
                     </span>
                   </label>
-                  <label className="relative flex items-center justify-center p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50">
+                  <label className="relative flex items-center justify-between p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50">
                     <input
                       type="radio"
                       name="payment"

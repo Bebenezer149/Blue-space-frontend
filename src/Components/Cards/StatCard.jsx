@@ -88,12 +88,12 @@ function StatCard({ data, icon: Icon, color = "blue" }) {
       ${config.border} ${config.shadow}
       group
     `}>
-      {/* Animated gradient background on hover */}
+     
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
         <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br from-blue-50 to-transparent opacity-50"></div>
       </div>
 
-      {/* Top section with icon and subtitle */}
+    
       <div className="flex items-start justify-between relative z-10">
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
