@@ -319,7 +319,12 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
             onClick={handleSubmit}
             className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer"
           >
-            <span>{loading ? "Placing Order" : "Place Order"}</span>
+            <span>{loading ? (
+              <div>
+              <span>Placing Order</span>
+              <span className=" animate-spin"></span>
+              </div>
+            ) : "Checkout"}</span>
           </button>
         </div>
       </div>
