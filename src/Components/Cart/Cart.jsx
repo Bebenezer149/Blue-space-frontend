@@ -324,7 +324,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
               {loading ? (
                 <div className="flex gap-4">
                   <span>Placing Order</span>
-                  <div class="h-5 w-5 animate-spin rounded-full border-4 border-gray-100 border-t-transparent"></div>
+                  <div class="h-5 w-5 animate-spin rounded-full border-3 border-gray-100 border-t-transparent"></div>
 
                 </div>
               ) : (
