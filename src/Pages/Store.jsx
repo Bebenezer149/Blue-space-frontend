@@ -12,6 +12,8 @@ function Store() {
   const [cart, setCart] = useState([]);
   const [openCart, setOpenCart] = useState(false);
   const [openViewCard, setOpenViewCard] = useState(false);
+
+  const businessName = localStorage.getItem("business")
   // const [productDetails, setProductDetails]=useState(null)
 
   useEffect(() => {
@@ -70,7 +72,7 @@ function Store() {
           {/* Store Details */}
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">
-              {storeData?.name || slug || "Store Name"}
+              {storeData?.name || businessName}
             </h1>
 
             {/* Contact Information */}
@@ -114,7 +116,7 @@ function Store() {
 
             {/* Stats */}
             <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 mb-4">
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-white">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -127,9 +129,9 @@ function Store() {
                   <span className="text-white font-semibold">{storeData?.subscribers || "2.5K"}</span>
                 </div>
                 <span className="text-white/70 text-sm">Subscribers</span>
-              </div>
+              </div> */}
 
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-yellow-400">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -137,7 +139,7 @@ function Store() {
                   <span className="text-white font-semibold">{storeData?.rating || "4.8"}</span>
                 </div>
                 <span className="text-white/70 text-sm">({storeData?.reviews || "2.5K"} Reviews)</span>
-              </div>
+              </div> */}
 
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-white">
@@ -156,7 +158,7 @@ function Store() {
             </div>
 
             {/* Subscribe Button */}
-            <div className="flex flex-wrap justify-center md:justify-start gap-3">
+            {/* <div className="flex flex-wrap justify-center md:justify-start gap-3">
               <button className="flex cursor-pointer items-center gap-2 border-2 border-white/30 px-6 py-2.5 bg-white text-blue-600 font-semibold rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-lg">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path
@@ -167,7 +169,7 @@ function Store() {
                 </svg>
                 Subscribe
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

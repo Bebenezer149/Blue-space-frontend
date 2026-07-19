@@ -262,7 +262,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                       value="MOMO"
                       onChange={() => setPaymentMethod("MOMO")}
                     />
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 mr-20">
                       <span className="font-medium">Mobile Money</span>
                     </span>
                   </label>
@@ -274,8 +274,8 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                       onChange={() => setPaymentMethod("CASH")}
                       required
                     />
-                    <span className="flex items-center gap-2">
-                      <span className="font-medium">Cash</span>
+                    <span className="flex items-center gap-2 mr-20">
+                      <span className="font-medium">Cash on Delivery</span>
                     </span>
                   </label>
                 </div>
@@ -305,10 +305,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
               <span>Subtotal</span>
               <span>GHS {subtotal}</span>
             </div>
-            <div className="flex justify-between text-gray-600">
+            {/* <div className="flex justify-between text-gray-600">
               <span>Shipping</span>
               <span className="text-green-600">Free</span>
-            </div>
+            </div> */}
             <div className="flex justify-between text-lg font-bold text-gray-800 pt-2 border-t border-gray-200">
               <span>Total</span>
               <span className="text-blue-600">GHS {total}</span>
