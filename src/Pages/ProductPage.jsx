@@ -306,7 +306,7 @@ function ProductPage() {
                     View
                   </button>
                   <button
-                    onClick={() => { setDeleteOpen(true); setId(data.id); }}
+                    onClick={() => { setDeleteOpen(true); setId(data.id); setProductName(data.product_name) }}
                     className="flex-1 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100"
                   >
                     Delete
