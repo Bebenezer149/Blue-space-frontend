@@ -175,7 +175,7 @@ function Store() {
       </div>
 
       {/* Filter Navigation */}
-      <div className="border-b static border-gray-200 h-20 justify-between  py-3 items-center flex gap-3 px-4 md:px-8 font-semibold bg-gray-100">
+      <div className="border-b border-gray-200 h-20 justify-between  py-3 items-center flex gap-3 px-4 md:px-8 font-semibold bg-gray-100">
         <div className="flex gap-4 md:gap-4 overflow-x-hidden flex-1 min-w-0">
           <button className="py-2 bg-white border mb-2 px-3 md:px-4 shadow-sm rounded-lg text-blue-400 cursor-pointer hover:bg-gray-100 whitespace-nowrap">
             All Products
