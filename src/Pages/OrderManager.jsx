@@ -127,7 +127,9 @@ const pendingOrders = orders.filter(
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 bg-white"
             />
           </div>
+          
           <div className="flex items-center justify-center bg-blue-50  border border-blue-200 rounded-lg sm:justify-end">
+            
             <div className=" flex items-center overflow-auto gap-2  px-3 py-2 text-sm text-gray-600 truncate max-w-full">
               <span className="text-blue-600">{copy}</span>
               
