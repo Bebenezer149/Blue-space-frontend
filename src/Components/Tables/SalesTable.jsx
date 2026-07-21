@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_URL } from "../../config";
+import { toast } from "react-toastify";
 
 function SalesTable() {
   const [sales, setSales] = useState([]);
@@ -21,6 +22,7 @@ function SalesTable() {
         console.log(res);
         setSales(res.order || []);
         setIsLoading(false);
+        res.order.status === "PENDING" && toast.update("You have new orders to process")
       })
       .catch((err) => {
         console.log(err);

@@ -41,6 +41,7 @@ function OrderManager() {
         console.log(res);
         setOrders(res.order || []);
         setIsRefreshing(false);
+       
       })
       .catch((err) => {
         console.log(err);
