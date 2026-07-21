@@ -20,9 +20,21 @@ function SalesTable() {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        setSales(res.order || []);
+        const orders = res.order || [];
+        setSales(orders);
         setIsLoading(false);
-        res.order[0].status === "PENDING" && toast.update("You have new orders to process")
+
+        const pendingCount = orders.filter((o) => o.status === "PENDING").length;
+        if (pendingCount > 0) {
+          toast.info(
+            ` ${pendingCount} pending order${pendingCount > 1 ? "s" : ""} to process!`,
+            {
+              autoClose: 8000,
+              closeOnClick: true,
+              pauseOnHover: true,
+            },
+          );
+        }
       })
       .catch((err) => {
         console.log(err);
