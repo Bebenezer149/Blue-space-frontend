@@ -11,8 +11,8 @@ function Store() {
   const [storeData, setStoreData] = useState(null);
   const [cart, setCart] = useState([]);
   const [openCart, setOpenCart] = useState(false);
-  const [email, setEmail]=useState("");
-  const [phone, setPhone]=useState("")
+  const [email, setEmail]=useState(" ");
+  const [phone, setPhone]=useState(" ")
   const [openViewCard, setOpenViewCard] = useState(false);
 
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -100,7 +100,7 @@ function Store() {
           {/* Store Details */}
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">
-              {storeData?.name || businessName}
+              { businessName}
             </h1>
 
             <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-6 items-center mb-3">
