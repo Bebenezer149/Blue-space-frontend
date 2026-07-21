@@ -22,7 +22,7 @@ function SalesTable() {
         console.log(res);
         setSales(res.order || []);
         setIsLoading(false);
-        res.order.status === "PENDING" && toast.update("You have new orders to process")
+        res.order[0].status === "PENDING" && toast.update("You have new orders to process")
       })
       .catch((err) => {
         console.log(err);
