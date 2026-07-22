@@ -81,10 +81,10 @@ function Store() {
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -ml-48"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-white/5 rounded-full blur-2xl"></div>
 
-        <div className="relative max-w-7xl mx-auto w-full flex flex-row items-center gap-3 sm:gap-4 md:gap-8">
+        <div className="relative max-w-7xl mx-2 w-full flex flex-row items-center gap-3 sm:gap-4 md:gap-8">
           {/* Store Logo */}
           <div className="relative shrink-0">
-            <div className="h-30 w-20 sm:h-20 sm:w-20 md:h-28 md:w-28 rounded-full border-2 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
+            <div className="h-30 w-30 sm:h-26 sm:w-26 md:h-28 md:w-28 rounded-full border-0.5 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
               <img
                 className="h-full w-full object-cover rounded-full"
                 src={
@@ -98,7 +98,7 @@ function Store() {
 
           {/* Store Details - Flex column with proper alignment */}
           <div className="flex-1 flex flex-col justify-center min-w-0">
-            <h1 className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2 truncate">
+            <h1 className="text-base sm:text-3xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2 truncate">
               {businessName}
             </h1>
 
