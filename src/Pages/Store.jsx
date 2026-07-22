@@ -11,16 +11,14 @@ function Store() {
   const [storeData, setStoreData] = useState(null);
   const [cart, setCart] = useState([]);
   const [openCart, setOpenCart] = useState(false);
-  const [email, setEmail] = useState(" ");
-  const [phone, setPhone] = useState(" ");
+  const [email, setEmail]=useState(" ");
+  const [phone, setPhone]=useState(" ")
   const [openViewCard, setOpenViewCard] = useState(false);
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  const [businessName, setBusinessName] = useState("");
-  const [bannerImage, setBannerImage] = useState("");
-  const [logoImage, setLogoImage] = useState("");
+  const [businessName,setBusinessName] = useState("");
 
   useEffect(() => {
     fetch(`${API_URL}/show-products?link=${slug}`, {
@@ -33,12 +31,10 @@ function Store() {
       .then((res) => {
         setProducts(res.products || []);
         setStoreData(res.store || null);
-        setBusinessName(res.business_name);
-        setPhone(res.phone_number);
-        setEmail(res.email);
-        setBannerImage(res.banner || "");
-        setLogoImage(res.logo || "");
-        console.log(res);
+        setBusinessName(res.business_name)
+        setPhone(res.phone_number)
+        setEmail(res.email)
+        console.log(res.phone )
       })
       .catch((err) => console.log(err));
   }, [slug]);
@@ -70,86 +66,44 @@ function Store() {
         return prev.map((item) =>
           item.id === cartData.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item
+            : item,
         );
       }
       return [...prev, { ...cartData, quantity: 1 }];
     });
   }
 
-  // Get initials from business name
-  const getInitials = (name) => {
-    if (!name) return "No user";
-    const words = name.trim().split(" ");
-    if (words.length === 1) return words[0].charAt(0).toUpperCase();
-    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
-  };
-
-  // Generate a consistent color based on business name
-  const getInitialsColor = (name) => {
-    if (!name) return "from-blue-600 to-blue-400";
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const hue = Math.abs(hash) % 360;
-    return `from-hsl(${hue}, 70%, 50%) to-hsl(${hue + 30}, 70%, 45%)`;
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Store Banner - Custom banner with fallback */}
-      <div 
-        className="relative p-4 sm:p-6 md:p-8 min-h-[180px] sm:min-h-[200px] md:min-h-[220px] overflow-hidden flex items-center"
-        style={{
-          backgroundImage: bannerImage ? `url(${bannerImage})` : undefined,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* Fallback gradient background when no banner */}
-        {!bannerImage && (
-          <div className={`absolute inset-0 bg-linear-to-r ${getInitialsColor(businessName)}`}></div>
-        )}
-        
-        {/* Subtle overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/30"></div>
-        
+      {/* Store Banner - Flex content on both mobile and desktop */}
+      <div className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 p-4 sm:p-6 md:p-8 min-h-[180px] sm:min-h-[200px] md:min-h-[220px] overflow-hidden flex items-center">
         <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -mr-48"></div>
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -ml-48"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-white/5 rounded-full blur-2xl"></div>
 
-        <div className="relative max-w-7xl mx-2 w-full flex flex-row items-center gap-3 sm:gap-4 md:gap-8 z-10">
-          {/* Store Logo - Custom logo with fallback to initials */}
+        <div className="relative max-w-7xl mx-2 w-full flex flex-row items-center gap-3 sm:gap-4 md:gap-8">
+          {/* Store Logo */}
           <div className="relative shrink-0">
-            <div className="h-30 w-30 sm:h-26 sm:w-26 md:h-28 md:w-28 rounded-full border-2 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100 flex items-center justify-center">
-              {logoImage ? (
-                <img
-                  className="h-full w-full object-cover rounded-full"
-                  src={logoImage}
-                  alt={slug}
-                />
-              ) : (
-                <div 
-                  className="h-full w-full rounded-full flex items-center justify-center text-white font-bold text-2xl sm:text-3xl md:text-4xl"
-                  style={{
-                    background: `linear-gradient(135deg, hsl(${Math.abs(businessName?.length || 0) * 37 % 360}, 70%, 50%), hsl(${(Math.abs(businessName?.length || 0) * 37 + 30) % 360}, 70%, 45%))`
-                  }}
-                >
-                  {getInitials(businessName)}
-                </div>
-              )}
+            <div className="h-30 w-30 sm:h-26 sm:w-26 md:h-28 md:w-28 rounded-full border-0.5 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
+              <img
+                className="h-full w-full object-cover rounded-full"
+                src={
+                  storeData?.logo ||
+                  "https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                }
+                alt={slug}
+              />
             </div>
           </div>
 
           {/* Store Details - Flex column with proper alignment */}
           <div className="flex-1 flex flex-col justify-center min-w-0">
-            <h1 className="text-base sm:text-3xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2 truncate drop-shadow-lg">
+            <h1 className="text-base sm:text-3xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2 truncate">
               {businessName}
             </h1>
 
             <div className="flex flex-col items-start gap-1 sm:gap-2 md:gap-4">
-              <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-md md:text-sm font-semibold text-white/90 items-center bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+              <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-md md:text-sm font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -168,7 +122,7 @@ function Store() {
                 <span className="xs:hidden">{phone?.slice(0, 10)}...</span>
               </span>
 
-              <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm font-semibold text-white/90 items-center bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+              <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -197,9 +151,7 @@ function Store() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-white font-semibold text-[10px] sm:text-xs md:text-base">
-                    {products.length}
-                  </span>
+                  <span className="text-white font-semibold text-[10px] sm:text-xs md:text-base">{products.length}</span>
                 </div>
                 <span className="text-white/70 text-[10px] sm:text-xs md:text-sm">Products</span>
               </div>
@@ -238,31 +190,19 @@ function Store() {
 
           {openDropdown && (
             <div className="absolute left-0 mt-2 z-10 bg-white text-center shadow-md rounded-lg border-default-medium rounded-base shadow-lg w-44">
-              <ul
-                className="p-2 text-sm text-gray-600 text-body font-medium"
-                aria-label="Store dropdown"
-              >
+              <ul className="p-2 text-sm text-gray-600 text-body font-medium" aria-label="Store dropdown">
                 <li className="hover:bg-gray-100 rounded-lg">
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
+                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
                     All Products
                   </a>
                 </li>
                 <li className="hover:bg-gray-100 rounded-lg">
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
+                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
                     Available
                   </a>
                 </li>
                 <li className="hover:bg-gray-100 rounded-lg">
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
+                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
                     Out of Stock
                   </a>
                 </li>
@@ -332,12 +272,8 @@ function Store() {
                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
               />
             </svg>
-            <h3 className="text-lg font-medium text-gray-600">
-              No products found
-            </h3>
-            <p className="text-gray-400">
-              This store doesn't have any products yet.
-            </p>
+            <h3 className="text-lg font-medium text-gray-600">No products found</h3>
+            <p className="text-gray-400">This store doesn't have any products yet.</p>
           </div>
         )}
       </div>
