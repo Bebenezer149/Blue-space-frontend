@@ -75,16 +75,16 @@ function Store() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Store Banner */}
-      <div className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 p-8 md:p-12 h-auto md:h-80 overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
+      {/* Store Banner - Flex content on both mobile and desktop */}
+      <div className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 p-4 sm:p-6 md:p-8 min-h-[180px] sm:min-h-[200px] md:min-h-[220px] overflow-hidden flex items-center">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -mr-48"></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -ml-48"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-white/5 rounded-full blur-2xl"></div>
 
-        <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-10">
+        <div className="relative max-w-7xl mx-auto w-full flex flex-row items-center gap-3 sm:gap-4 md:gap-8">
           {/* Store Logo */}
           <div className="relative shrink-0">
-            <div className="h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 rounded-full border-1 border-white/30 shadow-2xl overflow-hidden p-0.5 bg-gray-100">
+            <div className="h-16 w-16 sm:h-20 sm:w-20 md:h-28 md:w-28 rounded-full border-2 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
               <img
                 className="h-full w-full object-cover rounded-full"
                 src={
@@ -94,24 +94,23 @@ function Store() {
                 alt={slug}
               />
             </div>
-            {/* <div className="absolute  right-2 md:bottom-3 md:right-3 bg-green-500 w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-white shadow-lg"></div> */}
           </div>
 
-          {/* Store Details */}
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">
-              { businessName}
+          {/* Store Details - Flex column with proper alignment */}
+          <div className="flex-1 flex flex-col justify-center min-w-0">
+            <h1 className="text-base sm:text-xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2 truncate">
+              {businessName}
             </h1>
 
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-6 items-center mb-3">
-              <h1 className="flex gap-2 text-sm md:text-base font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 md:gap-4">
+              <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="size-4 md:size-5"
+                  className="size-2.5 sm:size-3 md:size-4"
                 >
                   <path
                     strokeLinecap="round"
@@ -119,17 +118,18 @@ function Store() {
                     d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
                   />
                 </svg>
-                {phone}
-              </h1>
+                <span className="hidden xs:inline">{phone}</span>
+                <span className="xs:hidden">{phone?.slice(0, 10)}...</span>
+              </span>
 
-              <h1 className="flex gap-2 text-sm md:text-base font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+              <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="size-4 md:size-5"
+                  className="size-2.5 sm:size-3 md:size-4"
                 >
                   <path
                     strokeLinecap="round"
@@ -137,14 +137,13 @@ function Store() {
                     d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
                   />
                 </svg>
-                {email }
-              </h1>
-            </div>
+                <span className="hidden xs:inline">{email}</span>
+                <span className="xs:hidden">{email?.slice(0, 12)}...</span>
+              </span>
 
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 mb-4">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 text-white">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center gap-1">
+                <div className="flex items-center gap-0.5 sm:gap-1 text-white">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                     <path
                       fillRule="evenodd"
@@ -152,9 +151,9 @@ function Store() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-white font-semibold">{products.length}</span>
+                  <span className="text-white font-semibold text-[10px] sm:text-xs md:text-base">{products.length}</span>
                 </div>
-                <span className="text-white/70 text-sm">Products</span>
+                <span className="text-white/70 text-[10px] sm:text-xs md:text-sm">Products</span>
               </div>
             </div>
           </div>
@@ -166,7 +165,7 @@ function Store() {
         <div ref={dropdownRef} className="relative">
           <button
             type="button"
-            className="inline-flex bg-white  items-center justify-center rounded-md text-blue-400 border  hover:bg-brand-strong  focus:ring-blue-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+            className="inline-flex bg-white items-center justify-center rounded-md text-blue-400 border hover:bg-brand-strong focus:ring-blue-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
             onClick={() => setOpenDropdown((v) => !v)}
           >
             Categories
@@ -191,23 +190,22 @@ function Store() {
 
           {openDropdown && (
             <div className="absolute left-0 mt-2 z-10 bg-white text-center shadow-md rounded-lg border-default-medium rounded-base shadow-lg w-44">
-              <ul className="p-2 text-sm text-gray-600 text-body  font-medium" aria-label="Store dropdown">
-                <li className=" hover:bg-gray-100 rounded-lg">
+              <ul className="p-2 text-sm text-gray-600 text-body font-medium" aria-label="Store dropdown">
+                <li className="hover:bg-gray-100 rounded-lg">
                   <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
                     All Products
                   </a>
                 </li>
-                <li className=" hover:bg-gray-100 rounded-lg">
+                <li className="hover:bg-gray-100 rounded-lg">
                   <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
-                   Available
+                    Available
                   </a>
                 </li>
-                <li className=" hover:bg-gray-100 rounded-lg">
+                <li className="hover:bg-gray-100 rounded-lg">
                   <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
-                   Out of Stock
+                    Out of Stock
                   </a>
                 </li>
-               
               </ul>
             </div>
           )}
@@ -294,4 +292,3 @@ function Store() {
 }
 
 export default Store;
-
