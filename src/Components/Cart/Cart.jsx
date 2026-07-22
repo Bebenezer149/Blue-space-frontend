@@ -122,8 +122,8 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
     <div className="fixed inset-0 flex justify-center items-center bg-black/50 backdrop-blur-sm z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
+        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
             <span className="text-blue-600">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +131,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6"
+                className="size-5 sm:size-6"
               >
                 <path
                   strokeLinecap="round"
@@ -140,50 +140,57 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                 />
               </svg>
             </span>
-            {step === 1 ? "Your Cart" : "Delivery Details"}
+            <span className="hidden xs:inline">
+              {step === 1 ? "Your Cart" : "Delivery Details"}
+            </span>
+            <span className="xs:hidden">
+              {step === 1 ? "Cart" : "Details"}
+            </span>
           </h2>
           <button
             onClick={() => setOpenCart(false)}
-            className="text-gray-400 hover:text-gray-600 transition-colors text-2xl cursor-pointer"
+            className="text-gray-400 hover:text-gray-600 transition-colors text-xl sm:text-2xl cursor-pointer p-1 hover:bg-gray-100 rounded-full w-8 h-8 sm:w-auto sm:h-auto flex items-center justify-center"
           >
             ✕
           </button>
         </div>
 
         {/* Step Indicator */}
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center justify-between max-w-xs mx-auto">
-            <div className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${step >= 1 ? 'bg-blue-600 text-white scale-100' : 'bg-gray-300 text-gray-600 scale-95'}`}>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300 ${step >= 1 ? 'bg-blue-600 text-white scale-100' : 'bg-gray-300 text-gray-600 scale-95'}`}>
                 1
               </div>
-              <span className={`text-sm transition-colors duration-300 ${step >= 1 ? 'text-gray-800 font-medium' : 'text-gray-400'}`}>
-                Cart
+              <span className={`text-xs sm:text-sm transition-colors duration-300 ${step >= 1 ? 'text-gray-800 font-medium' : 'text-gray-400'}`}>
+                <span className="hidden xs:inline">Cart</span>
+                <span className="xs:hidden">Items</span>
               </span>
             </div>
-            <div className={`flex-1 h-0.5 mx-2 transition-all duration-500 ${step >= 2 ? 'bg-blue-600' : 'bg-gray-300'}`} />
-            <div className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${step >= 2 ? 'bg-blue-600 text-white scale-100' : 'bg-gray-300 text-gray-600 scale-95'}`}>
+            <div className={`flex-1 h-0.5 mx-1 sm:mx-2 transition-all duration-500 ${step >= 2 ? 'bg-blue-600' : 'bg-gray-300'}`} />
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300 ${step >= 2 ? 'bg-blue-600 text-white scale-100' : 'bg-gray-300 text-gray-600 scale-95'}`}>
                 2
               </div>
-              <span className={`text-sm transition-colors duration-300 ${step >= 2 ? 'text-gray-800 font-medium' : 'text-gray-400'}`}>
-                Details
+              <span className={`text-xs sm:text-sm transition-colors duration-300 ${step >= 2 ? 'text-gray-800 font-medium' : 'text-gray-400'}`}>
+                <span className="hidden xs:inline">Details</span>
+                <span className="xs:hidden">Info</span>
               </span>
             </div>
           </div>
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-6 relative">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 relative">
           {/* Step 1: Cart Items */}
           <div className={`transition-all duration-500 transform ${isTransitioning ? 'opacity-0 -translate-x-4' : 'opacity-100 translate-x-0'} ${step === 1 ? 'block' : 'hidden'}`}>
             <div className="space-y-4 mb-6">
-              <h3 className="text-lg font-semibold text-gray-700">Confirm Your Items</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-700">Confirm Your Items</h3>
 
               {cart.length === 0 ? (
-                <div className="text-center py-12">
+                <div className="text-center py-8 sm:py-12">
                   <svg
-                    className="w-20 h-20 mx-auto text-gray-300 mb-4"
+                    className="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-300 mb-4"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -195,8 +202,8 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                       d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                   </svg>
-                  <h3 className="text-lg font-medium text-gray-600">Your cart is empty</h3>
-                  <p className="text-gray-400 mt-1">Add some items to get started!</p>
+                  <h3 className="text-base sm:text-lg font-medium text-gray-600">Your cart is empty</h3>
+                  <p className="text-gray-400 mt-1 text-sm sm:text-base">Add some items to get started!</p>
                 </div>
               ) : (
                 cart.map((data, index) => (
@@ -212,14 +219,14 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-800 truncate">
+                      <h3 className="font-semibold text-gray-800 truncate text-sm sm:text-base">
                         {data.product_name}
                       </h3>
-                      <p className="text-sm text-gray-500 line-clamp-2">
+                      <p className="text-xs sm:text-sm text-gray-500 line-clamp-2">
                         {data.description}
                       </p>
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
-                        <span className="text-lg font-bold text-blue-600">
+                        <span className="text-base sm:text-lg font-bold text-blue-600">
                           GHS {data.price}
                         </span>
                         <div className="flex items-center gap-3">
@@ -229,7 +236,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                           >
                             −
                           </button>
-                          <span className="font-semibold w-6 text-center">
+                          <span className="font-semibold w-6 text-center text-sm sm:text-base">
                             {data.quantity}
                           </span>
                           <button
@@ -243,7 +250,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                     </div>
                     <button
                       onClick={() => handleRemoveItem(data.id)}
-                      className="text-red-400 hover:text-red-600 transition cursor-pointer hover:scale-110 active:scale-95"
+                      className="text-red-400 hover:text-red-600 transition cursor-pointer hover:scale-110 active:scale-95 self-end sm:self-center"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -251,7 +258,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="size-6"
+                        className="size-5 sm:size-6"
                       >
                         <path
                           strokeLinecap="round"
@@ -269,7 +276,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
           {/* Step 2: Delivery Details */}
           <div className={`transition-all duration-500 transform ${isTransitioning ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'} ${step === 2 ? 'block' : 'hidden'}`}>
             <div className="border-t border-gray-200 pt-2">
-              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-4">
                 Delivery Details
               </h3>
 
@@ -284,7 +291,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                     value={customer}
                     onChange={(e) => setCustomer(e.target.value)}
                     placeholder="Enter your full name"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm sm:text-base"
                     required
                   />
                 </div>
@@ -299,7 +306,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Enter your phone number"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm sm:text-base"
                     required
                   />
                 </div>
@@ -314,7 +321,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                     value={deliveryTo}
                     onChange={(e) => setDeliveryTo(e.target.value)}
                     placeholder="Enter delivery address"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm sm:text-base"
                     required
                   />
                 </div>
@@ -333,8 +340,8 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                         onChange={() => setPaymentMethod("MOMO")}
                         className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                       />
-                      <span className="flex items-center gap-2 mr-20">
-                        <span className="font-medium">Mobile Money</span>
+                      <span className="flex items-center gap-2 mr-12 sm:mr-20">
+                        <span className="font-medium text-sm sm:text-base">Mobile Money</span>
                       </span>
                     </label>
                     <label className="relative flex items-center justify-between p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50 hover:scale-105 active:scale-95">
@@ -346,8 +353,8 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                         className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                         required
                       />
-                      <span className="flex items-center gap-2 mr-20">
-                        <span className="font-medium">Cash on Delivery</span>
+                      <span className="flex items-center gap-2 mr-12 sm:mr-20">
+                        <span className="font-medium text-sm sm:text-base">Cash on Delivery</span>
                       </span>
                     </label>
                   </div>
@@ -360,10 +367,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                   </label>
                   <textarea
                     placeholder="Add any special requests or delivery instructions..."
-                    rows="4"
+                    rows="3 sm:rows-4"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none text-sm sm:text-base"
                   />
                 </div>
               </form>
@@ -372,23 +379,23 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
         </div>
 
         {/* Footer - Cart Summary */}
-        <div className="border-t border-gray-200 p-6 bg-gray-50">
+        <div className="border-t border-gray-200 p-4 sm:p-6 bg-gray-50">
           <div className="space-y-2">
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-sm sm:text-base text-gray-600">
               <span>Subtotal</span>
               <span>GHS {subtotal}</span>
             </div>
-            <div className="flex justify-between text-lg font-bold text-gray-800 pt-2 border-t border-gray-200">
+            <div className="flex justify-between text-base sm:text-lg font-bold text-gray-800 pt-2 border-t border-gray-200">
               <span>Total</span>
               <span className="text-blue-600">GHS {total}</span>
             </div>
           </div>
 
-          <div className="flex gap-3 mt-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4">
             {step === 2 && (
               <button
                 onClick={goToStep1}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
+                className="w-full sm:flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 active:scale-95 order-2 sm:order-1"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -404,7 +411,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                     d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
                   />
                 </svg>
-                Back to Cart
+                <span className="text-sm sm:text-base">Back</span>
               </button>
             )}
             
@@ -412,11 +419,11 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
               <button
                 onClick={goToStep2}
                 disabled={cart.length === 0}
-                className={`flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 active:scale-95 ${
+                className={`w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 active:scale-95 ${
                   cart.length === 0 ? 'opacity-50 cursor-not-allowed hover:scale-100' : ''
                 }`}
               >
-                <span>Review & Continue</span>
+                <span className="text-sm sm:text-base">Review & Continue</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -435,16 +442,16 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
             ) : (
               <button
                 onClick={handleSubmit}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
+                className="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 active:scale-95 order-1 sm:order-2"
               >
                 <span>
                   {loading ? (
                     <div className="flex gap-4 items-center">
-                      <span>Placing Order</span>
+                      <span className="text-sm sm:text-base">Placing Order</span>
                       <div className="h-5 w-5 animate-spin rounded-full border-3 border-gray-100 border-t-transparent"></div>
                     </div>
                   ) : (
-                    "Place Order"
+                    <span className="text-sm sm:text-base">Place Order</span>
                   )}
                 </span>
               </button>
