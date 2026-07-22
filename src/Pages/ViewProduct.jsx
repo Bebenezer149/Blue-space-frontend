@@ -67,7 +67,7 @@ function ViewProduct({productDetails, setViewOpen}) {
               <label className="text-sm font-medium text-gray-500 block mb-1">
                 Status
               </label>
-              <span className="inline-flex px-4 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-700">
+              <span className={`inline-flex px-4 py-1.5 rounded-full text-sm font-semibold ${productDetails.status === "Available" ? " bg-green-100 text-green-700":"bg-yellow-100 text-yellow-700"}`}>
                {productDetails.status}
               </span>
             </div>
@@ -90,22 +90,13 @@ function ViewProduct({productDetails, setViewOpen}) {
               <p className="text-gray-600">{ productDetails.created_at ? new Date(productDetails.created_at).toLocaleDateString(): "Couldn't display date"}</p>
             </div>
 
-            {/* Product ID */}
-            <div className="md:col-span-2">
-              <label className="text-sm font-medium text-gray-500 block mb-1">
-                Product ID
-              </label>
-              <p className="text-gray-600 text-sm font-mono">{productDetails.id}</p>
-            </div>
+         
           </div>
         </div>
 
         {/* Footer Actions */}
         <div className="flex flex-col sm:flex-row justify-end gap-3 p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl sticky bottom-0">
           
-          <button className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 cursor-pointer order-1 sm:order-2">
-            Edit Product
-          </button>
         </div>
       </div>
     </div>
