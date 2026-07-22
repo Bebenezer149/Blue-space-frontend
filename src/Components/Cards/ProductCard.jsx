@@ -24,7 +24,7 @@ function ProductCard({ data, img, title, price, status, addToCart }) {
                   : "bg-yellow-100 text-yellow-600"
             }`}
           >
-            <h1>{status || "Available"}</h1>
+            <h1>{status === "OUT_OF_STOCK" ? "Out Of Stock" : "Available"}</h1>
           </div>
         </div>
         <div className="mt-2 text-xl md:text-2xl font-bold text-blue-600">
