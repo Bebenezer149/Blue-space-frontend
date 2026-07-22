@@ -84,7 +84,7 @@ function Store() {
         <div className="relative max-w-7xl mx-auto w-full flex flex-row items-center gap-3 sm:gap-4 md:gap-8">
           {/* Store Logo */}
           <div className="relative shrink-0">
-            <div className="h-16 w-16 sm:h-20 sm:w-20 md:h-28 md:w-28 rounded-full border-2 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
+            <div className="h-30 w-20 sm:h-20 sm:w-20 md:h-28 md:w-28 rounded-full border-2 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
               <img
                 className="h-full w-full object-cover rounded-full"
                 src={
@@ -98,12 +98,12 @@ function Store() {
 
           {/* Store Details - Flex column with proper alignment */}
           <div className="flex-1 flex flex-col justify-center min-w-0">
-            <h1 className="text-base sm:text-xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2 truncate">
+            <h1 className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2 truncate">
               {businessName}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-1 sm:gap-2 md:gap-4">
-              <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+            <div className="flex flex-col items-start gap-1 sm:gap-2 md:gap-4">
+              <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-md md:text-sm font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
