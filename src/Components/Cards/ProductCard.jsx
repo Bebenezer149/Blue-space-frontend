@@ -32,14 +32,15 @@ function ProductCard({ data, img, title, price, status, addToCart }) {
         </div>
         <div className="mt-auto pt-3">
           <button
+            disabled={status === "Out_Of_Stock"}
             onClick={() => {
-              if (status === "Out_of_Stock") {
+              if (status === "Out_Of_Stock") {
                 toast.warning("This product is not available at the moment");
               } else {
                 addToCart(data);
               }
             }}
-            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg transition-colors duration-200 cursor-pointer"
+            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-lg transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Add to Cart
           </button>
