@@ -3,8 +3,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_URL } from "../config";
 
-
-
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
@@ -70,7 +68,6 @@ const AddProductPage = () => {
         }
 
         uploadedImageUrl = res.secure_url;
-
       } catch (err) {
         console.log(err);
         toast.error("Couldn't upload image");
@@ -123,7 +120,6 @@ const AddProductPage = () => {
       setImage(null);
       setDescription("");
 
-
       navigate("/products");
       toast.success("Product created");
 
@@ -151,7 +147,9 @@ const AddProductPage = () => {
     <div className="p-4 sm:p-6 min-h-screen flex items-center justify-center w-full bg-gradient-to-br from-blue-400 to-blue-600">
       <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 w-full max-w-2xl">
         <div className="flex justify-between items-start gap-4 mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Add New Product</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Add New Product
+          </h2>
 
           <Link to={"/products"}>
             <button className="cursor-pointer text-gray-500 hover:text-gray-700 p-1">
@@ -163,7 +161,11 @@ const AddProductPage = () => {
                 stroke="currentColor"
                 className="size-6"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </Link>
@@ -181,7 +183,11 @@ const AddProductPage = () => {
                 stroke="currentColor"
                 className="size-6"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m4.5 12.75 6 6 9-13.5"
+                />
               </svg>
             </h1>
           </div>
@@ -211,7 +217,9 @@ const AddProductPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Product Name
+            </label>
             <input
               type="text"
               name="product_name"
@@ -225,7 +233,9 @@ const AddProductPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Price (GH₵)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Price (GH₵)
+              </label>
               <input
                 type="number"
                 name="price"
@@ -240,7 +250,9 @@ const AddProductPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Stock Quantity
+              </label>
               <input
                 type="number"
                 name="quantity"
@@ -255,7 +267,9 @@ const AddProductPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status
+              </label>
               <select
                 name="status"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
@@ -267,19 +281,25 @@ const AddProductPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Image
+              </label>
               <input
                 type="file"
                 accept="image/*"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={handleImageChange}
               />
-              <p className="text-xs text-gray-500 mt-1">Upload an image less than 5MB (optional)</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Upload an image less than 5MB (optional)
+              </p>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
             <textarea
               name="description"
               rows="4"
@@ -299,7 +319,14 @@ const AddProductPage = () => {
                 disable ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {loading ? "Creating..." : "Add Product"}
+              {loading ? (
+                <div className=" flex gap-4 items-center">
+                  <h1>Creating</h1>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                </div>
+              ) : (
+                "Add Product"
+              )}
             </button>
 
             <button
@@ -327,4 +354,3 @@ const AddProductPage = () => {
 };
 
 export default AddProductPage;
-
