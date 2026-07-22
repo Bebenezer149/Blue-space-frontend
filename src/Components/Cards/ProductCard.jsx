@@ -34,7 +34,7 @@ function ProductCard({ data, img, title, price, status, addToCart }) {
           <button
             disabled={status === "Out_Of_Stock"}
             onClick={() => {
-              if (status === "Out_Of_Stock") {
+              if (status === "OUT_OF_STOCK") {
                 toast.warning("This product is not available at the moment");
               } else {
                 addToCart(data);
