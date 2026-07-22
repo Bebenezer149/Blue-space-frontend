@@ -320,9 +320,9 @@ const AddProductPage = () => {
               }`}
             >
               {loading ? (
-                <div className=" flex gap-4 items-center">
+                <div className=" flex gap-4 items-center justify-center">
                   <h1>Creating</h1>
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                 </div>
               ) : (
                 "Add Product"
