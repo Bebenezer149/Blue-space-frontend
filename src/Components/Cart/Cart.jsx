@@ -72,10 +72,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       .toFixed(2);
   };
 
-  const handleIncreaseQuantity = (itemId) => {
+  const handleIncreaseQuantity = (thing) => {
     setCart((prev) =>
       prev.map((item) =>
-        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item,
+        item.id === thing.id && item.quantity !== thing.quantity ?  { ...item, quantity: item.quantity + 1 } : item,
       ),
     );
   };
@@ -249,7 +249,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                       </div>
                     </div>
                     <button
-                      onClick={() => handleRemoveItem(data.id)}
+                      onClick={() => handleRemoveItem(data)}
                       className="text-red-400 hover:text-red-600 transition cursor-pointer hover:scale-110 active:scale-95 self-end sm:self-center"
                     >
                       <svg
