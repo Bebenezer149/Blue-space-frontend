@@ -72,10 +72,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       .toFixed(2);
   };
 
-  const handleIncreaseQuantity = (thing) => {
+  const handleIncreaseQuantity = (itemId) => {
     setCart((prev) =>
       prev.map((item) =>
-        item.id === thing.id && item.quantity !== thing.quantity ?  { ...item, quantity: item.quantity + 1 } : item,
+        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item,
       ),
     );
   };
