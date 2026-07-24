@@ -6,6 +6,7 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login";
 import { ToastContainer } from "react-toastify";
+import ForgotPassword from "./Pages/ForgotPassword";
 // import Header from "./Components/Header";
 // import Store from "./Pages/Store";
 import SignUp from "./Pages/SignUp";
@@ -40,6 +41,7 @@ function App() {
         <Route path="/order-manager" element={<OrderManager/>}/>
         <Route path="/preview-order" element={<ViewOrder/>}/>
         <Route path="/store/:slug" element={<Store/>}/>
+        <Route path="/forgot-password" element={<ForgotPassword/>}/>
 
       </Routes>
     </>

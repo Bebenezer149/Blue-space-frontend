@@ -1,6 +1,8 @@
 @import "tailwindcss";
+/* @import "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json"; */
 
-*,
+/* *,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -14,4 +16,4 @@ body {
 
 #root {
   min-height: 100svh;
-}
+} */
