@@ -3,6 +3,9 @@ import { toast } from "react-toastify";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [notify, setNotify] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -24,16 +27,18 @@ function ForgotPassword() {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          toast.success(res.message);
+          setSuccessMessage(res.message);
+          setNotify(true);
+
           setLoading(false);
         } else {
-          toast.error(res.message || "Something went wrong");
+          setErrorMessage("Unable to send link please try again");
         }
       })
       .catch((err) => {
         console.log(err);
-        toast.error("Network error. Please try again.");
-        setLoading(false)
+        setErrorMessage("Network error. Please try again.");
+        setLoading(false);
       });
   }
   return (
@@ -45,6 +50,16 @@ function ForgotPassword() {
         <p className="text-gray-500 text-sm sm:text-base text-center mt-2">
           Let us know your email and we'll send you a reset link.
         </p>
+        {loading === errorMessage && (
+          <div className="p-3 w-full border-1 mt-3 border-red-600 bg-red-100 rounded-lg text-red-500">
+            {errorMessage}
+          </div>
+        )}
+        {loading === successMessage && (
+          <div className="p-3 w-full border-1 mt-3 border-green-600 bg-green-100 rounded-lg text-red-500">
+            {successMessage}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="w-full mt-4">
           <div className="w-full">
             <label
