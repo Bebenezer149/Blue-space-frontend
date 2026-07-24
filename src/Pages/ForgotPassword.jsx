@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [notify, setNotify] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -14,6 +13,9 @@ function ForgotPassword() {
       toast.error("Please fill your email");
       return;
     }
+
+    setSuccessMessage("");
+    setErrorMessage("");
     setLoading(true);
 
     fetch("https://makola-2.onrender.com/api/forgot-password", {
@@ -26,13 +28,11 @@ function ForgotPassword() {
     })
       .then((res) => res.json())
       .then((res) => {
+        setLoading(false);
         if (res.success) {
           setSuccessMessage(res.message);
-          setNotify(true);
-
-          setLoading(false);
         } else {
-          setErrorMessage("Unable to send link please try again");
+          setErrorMessage(res.message || "Unable to send link please try again");
         }
       })
       .catch((err) => {
@@ -50,13 +50,13 @@ function ForgotPassword() {
         <p className="text-gray-500 text-sm sm:text-base text-center mt-2">
           Let us know your email and we'll send you a reset link.
         </p>
-        {loading === errorMessage && (
-          <div className="p-3 w-full border-1 mt-3 border-red-600 bg-red-100 rounded-lg text-red-500">
+        {errorMessage && (
+          <div className="p-3 w-full mt-3 border border-red-600 bg-red-100 rounded-lg text-red-600 text-sm">
             {errorMessage}
           </div>
         )}
-        {loading === successMessage && (
-          <div className="p-3 w-full border-1 mt-3 border-green-600 bg-green-100 rounded-lg text-red-500">
+        {successMessage && (
+          <div className="p-3 w-full mt-3 border border-green-600 bg-green-100 rounded-lg text-green-600 text-sm">
             {successMessage}
           </div>
         )}
