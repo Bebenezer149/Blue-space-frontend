@@ -8,7 +8,7 @@ function ResetPassword() {
   const email=searchParams.get("email")
 
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,12 +16,12 @@ function ResetPassword() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!password || !confirmPassword) {
+    if (!password || !passwordConfirmation) {
       toast.error("Please fill in all fields");
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (password !== passwordConfirmation) {
       toast.error("Passwords do not match");
       return;
     }
@@ -48,7 +48,7 @@ function ResetPassword() {
         setLoading(false);
         if (res.success) {
           setSuccessMessage(res.message || "Password reset successful!");
-          toast.success(res.message || "Password reset successful!");
+          // toast.success(res.message || "Password reset successful!");
         } else {
           setErrorMessage(res.message || "Unable to reset password. Please try again.");
           toast.error(res.message || "Unable to reset password. Please try again.");
@@ -104,9 +104,9 @@ function ResetPassword() {
               className="w-full border p-2 mt-1 rounded-md outline-none text-sm sm:text-base"
               placeholder="Confirm new password"
               type="password"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              name="passwordConfirmation"
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
               required
             />
           </div>
