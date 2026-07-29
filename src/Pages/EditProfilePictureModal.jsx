@@ -1,4 +1,4 @@
-function EditProfilePictureModal({ isOpen, onClose }) {
+function EditBannerImageModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
@@ -10,7 +10,7 @@ function EditProfilePictureModal({ isOpen, onClose }) {
       ></div>
 
       {/* Modal content */}
-      <div className="relative bg-white rounded-2xl shadow-lg w-full max-w-sm p-6 sm:p-8">
+      <div className="relative bg-white rounded-2xl shadow-lg w-full max-w-lg p-6 sm:p-8">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -20,23 +20,21 @@ function EditProfilePictureModal({ isOpen, onClose }) {
         </button>
 
         <h3 className="text-lg font-semibold text-gray-900 mb-6">
-          Update Profile Picture
+          Update Banner Image
         </h3>
 
         {/* Current / preview image */}
-        <div className="flex justify-center mb-6">
-          <div className="w-28 h-28 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-semibold text-indigo-600 overflow-hidden">
-            JD
-          </div>
+        <div className="w-full aspect-[3/1] rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 overflow-hidden mb-6">
+          <span className="text-sm font-medium">No banner uploaded</span>
         </div>
 
         {/* Upload area */}
         <label className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-200 rounded-xl py-6 px-4 cursor-pointer hover:border-indigo-300 transition-colors mb-6">
           <span className="text-sm text-gray-500 mb-1">
-            Click to upload a new photo
+            Click to upload a new banner
           </span>
           <span className="text-xs text-gray-400">
-            PNG or JPG, up to 5MB
+            PNG or JPG, recommended 1200x400px, up to 5MB
           </span>
           <input type="file" accept="image/*" className="hidden" />
         </label>
@@ -50,7 +48,7 @@ function EditProfilePictureModal({ isOpen, onClose }) {
             Cancel
           </button>
           <button className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors">
-            Save Photo
+            Save Banner
           </button>
         </div>
       </div>
@@ -58,4 +56,4 @@ function EditProfilePictureModal({ isOpen, onClose }) {
   );
 }
 
-export default EditProfilePictureModal;
+export default EditBannerImageModal;
