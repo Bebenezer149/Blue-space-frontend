@@ -39,7 +39,7 @@ function Profile() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
             <div className="relative shrink-0">
               <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-2xl font-semibold text-indigo-600">
-                <img src={userData.profile_picture} alt="" />
+                <img className="h-full w-full rounded-full object-cover" src={userData.profile_picture} alt="" />
               </div>
               <button
                 onClick={() => setIsEditPictureOpen(true)}
