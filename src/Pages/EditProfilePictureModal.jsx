@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 function EditProfilePictureModal({ isOpen, onClose }) {
   const [step, setStep] = useState(1);
@@ -106,6 +107,8 @@ function EditProfilePictureModal({ isOpen, onClose }) {
       })
       .then((data) => {
         onClose();
+        console.log(data)
+        toast.success("Profile Picture updated Successfully")
       })
       .catch((err) => {
         console.error(err);
