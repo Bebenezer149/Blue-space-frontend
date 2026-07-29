@@ -23,7 +23,7 @@ function Profile() {
         console.log(res);
         setUserData(res.user);
       });
-  },[]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -39,13 +39,30 @@ function Profile() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
             <div className="relative shrink-0">
               <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-2xl font-semibold text-indigo-600">
-                <img className="h-full w-full rounded-full object-cover" src={userData.profile_picture} alt="" />
+                <img
+                  className="h-full w-full rounded-full object-cover"
+                  src={userData.profile_picture}
+                  alt=""
+                />
               </div>
               <button
                 onClick={() => setIsEditPictureOpen(true)}
                 className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs hover:bg-indigo-700 transition-colors border-2 border-white"
               >
-                ✎
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                  />
+                </svg>
               </button>
             </div>
             <div>
