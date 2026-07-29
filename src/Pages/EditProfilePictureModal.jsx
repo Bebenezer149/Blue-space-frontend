@@ -90,7 +90,7 @@ function EditProfilePictureModal({ isOpen, onClose }) {
         if (profileUrl) payload.profile_picture = profileUrl;
 
         return fetch("https://makola-2.onrender.com/api/update-profile", {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
