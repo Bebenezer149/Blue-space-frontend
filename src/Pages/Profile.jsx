@@ -8,10 +8,16 @@ import EditProfileModal from "./EditProfileModal";
 function Profile() {
   const [isEditPictureOpen, setIsEditPictureOpen] = useState(false);
   const [userData, setUserData] = useState({});
-  const [isEditProfileOpen, setIsEditProfileOpen]=useState(false)
-
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    fetch("https://makola-2.onrender.com/api/user")
+    fetch("https://makola-2.onrender.com/api/user", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
@@ -66,7 +72,10 @@ function Profile() {
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">
                 Business Name
               </p>
-              <p className="text-base text-gray-800"> {userData.business_name}</p>
+              <p className="text-base text-gray-800">
+                {" "}
+                {userData.business_name}
+              </p>
             </div>
 
             <div>
@@ -86,7 +95,10 @@ function Profile() {
 
           {/* Action button */}
           <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
-            <button onClick={()=>setIsEditProfileOpen(true)} className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 cursor-pointer transition-colors">
+            <button
+              onClick={() => setIsEditProfileOpen(true)}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 cursor-pointer transition-colors"
+            >
               Update Info
             </button>
           </div>
@@ -97,9 +109,12 @@ function Profile() {
         isOpen={isEditPictureOpen}
         onClose={() => setIsEditPictureOpen(false)}
       />
-      {
-        isEditProfileOpen && (<EditProfileModal data={userData} onClose={()=>setIsEditProfileOpen(false)}/> )
-      }
+      {isEditProfileOpen && (
+        <EditProfileModal
+          data={userData}
+          onClose={() => setIsEditProfileOpen(false)}
+        />
+      )}
     </div>
   );
 }
