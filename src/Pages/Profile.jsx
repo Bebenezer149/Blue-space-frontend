@@ -23,7 +23,7 @@ function Profile() {
         console.log(res);
         setUserData(res.user);
       });
-  });
+  },[]);
 
   return (
     <div className="min-h-screen bg-gray-50">
