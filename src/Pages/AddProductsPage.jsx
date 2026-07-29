@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_URL } from "../config";
 
+
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");

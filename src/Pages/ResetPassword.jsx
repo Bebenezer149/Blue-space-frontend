@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 
+
 function ResetPassword() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
