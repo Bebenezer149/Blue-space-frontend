@@ -3,37 +3,33 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   const [openMenu, setOpenMenu] = useState(false);
-  const [ image, setImage]=useState("")
+  const [image, setImage] = useState("");
   // const [active, setActive]=useState(false)
 
-  const token=localStorage.getItem("token")
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   function Logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("slug")
+    localStorage.removeItem("slug");
     navigate("/");
   }
 
-
-  useEffect(()=>{
-    fetch("https://makola-2.onrender.com/api/user",{
-      method:'GET',
-      headers:{
-        'Accept':'application/json',
-        'Authorization':`Bearer ${token}`
+  useEffect(() => {
+    fetch("https://makola-2.onrender.com/api/user", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      
     })
-    .then((res)=>res.json())
-    .then((res)=>{
-      console.log(res)
-      setImage(res.user.banner)
-    })
-    .catch((err)=>console.log(err))
-
-
-  },[])
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setImage(res.user.banner);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto p-4 flex justify-between items-center">
@@ -44,21 +40,21 @@ function Header() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center text-base lg:text-lg text-gray-700 gap-6 lg:gap-10">
           <Link to={"/dashboard"}>
-            <button  className="cursor-pointer hover:text-blue-400">Home</button>
+            <button className="cursor-pointer hover:text-blue-400">Home</button>
           </Link>
 
           <Link to={"/products"}>
-            <button  className="cursor-pointer hover:text-blue-400">
+            <button className="cursor-pointer hover:text-blue-400">
               Products
             </button>
           </Link>
           <Link to={"/order-manager"}>
-            <button  className="cursor-pointer hover:text-blue-400">
+            <button className="cursor-pointer hover:text-blue-400">
               Orders
             </button>
           </Link>
           <Link to={"/profile"}>
-            <button  className="cursor-pointer hover:text-blue-400">
+            <button className="cursor-pointer hover:text-blue-400">
               Profile
             </button>
           </Link>
@@ -80,7 +76,28 @@ function Header() {
 
           <Link to={"/profile"}>
             <div className="h-14 w-14 border rounded-full border-slate-400 text-slate-400 cursor-pointer hover:text-blue-400 hover:border-blue-400">
-            <img className="h-full w-full rounded-full" src={image} alt="" />
+              {image ? (
+                <img
+                  className="h-full w-full rounded-full"
+                  src={image}
+                  alt=""
+                />
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                  />
+                </svg>
+              )}
             </div>
           </Link>
         </div>
@@ -149,8 +166,8 @@ function Header() {
               Logout
             </button>
 
-              <div className="h-14 w-14 border rounded-full border-slate-400 text-slate-400 cursor-pointer hover:text-blue-400 hover:border-blue-400">
-            <img className="h-full w-full rounded-full" src={image} alt="" />
+            <div className="h-14 w-14 border rounded-full border-slate-400 text-slate-400 cursor-pointer hover:text-blue-400 hover:border-blue-400">
+              <img className="h-full w-full rounded-full" src={image} alt="" />
             </div>
           </div>
         </div>
