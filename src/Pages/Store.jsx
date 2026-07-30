@@ -11,15 +11,15 @@ function Store() {
   const [storeData, setStoreData] = useState(null);
   const [cart, setCart] = useState([]);
   const [openCart, setOpenCart] = useState(false);
-  const [email, setEmail]=useState(" ");
-  const [phone, setPhone]=useState(" ")
+  const [email, setEmail] = useState(" ");
+  const [phone, setPhone] = useState(" ");
   const [openViewCard, setOpenViewCard] = useState(false);
-  const [profile, setProfile]=useState(" ")
+  const [profile, setProfile] = useState(" ");
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  const [businessName,setBusinessName] = useState("");
+  const [businessName, setBusinessName] = useState("");
 
   useEffect(() => {
     fetch(`${API_URL}/show-products?link=${slug}`, {
@@ -30,14 +30,14 @@ function Store() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res)
+        console.log(res);
         setProducts(res.products || []);
         setStoreData(res.store || null);
-        setBusinessName(res.business_name)
-        setPhone(res.phone_number)
-        setEmail(res.email)
-        setProfile(res.profile_picture)
-        console.log(res.phone )
+        setBusinessName(res.business_name);
+        setPhone(res.phone_number);
+        setEmail(res.email);
+        setProfile(res.profile_picture);
+        console.log(res.phone);
       })
       .catch((err) => console.log(err));
   }, [slug]);
@@ -90,10 +90,7 @@ function Store() {
             <div className="h-30 w-30 sm:h-26 sm:w-26 md:h-28 md:w-28 rounded-full border-0.5 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
               <img
                 className="h-full w-full object-cover rounded-full"
-                src={
-                  storeData?.logo ||
-                   {profile} 
-                }
+                src={storeData?.logo || { profile }}
                 alt={slug}
               />
             </div>
@@ -146,7 +143,11 @@ function Store() {
 
               <div className="flex items-center gap-1">
                 <div className="flex items-center gap-0.5 sm:gap-1 text-white">
-                  <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                     <path
                       fillRule="evenodd"
@@ -154,9 +155,13 @@ function Store() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-white font-semibold text-[10px] sm:text-xs md:text-base">{products.length}</span>
+                  <span className="text-white font-semibold text-[10px] sm:text-xs md:text-base">
+                    {products.length}
+                  </span>
                 </div>
-                <span className="text-white/70 text-[10px] sm:text-xs md:text-sm">Products</span>
+                <span className="text-white/70 text-[10px] sm:text-xs md:text-sm">
+                  Products
+                </span>
               </div>
             </div>
           </div>
@@ -193,19 +198,31 @@ function Store() {
 
           {openDropdown && (
             <div className="absolute left-0 mt-2 z-10 bg-white text-center shadow-md rounded-lg border-default-medium rounded-base shadow-lg w-44">
-              <ul className="p-2 text-sm text-gray-600 text-body font-medium" aria-label="Store dropdown">
+              <ul
+                className="p-2 text-sm text-gray-600 text-body font-medium"
+                aria-label="Store dropdown"
+              >
                 <li className="hover:bg-gray-100 rounded-lg">
-                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                  <a
+                    href="#"
+                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
+                  >
                     All Products
                   </a>
                 </li>
                 <li className="hover:bg-gray-100 rounded-lg">
-                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                  <a
+                    href="#"
+                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
+                  >
                     Available
                   </a>
                 </li>
                 <li className="hover:bg-gray-100 rounded-lg">
-                  <a href="#" className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded">
+                  <a
+                    href="#"
+                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
+                  >
                     Out of Stock
                   </a>
                 </li>
@@ -275,8 +292,12 @@ function Store() {
                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
               />
             </svg>
-            <h3 className="text-lg font-medium text-gray-600">No products found</h3>
-            <p className="text-gray-400">This store doesn't have any products yet.</p>
+            <h3 className="text-lg font-medium text-gray-600">
+              No products found
+            </h3>
+            <p className="text-gray-400">
+              This store doesn't have any products yet.
+            </p>
           </div>
         )}
       </div>
