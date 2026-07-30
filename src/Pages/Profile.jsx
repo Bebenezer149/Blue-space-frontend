@@ -47,7 +47,7 @@ function Profile() {
               </div>
               <button
                 onClick={() => setIsEditPictureOpen(true)}
-                className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs hover:bg-indigo-700 transition-colors border-2 border-white"
+                className="p-1 absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs hover:bg-indigo-700 transition-colors border-none "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +55,7 @@ function Profile() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="size-6"
+                  className="size-5 "
                 >
                   <path
                     strokeLinecap="round"
