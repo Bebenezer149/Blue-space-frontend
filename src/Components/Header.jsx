@@ -17,7 +17,7 @@ function Header() {
 
 
   useEffect(()=>{
-    fetch("https://makola-2.onrender.com/api/users",{
+    fetch("https://makola-2.onrender.com/api/user",{
       method:'GET',
       headers:{
         'Accept':'application/json',
