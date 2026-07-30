@@ -28,7 +28,7 @@ function Header() {
     .then((res)=>res.json())
     .then((res)=>{
       console.log(res)
-      setImage(res)
+      setImage(res.user)
     })
     .catch((err)=>console.log(err))
 
@@ -80,7 +80,7 @@ function Header() {
 
           <Link to={"/profile"}>
             <div className="h-14 w-14 border rounded-full border-slate-400 text-slate-400 cursor-pointer hover:text-blue-400 hover:border-blue-400">
-            <img className="h-full w-full rounded-full" src={image.user.profile_picture} alt="" />
+            <img className="h-full w-full rounded-full" src={image} alt="" />
             </div>
           </Link>
         </div>
