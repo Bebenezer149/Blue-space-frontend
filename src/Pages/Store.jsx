@@ -14,6 +14,7 @@ function Store() {
   const [email, setEmail]=useState(" ");
   const [phone, setPhone]=useState(" ")
   const [openViewCard, setOpenViewCard] = useState(false);
+  const [profile, setProfile]=useState(" ")
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -29,11 +30,13 @@ function Store() {
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log(res)
         setProducts(res.products || []);
         setStoreData(res.store || null);
         setBusinessName(res.business_name)
         setPhone(res.phone_number)
         setEmail(res.email)
+        setProfile(res.profile_picture)
         console.log(res.phone )
       })
       .catch((err) => console.log(err));
@@ -89,7 +92,7 @@ function Store() {
                 className="h-full w-full object-cover rounded-full"
                 src={
                   storeData?.logo ||
-                  "https://plus.unsplash.com/premium_photo-1689977807477-a579eda91fa2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                   {profile} 
                 }
                 alt={slug}
               />
