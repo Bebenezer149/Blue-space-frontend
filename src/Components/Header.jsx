@@ -3,10 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   const [openMenu, setOpenMenu] = useState(false);
-  const [ iimage, setImage]=useState("")
+  const [ image, setImage]=useState("")
   // const [active, setActive]=useState(false)
 
-  const token=localStorage.getItem()
+  const token=localStorage.getItem("token")
   const navigate = useNavigate();
   function Logout() {
     localStorage.removeItem("token");
@@ -80,7 +80,7 @@ function Header() {
 
           <Link to={"/profile"}>
             <div className="h-6 w-6 border rounded-full border-slate-400 text-slate-400 cursor-pointer hover:text-blue-400 hover:border-blue-400">
-            <img className="h-full w-full rounded-full" src={Image} alt="" />
+            <img className="h-full w-full rounded-full" src={image} alt="" />
             </div>
           </Link>
         </div>
