@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import mobileAppScreenshot from "../assets/bg-20c04bea-1d6e-4f74-b0b6-5a824b73866b.png";
 import bluespaceLogoSVG from "../assets/bluespace-logo.svg";
+import anass from "../assets/anass.jpeg";
+import cecil from "../assets/cecil-ofori.jpeg";
+import eben from "../assets/eben.jpeg";
 
 /* ------------------------------------------------------------------ */
 /* Scroll-reveal utilities                                             */
@@ -111,16 +114,16 @@ const TEAM = [
     name: "Cecil Ofori",
     role: "Founder & CEO",
     initials: "CO",
-    image: "https://i.pravatar.cc/400?img=11",
+    image: cecil,
   },
   {
     name: "Baidoo Ebenezer",
     role: "Founder & Chief Technology Officer",
     initials: "BE",
-    image: "https://i.pravatar.cc/400?img=12",
+    image: eben,
   },
   {
-    name: "Silvia",
+    name: "Sylvia",
     role: "Head of Customer Support",
     initials: "SS",
     image: "https://i.pravatar.cc/400?img=47",
@@ -129,7 +132,7 @@ const TEAM = [
     name: "Anass Abdallah",
     role: "Head of Growth",
     initials: "AA",
-    image: "https://i.pravatar.cc/400?img=15",
+    image: anass,
   },
 ];
 

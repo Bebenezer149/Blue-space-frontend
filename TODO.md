@@ -1,14 +1,16 @@
-# Landing Page - Logo & Team Section Updates
+# Landing Page - Increase Logo Size & Add "Blue Space" Text
 
 ## Steps
 
 - [x] 1. Create TODO.md
-- [x] 2. Create `src/assets/bluespace-logo.svg` - logo mark + "Blue Space" text combined into one SVG asset
-- [x] 3. Navbar logo - increased size to `h-12` and use the combined logo SVG (mark + "Blue Space" text)
-- [x] 4. Footer logo - increased size to `h-10` and use the combined logo SVG (mark + "Blue Space" text)
-- [x] 5. Add `image` field with placeholder URLs to the TEAM data
-- [x] 6. Update team cards to use member images as card backgrounds with gradient overlay for readability
-- [x] 7. Verify with build (`npm run build` passed successfully)
+- [x] 2. Navbar logo - increase size from `h-10` to `h-12` and use combined logo + "Blue Space" text asset
+- [x] 3. Footer logo - increase size from `h-8` to `h-10` and use combined logo + "Blue Space" text asset
+- [x] 4. Wire up real team images (Cecil, Ebenezer, Anass) in the Team section
+- [x] 5. Verify with build (`npm run build`)
 
-</content>
+## Result
+
+- Created `src/assets/bluespace-logo.svg` — combines the Blue Space logo mark with the "Blue Space" wordmark in a branded blue gradient, baked into a single logo image.
+- Navbar logo enlarged to `h-12` (from `h-10`) and footer logo enlarged to `h-10` (from `h-8`).
+- Production build passes successfully.
 
