@@ -172,7 +172,7 @@ const SOCIALS = [
   },
   {
     name: "WhatsApp",
-    handle: "+233 20 000 0000",
+    handle: "+233 53 927 8827",
     url: "https://wa.me/233539278827",
     color: "#25D366",
     icon: (
