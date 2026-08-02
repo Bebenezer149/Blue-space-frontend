@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import Profile from "./Pages/Profile";
+import Landing from "./Pages/Landing";
 // import Header from "./Components/Header";
 // import Store from "./Pages/Store";
 import SignUp from "./Pages/SignUp";
@@ -35,7 +36,8 @@ function App() {
       />
       {/* <Header/> */}
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Landing/>}/>
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/products" element={<ProductPage />} />

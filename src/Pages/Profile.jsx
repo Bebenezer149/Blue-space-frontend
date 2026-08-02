@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../Components/Header";
-import { toast } from "react-toastify";
 import EditProfilePictureModal from "./EditProfilePictureModal";
 import EditProfileModal from "./EditProfileModal";
 
@@ -10,7 +8,10 @@ function Profile() {
   const [userData, setUserData] = useState({});
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const token = localStorage.getItem("token");
+
   useEffect(() => {
+    if (!token) return;
+
     fetch("https://makola-2.onrender.com/api/user", {
       method: "GET",
       headers: {
@@ -20,10 +21,18 @@ function Profile() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
-        setUserData(res.user);
+        setUserData(res.user || {});
+      })
+      .catch((err) => {
+        console.error("Failed to fetch user data:", err);
+        setUserData({});
       });
-  }, []);
+  }, [token]);
+
+  const firstName = userData.first_name || "";
+  const lastName = userData.last_name || "";
+  const fullName = `${firstName} ${lastName}`.trim() || "User";
+  const profilePicture = userData.profile_picture;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,12 +47,16 @@ function Profile() {
           {/* Avatar + name section */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
             <div className="relative shrink-0">
-              <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-2xl font-semibold text-indigo-600">
-                <img
-                  className="h-full w-full rounded-full object-cover"
-                  src={userData.profile_picture}
-                  alt=""
-                />
+              <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-2xl font-semibold text-indigo-600 overflow-hidden">
+                {profilePicture ? (
+                  <img
+                    className="h-full w-full rounded-full object-cover"
+                    src={profilePicture}
+                    alt=""
+                  />
+                ) : (
+                  <span>{firstName.charAt(0).toUpperCase() || "U"}</span>
+                )}
               </div>
               <button
                 onClick={() => setIsEditPictureOpen(true)}
@@ -67,7 +80,7 @@ function Profile() {
             </div>
             <div>
               <h2 className="text-xl font-semibold text-gray-900">
-                {userData.first_name + " " + userData.last_name}
+                {fullName}
               </h2>
               <p className="text-sm text-gray-500">Store Owner</p>
             </div>
@@ -79,10 +92,7 @@ function Profile() {
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">
                 Full Name
               </p>
-              <p className="text-base text-gray-800">
-                {" "}
-                {userData.first_name + " " + userData.last_name}
-              </p>
+              <p className="text-base text-gray-800">{fullName}</p>
             </div>
 
             <div>
@@ -90,8 +100,7 @@ function Profile() {
                 Business Name
               </p>
               <p className="text-base text-gray-800">
-                {" "}
-                {userData.business_name}
+                {userData.business_name || "—"}
               </p>
             </div>
 
@@ -99,14 +108,16 @@ function Profile() {
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">
                 Phone Number
               </p>
-              <p className="text-base text-gray-800">{userData.phone_number}</p>
+              <p className="text-base text-gray-800">
+                {userData.phone_number || "—"}
+              </p>
             </div>
 
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">
                 Email
               </p>
-              <p className="text-base text-gray-800">{userData.email}</p>
+              <p className="text-base text-gray-800">{userData.email || "—"}</p>
             </div>
           </div>
 
@@ -137,3 +148,4 @@ function Profile() {
 }
 
 export default Profile;
+

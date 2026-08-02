@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Brand text gradient (shared across landing page & app header)      */
+/* ------------------------------------------------------------------ */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.text-gradient {
+  background-image: linear-gradient(120deg, #2563eb, #38bdf8, #1e40af, #2563eb);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 6s ease-in-out infinite;
+}
+
+.text-gradient-light {
+  background-image: linear-gradient(120deg, #93c5fd, #ffffff, #60a5fa, #93c5fd);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 6s ease-in-out infinite;
+}
+
