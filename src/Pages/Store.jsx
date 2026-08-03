@@ -36,7 +36,7 @@ function Store() {
         setBusinessName(res.business_name);
         setPhone(res.phone_number);
         setEmail(res.email);
-        setProfile(res.profile_picture);
+        setProfile(res.banner);
         console.log(res.phone);
       })
       .catch((err) => console.log(err));
