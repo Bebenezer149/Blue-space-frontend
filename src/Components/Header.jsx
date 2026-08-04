@@ -41,7 +41,7 @@ function Header() {
           <img
             src={bluespaceLogo}
             alt="Blue Space logo"
-            className="h-12 w-auto object-contain drop-shadow group-hover:scale-105 transition-transform duration-300"
+            className="left-4 h-14 w-auto object-contain drop-shadow group-hover:scale-105 transition-transform duration-300"
           />
           <span className="text-xl md:text-2xl font-extrabold tracking-tight text-gradient">
             Blue Space

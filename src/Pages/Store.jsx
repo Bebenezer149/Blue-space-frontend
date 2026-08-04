@@ -14,7 +14,7 @@ function Store() {
   const [email, setEmail] = useState(" ");
   const [phone, setPhone] = useState(" ");
   const [openViewCard, setOpenViewCard] = useState(false);
-  const [profile, setProfile] = useState(" ");
+  const [profilePicture, setProfilePicture] = useState(" ");
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -36,7 +36,7 @@ function Store() {
         setBusinessName(res.business_name);
         setPhone(res.phone_number);
         setEmail(res.email);
-        setProfile(res.banner);
+        setProfilePicture(res.profile_picture);
         console.log(res.phone);
       })
       .catch((err) => console.log(err));
@@ -90,7 +90,7 @@ function Store() {
             <div className="h-30 w-30 sm:h-26 sm:w-26 md:h-28 md:w-28 rounded-full border-0.5 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
               <img
                 className="h-full w-full object-cover rounded-full"
-                src={storeData?.logo || { profile }}
+                src={storeData?.logo || { profilePicture }}
                 alt={slug}
               />
             </div>
