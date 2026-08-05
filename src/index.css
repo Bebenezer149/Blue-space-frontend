@@ -94,6 +94,87 @@ html.dark .surface-card {
   box-shadow: 0 14px 32px rgb(0 0 0 / 0.24), inset 0 1px rgb(255 255 255 / 0.045);
 }
 
+/* Blue Space notifications */
+.app-toast-container {
+  width: min(23rem, calc(100vw - 2rem));
+}
+
+.app-toast {
+  --toast-accent: #2563eb;
+  min-height: 3.9rem;
+  margin-bottom: 0.75rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid rgb(148 163 184 / 0.35);
+  border-radius: 0.9rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgb(96 165 250 / 0.14), transparent 40%),
+    #fff;
+  color: #1e293b;
+  box-shadow: 0 14px 30px rgb(15 23 42 / 0.14);
+  font-family: inherit;
+}
+
+.app-toast--success { --toast-accent: #16a34a; }
+.app-toast--error { --toast-accent: #dc2626; }
+.app-toast--warning { --toast-accent: #d97706; }
+.app-toast--info { --toast-accent: #2563eb; }
+
+.app-toast::before {
+  content: "";
+  align-self: stretch;
+  width: 0.25rem;
+  margin: -0.8rem 0 -0.8rem -0.95rem;
+  border-radius: 0.9rem 0 0 0.9rem;
+  background: var(--toast-accent);
+}
+
+.app-toast-body {
+  margin: 0;
+  padding: 0 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.app-toast-progress {
+  height: 3px;
+  background: var(--toast-accent) !important;
+  opacity: 0.9;
+}
+
+.app-toast .Toastify__toast-icon {
+  width: 1.2rem;
+  margin-inline-end: 0.15rem;
+}
+
+.app-toast .Toastify__close-button {
+  color: #64748b;
+  align-self: center;
+  opacity: 0.75;
+}
+
+.app-toast .Toastify__close-button:hover {
+  color: #1e293b;
+  opacity: 1;
+}
+
+html.dark .app-toast {
+  background:
+    radial-gradient(circle at 100% 0%, rgb(96 165 250 / 0.16), transparent 40%),
+    #1f2937;
+  color: #e5e7eb;
+  border-color: rgb(100 116 139 / 0.72);
+  box-shadow: 0 16px 32px rgb(0 0 0 / 0.3);
+}
+
+html.dark .app-toast .Toastify__close-button {
+  color: #cbd5e1;
+}
+
+html.dark .app-toast .Toastify__close-button:hover {
+  color: #fff;
+}
+
 /* ------------------------------------------------------------------ */
 /* Brand text gradient (shared across landing page & app header)      */
 /* ------------------------------------------------------------------ */

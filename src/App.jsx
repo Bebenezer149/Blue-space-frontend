@@ -36,6 +36,10 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        className="app-toast-container"
+        toastClassName={({ type }) => `app-toast app-toast--${type || "default"}`}
+        bodyClassName="app-toast-body"
+        progressClassName="app-toast-progress"
       />
       {/* <Header/> */}
       <Routes>

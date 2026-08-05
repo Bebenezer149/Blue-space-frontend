@@ -37,22 +37,23 @@ function Dashboard() {
     const StatData = [
         { 
             title: "Total Products", 
-            value: !statistics.total_products ? '0': statistics.total_products,
+            value: Number(statistics.total_products) || 0,
             loading: loading 
         },
         { 
             title: "Total Orders", 
-            value: !statistics.total_orders ? '0': statistics.total_orders,
+            value: Number(statistics.total_orders) || 0,
             loading: loading 
         },
         { 
             title: "Delivered Orders", 
-            value: !statistics.delivered_orders ?'0': statistics.delivered_orders,
+            value: Number(statistics.delivered_orders) || 0,
             loading: loading 
         },
         { 
             title: "Total Revenue", 
-            value: `GHS ${ !statistics.total_revenue ? '0.00' : statistics.total_revenue}`,
+            value: Number(statistics.total_revenue) || 0,
+            currency: "GHS",
             loading: loading 
         },
     ];

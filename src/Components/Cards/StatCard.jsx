@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 function StatCard({ data, icon: Icon, color = "blue" }) {
   // Color configurations
   const colorConfigs = {
@@ -73,7 +75,23 @@ function StatCard({ data, icon: Icon, color = "blue" }) {
   };
 
   // Determine if value is a number
-  const isNumeric = typeof data.value === 'number';
+  const numericValue = Number(data.value);
+  const isNumeric = Number.isFinite(numericValue);
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (!isNumeric) return;
+    const duration = 750;
+    const startTime = performance.now();
+    let frame;
+    const animate = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      setDisplayValue(numericValue * (1 - (1 - progress) ** 3));
+      if (progress < 1) frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [isNumeric, numericValue]);
 
   return (
     <div className={`
@@ -81,7 +99,7 @@ function StatCard({ data, icon: Icon, color = "blue" }) {
       border border-gray-200 
       w-full flex flex-col gap-3 
       p-5 sm:p-6 py-6 sm:py-8 
-      rounded-xl 
+      rounded-2xl 
       bg-white surface-card
       transition-all duration-300 
       hover:shadow-lg hover:-translate-y-1
@@ -122,7 +140,7 @@ function StatCard({ data, icon: Icon, color = "blue" }) {
           {isNumeric ? (
             <>
               {data.currency && <span className="text-lg text-gray-500 mr-1">{data.currency}</span>}
-              {formatValue(data.value)}
+              {formatValue(Math.round(displayValue))}
               {data.suffix && <span className="text-lg text-gray-500 ml-1">{data.suffix}</span>}
             </>
           ) : (
