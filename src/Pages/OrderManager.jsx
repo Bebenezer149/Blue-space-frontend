@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import OrderCard from "../Components/Cards/OrderCard";
@@ -12,6 +13,8 @@ function OrderManager() {
   const [isOpen, setIsOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [tick, setTick] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 8;
   const [copy] = useState(`${window.location.origin}/store/${slug}`);
   const [orderDetails, setOrderDetails] = useState({
     id: "",
@@ -49,6 +52,7 @@ function OrderManager() {
       });
   }
 
+  // Refresh after the details modal closes so status changes are reflected.
   useEffect(() => {
     fetchOrders();
   }, [isOpen]);
@@ -56,6 +60,8 @@ function OrderManager() {
   const filteredOrders = orders.filter((order) =>
     order.customer_name.toLowerCase().includes(search.toLowerCase()),
   );
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
+  const paginatedOrders = filteredOrders.slice((page - 1) * pageSize, page * pageSize);
 
   function clearCard(id) {
     setOrders((prevOrders) => prevOrders.filter((item) => item.id !== id));
@@ -90,7 +96,7 @@ const pendingOrders = orders.filter(
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 lg:py-8">
         {/* Heading Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
               Orders
@@ -124,7 +130,7 @@ const pendingOrders = orders.filter(
               type="text"
               placeholder="Search customer..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 bg-white"
             />
           </div>
@@ -179,7 +185,7 @@ const pendingOrders = orders.filter(
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 mt-6 sm:mt-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 mt-6 sm:mt-8 animate-stagger">
           <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
             <p className="text-xs sm:text-sm text-gray-500">Total Orders</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1">
@@ -210,7 +216,7 @@ const pendingOrders = orders.filter(
         </div>
 
         {/* Orders Section */}
-        <div className="bg-white rounded-xl shadow-sm mt-6 sm:mt-8 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm mt-6 sm:mt-8 overflow-hidden animate-fade-in-up">
           <div className="border-b border-gray-200 p-4 sm:p-5">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <h2 className="font-semibold text-lg sm:text-xl text-gray-800">
@@ -233,7 +239,7 @@ const pendingOrders = orders.filter(
               </div>
             ) : filteredOrders.length > 0 ? (
               <div className="space-y-4">
-                {filteredOrders.map((order) => (
+                {paginatedOrders.map((order) => (
                   <OrderCard
                     key={order.id}
                     order={order}
@@ -272,6 +278,13 @@ const pendingOrders = orders.filter(
                     Clear search
                   </button>
                 )}
+              </div>
+            )}
+            {filteredOrders.length > pageSize && (
+              <div className="mt-6 flex items-center justify-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <button onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={page === 1} className="rounded-lg border px-4 py-2 disabled:opacity-40">Previous</button>
+                <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
+                <button onClick={() => setPage((value) => Math.min(totalPages, value + 1))} disabled={page === totalPages} className="rounded-lg border px-4 py-2 disabled:opacity-40">Next</button>
               </div>
             )}
           </div>

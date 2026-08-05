@@ -6,6 +6,8 @@ function SalesTable() {
   const [sales, setSales] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -47,6 +49,15 @@ function SalesTable() {
     sale.customer_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     sale.id?.toString().includes(searchTerm)
   );
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filteredSales.length / pageSize));
+  const paginatedSales = filteredSales.slice(
+    (page - 1) * pageSize,
+    page * pageSize,
+  );
+  const startIndex = filteredSales.length === 0 ? 0 : (page - 1) * pageSize + 1;
+  const endIndex = Math.min(page * pageSize, filteredSales.length);
 
   // Get status color
   const getStatusColor = (status) => {
@@ -101,7 +112,10 @@ function SalesTable() {
             type="text"
             placeholder="Search orders..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
             className="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 text-sm"
           />
         </div>
@@ -171,8 +185,8 @@ function SalesTable() {
             </thead>
 
             <tbody>
-              {filteredSales.map((sale) => (
-                <tr key={sale.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150">
+              {paginatedSales.map((sale) => (
+                <tr key={sale.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150 animate-fade-in">
                   <td className="p-3 text-sm font-medium text-gray-800">
                     #{sale.id}
                   </td>
@@ -206,8 +220,8 @@ function SalesTable() {
       {/* Cards - Mobile/Tablet View */}
       {!isLoading && filteredSales.length > 0 && (
         <div className="md:hidden space-y-4">
-          {filteredSales.map((sale) => (
-            <div key={sale.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          {paginatedSales.map((sale) => (
+            <div key={sale.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200 animate-fade-in">
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <span className="text-sm font-medium text-gray-500">Order </span>
@@ -247,18 +261,49 @@ function SalesTable() {
 
       {/* Footer */}
       {!isLoading && filteredSales.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <p className="text-sm text-gray-500">
-            Showing {filteredSales.length} of {sales.length} orders
+            Showing {startIndex}-{endIndex} of {filteredSales.length} orders
           </p>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <span>Rows per page:</span>
-            <select className="border border-gray-300 rounded-md px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-400">
-              <option>10</option>
-              <option>25</option>
-              <option>50</option>
-              <option>100</option>
-            </select>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <span>Rows per page:</span>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="border border-gray-300 rounded-md px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+
+            {filteredSales.length > pageSize && (
+              <div className="flex items-center gap-2 animate-fade-in">
+                <button
+                  onClick={() => setPage((value) => Math.max(1, value - 1))}
+                  disabled={page === 1}
+                  className="px-3 py-1.5 rounded-md border bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  Previous
+                </button>
+                <span className="text-sm text-gray-600">
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
+                  disabled={page === totalPages}
+                  className="px-3 py-1.5 rounded-md border bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

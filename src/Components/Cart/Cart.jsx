@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
+import { apiFetch } from "../../api";
 
 const Cart = ({ setOpenCart, cart, setCart }) => {
   const [step, setStep] = useState(1); // 1: Confirm Items, 2: Delivery Details
@@ -12,11 +12,11 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
 
-    const vendorId = cart.length > 0 ? cart[0].vendor_id : null;
     const items = cart.map((item) => ({
       product_id: item.id,
       quantity: item.quantity,
@@ -33,37 +33,27 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       return;
     }
     const data = {
-      vendor_id: vendorId,
       customer_name: customer,
       phone_number: phone,
       delivery_to: deliveryTo,
       additional_notes: notes,
-      status: "PENDING",
       payment_method: paymentMethod,
       items,
     };
-    console.log(data);
-    fetch(`${API_URL}/create-order`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        setLoading(false);
-        setOpenCart(false);
-        setCart([]);
-        toast.success("Order Placed Successfully");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Failed to place order");
-        setLoading(false);
+    try {
+      await apiFetch("/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
+      setOpenCart(false);
+      setCart([]);
+      toast.success("Order placed successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to place order");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const calculateSubtotal = () => {
@@ -249,7 +239,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                       </div>
                     </div>
                     <button
-                      onClick={() => handleRemoveItem(data)}
+                      onClick={() => handleRemoveItem(data.id)}
                       className="text-red-400 hover:text-red-600 transition cursor-pointer hover:scale-110 active:scale-95 self-end sm:self-center"
                     >
                       <svg

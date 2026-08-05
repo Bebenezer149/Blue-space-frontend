@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { API_URL } from "../config";
@@ -17,6 +18,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const token = localStorage.getItem("token");
 
   
+  // Initialise the draft when the selected product changes.
   useEffect(() => {
     if (productDetails) {
       setProductName(productDetails.product_name || "");
@@ -112,7 +114,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-modal-in">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Edit Product</h2>

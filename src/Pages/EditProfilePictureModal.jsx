@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -15,6 +16,7 @@ function EditProfilePictureModal({ isOpen, onClose }) {
   const totalSteps = 2;
 
   // Trigger enter animation on mount
+  // This effect intentionally controls the modal enter/exit animation state.
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => setShow(true), 10);

@@ -19,6 +19,7 @@ import AddProductPage from "./Pages/AddProductsPage";
 import OrderManager from "./Pages/OrderManager";
 import ViewOrder from "./Pages/ViewOrder";
 import Store from "./Pages/Store";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   return (
@@ -39,15 +40,15 @@ function App() {
         <Route path="/" element={<Landing/>}/>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignUp />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/products" element={<ProductPage />} />
-        <Route path="/add-products" element={<AddProductPage />} />
-        <Route path="/order-manager" element={<OrderManager/>}/>
-        <Route path="/preview-order" element={<ViewOrder/>}/>
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/products" element={<ProtectedRoute><ProductPage /></ProtectedRoute>} />
+        <Route path="/add-products" element={<ProtectedRoute><AddProductPage /></ProtectedRoute>} />
+        <Route path="/order-manager" element={<ProtectedRoute><OrderManager/></ProtectedRoute>}/>
+        <Route path="/preview-order" element={<ProtectedRoute><ViewOrder/></ProtectedRoute>}/>
         <Route path="/store/:slug" element={<Store/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/reset-password" element={<ResetPassword/>}/>
-        <Route path="/profile" element={<Profile/>}/>
+        <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>}/>
         
 
       </Routes>

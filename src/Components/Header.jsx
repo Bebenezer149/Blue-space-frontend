@@ -1,14 +1,29 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import bluespaceLogo from "../assets/remove-the--blue-space--text-at-the-bottom-of-the-.png";
+import { API_URL } from "../config";
 
 function Header() {
   const [openMenu, setOpenMenu] = useState(false);
   const [image, setImage] = useState("");
-  // const [active, setActive]=useState(false)
+  const location = useLocation();
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+
+  const navItems = [
+    { to: "/dashboard", label: "Home" },
+    { to: "/products", label: "Products" },
+    { to: "/order-manager", label: "Orders" },
+    { to: "/profile", label: "Profile" },
+  ];
+
+  const isActive = (path) => {
+    if (path === "/dashboard") {
+      return location.pathname === "/dashboard";
+    }
+    return location.pathname.startsWith(path);
+  };
   function Logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -17,7 +32,7 @@ function Header() {
   }
 
   useEffect(() => {
-    fetch("https://makola-2.onrender.com/api/user", {
+    fetch(`${API_URL}/user`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -29,7 +44,7 @@ function Header() {
         setImage(res.user.profile_picture);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [token]);
 
   return (
     <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
@@ -50,30 +65,22 @@ function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center text-base lg:text-lg text-gray-700 gap-6 lg:gap-10">
-          <Link to={"/dashboard"}>
-            <button className="cursor-pointer hover:text-blue-400">Home</button>
-          </Link>
-
-          <Link to={"/products"}>
-            <button className="cursor-pointer hover:text-blue-400">
-              Products
-            </button>
-          </Link>
-          <Link to={"/order-manager"}>
-            <button className="cursor-pointer hover:text-blue-400">
-              Orders
-            </button>
-          </Link>
-          <Link to={"/profile"}>
-            <button className="cursor-pointer hover:text-blue-400">
-              Profile
-            </button>
-          </Link>
-          {/* <Link to={"/report-center"}>
-            <button className="cursor-pointer hover:text-blue-400">
-              Report Center
-            </button>
-          </Link> */}
+          {navItems.map((item) => (
+            <Link key={item.to} to={item.to}>
+              <button
+                className={`cursor-pointer transition-all duration-200 relative py-1 ${
+                  isActive(item.to)
+                    ? "text-blue-500 font-semibold"
+                    : "hover:text-blue-400"
+                }`}
+              >
+                {item.label}
+                {isActive(item.to) && (
+                  <span className="absolute left-0 right-0 -bottom-1 h-0.5 rounded-full bg-blue-500 animate-fade-in" />
+                )}
+              </button>
+            </Link>
+          ))}
         </div>
 
         {/* Desktop Actions */}
@@ -145,30 +152,20 @@ function Header() {
 
       {/* Mobile Menu */}
       {openMenu && (
-        <div className="md:hidden flex flex-col gap-4 p-4 border-t border-gray-300">
-          <Link to={"/dashboard"}>
-            <button className="cursor-pointer hover:text-blue-400">Home</button>
-          </Link>
-          <Link to={"/products"}>
-            <button className="cursor-pointer hover:text-blue-400">
-              Products
-            </button>
-          </Link>
-          <Link to={"/order-manager"}>
-            <button className="cursor-pointer hover:text-blue-400">
-              Orders
-            </button>
-          </Link>
-          <Link to={"/profile"}>
-            <button className="cursor-pointer hover:text-blue-400">
-              Profile
-            </button>
-          </Link>
-          {/* <Link to={"/report-center"}>
-            <button className="cursor-pointer hover:text-blue-400">
-              Report Center
-            </button>
-          </Link> */}
+        <div className="md:hidden flex flex-col gap-4 p-4 border-t border-gray-300 animate-slide-down">
+          {navItems.map((item) => (
+            <Link key={item.to} to={item.to} onClick={() => setOpenMenu(false)}>
+              <button
+                className={`cursor-pointer transition-all duration-200 ${
+                  isActive(item.to)
+                    ? "text-blue-500 font-semibold"
+                    : "hover:text-blue-400"
+                }`}
+              >
+                {item.label}
+              </button>
+            </Link>
+          ))}
           <div className="flex items-center justify-between pt-2">
             <button
               onClick={Logout}

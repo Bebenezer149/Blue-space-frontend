@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import StatCard from "../Components/Cards/StatCard";
@@ -11,6 +12,7 @@ function Dashboard() {
     const [statistics, setStatistics] = useState({});
     const [loading, setLoading] = useState(true);
 
+    // Fetch once when this protected dashboard mounts.
     useEffect(() => {
         setLoading(true);
         fetch(`${API_URL}/dashboard`, {
@@ -61,19 +63,19 @@ function Dashboard() {
 
             <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                 {/* Header */}
-                <h1 className="font-semibold text-2xl sm:text-3xl lg:text-4xl text-gray-800">
+                <h1 className="font-semibold text-2xl sm:text-3xl lg:text-4xl text-gray-800 animate-fade-in-up">
                     Welcome {userName}!
                 </h1>
 
                 {/* Stats Grid */}
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 animate-stagger">
                     {StatData.map((data) => (
                         <StatCard key={data.title} data={data} />
                     ))}
                 </div>
 
                 {/* Table Section */}
-                <div className="mt-8 overflow-x-auto">
+                <div className="mt-8 overflow-x-auto animate-fade-in-up">
                     <SalesTable />
                 </div>
             </div>

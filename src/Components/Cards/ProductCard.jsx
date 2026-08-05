@@ -1,9 +1,29 @@
 import { toast } from "react-toastify";
 
-function ProductCard({ data, img, title, price, status, addToCart }) {
+function ProductCard({
+  data,
+  img,
+  title,
+  price,
+  status,
+  addToCart,
+  setOpenViewCard,
+  setViewProductDetails,
+}) {
+  const isOutOfStock =
+    status === "OUT_OF_STOCK" || status === "Out_Of_Stock";
+
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white w-full h-full flex flex-col">
-      <div className="h-50 md:h-60 overflow-hidden bg-gray-100">
+    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white w-full h-full flex flex-col hover:-translate-y-1">
+      <div
+        className="h-50 md:h-60 overflow-hidden bg-gray-100 cursor-pointer"
+        onClick={() => {
+          if (setOpenViewCard && setViewProductDetails) {
+            setViewProductDetails(data);
+            setOpenViewCard(true);
+          }
+        }}
+      >
         <img
           className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
           src={img}
@@ -19,12 +39,12 @@ function ProductCard({ data, img, title, price, status, addToCart }) {
             className={`py-1 px-3 rounded-full text-xs font-semibold whitespace-nowrap ${
               status === "AVAILABLE"
                 ? "bg-green-100 text-green-600"
-                : status === "Out_Of_Stock"
+                : isOutOfStock
                   ? "bg-red-100 text-red-600"
                   : "bg-yellow-100 text-yellow-600"
             }`}
           >
-            <h1>{status === "OUT_OF_STOCK" ? "Out Of Stock" : "Available"}</h1>
+            <h1>{isOutOfStock ? "Out Of Stock" : "Available"}</h1>
           </div>
         </div>
         <div className="mt-2 text-xl md:text-2xl font-bold text-blue-600">
@@ -32,9 +52,9 @@ function ProductCard({ data, img, title, price, status, addToCart }) {
         </div>
         <div className="mt-auto pt-3">
           <button
-            disabled={status === "Out_Of_Stock"}
+            disabled={isOutOfStock}
             onClick={() => {
-              if (status === "OUT_OF_STOCK") {
+              if (isOutOfStock) {
                 toast.warning("This product is not available at the moment");
               } else {
                 addToCart(data);

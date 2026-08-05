@@ -1,16 +1,15 @@
-# Landing Page - Increase Logo Size & Add "Blue Space" Text
+# UI/UX Improvements - Fixes, Pagination & Animations
 
 ## Steps
 
-- [x] 1. Create TODO.md
-- [x] 2. Navbar logo - increase size from `h-10` to `h-12` and use combined logo + "Blue Space" text asset
-- [x] 3. Footer logo - increase size from `h-8` to `h-10` and use combined logo + "Blue Space" text asset
-- [x] 4. Wire up real team images (Cecil, Ebenezer, Anass) in the Team section
-- [x] 5. Verify with build (`npm run build`)
-
-## Result
-
-- Created `src/assets/bluespace-logo.svg` — combines the Blue Space logo mark with the "Blue Space" wordmark in a branded blue gradient, baked into a single logo image.
-- Navbar logo enlarged to `h-12` (from `h-10`) and footer logo enlarged to `h-10` (from `h-8`).
-- Production build passes successfully.
-
+- [x] 1. Add reusable animation keyframes to `src/index.css`
+- [x] 2. Fix & enhance `src/Pages/Store.jsx` (ViewProduct props, category filtering, pagination, animations)
+- [x] 3. Fix & enhance `src/Components/Cards/ProductCard.jsx` (status fix, entrance animation)
+- [x] 4. Add real pagination & animations to `src/Components/Tables/SalesTable.jsx`
+- [x] 5. Enhance `src/Components/Header.jsx` (active link highlighting, mobile menu animation)
+- [x] 6. Add entrance animations to `src/Pages/Dashboard.jsx` (StatCards)
+- [x] 7. Add entrance animations to `src/Pages/OrderManager.jsx` (order cards)
+- [x] 8. Add entrance animations to `src/Pages/ProductPage.jsx` (table rows/cards)
+- [x] 9. Add modal entrance animations (ViewProduct, EditProduct, ViewOrder, DeletePrompt)
+- [x] 10. Add entrance animation to `src/Components/Cards/OrderCard.jsx`
+- [x] 11. Run lint/build to verify no errors

@@ -13,15 +13,16 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
   
   const token = localStorage.getItem("token");
 
-  function deliveredStatus() {
+  function advanceStatus() {
     if (isUpdating || disable) return;
     
   
     
     setIsUpdating(true);
+    const nextStatus = currentStatus === "PENDING" ? "CONFIRMED" : "DELIVERED";
     const deliveredStatus = {
       id: order.id,
-      status: "DELIVERED",
+      status: nextStatus,
     };
     
     fetch(`${API_URL}/update-status?id=${deliveredStatus.id}`, {
@@ -42,9 +43,9 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
       .then((res) => {
         console.log(res);
         if (res.message) {
-          setCurrentStatus("DELIVERED");
+          setCurrentStatus(nextStatus);
           if (onStatusUpdate) {
-            onStatusUpdate(order.id, "DELIVERED");
+            onStatusUpdate(order.id, nextStatus);
           }
         }
       })
@@ -58,7 +59,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
   }
 
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 relative">
+    <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 relative animate-fade-in-up">
       {/* Close button - positioned at top right corner */}
       <button
         onClick={() => clearCard(order.id)}
@@ -141,7 +142,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
             </button>
 
             <button
-              onClick={deliveredStatus}
+              onClick={advanceStatus}
               disabled={disable}
               className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                 disable
@@ -149,7 +150,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
                   : "bg-green-600 hover:bg-green-700 hover:scale-105 hover:shadow-md cursor-pointer text-white"
               }`}
             >
-              {isUpdating ? "Updating..." : "Delivered"}
+              {isUpdating ? "Updating..." : currentStatus === "PENDING" ? "Confirm" : "Mark delivered"}
             </button>
           </div>
         </div>

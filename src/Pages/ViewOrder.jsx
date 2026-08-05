@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 // import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import { API_URL } from "../config";
 
 function ViewOrder({ setIsOpen, orderDetails }) {
@@ -150,7 +149,7 @@ function ViewOrder({ setIsOpen, orderDetails }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-modal-in">
         {/* Header */}
         <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
           <h1 className="font-bold text-xl sm:text-2xl text-gray-800">Order Details</h1>

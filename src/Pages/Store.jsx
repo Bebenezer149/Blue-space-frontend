@@ -20,6 +20,10 @@ function Store() {
   const dropdownRef = useRef(null);
 
   const [businessName, setBusinessName] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Products");
+  const [page, setPage] = useState(1);
+  const pageSize = 8;
+  const [viewProductDetails, setViewProductDetails] = useState(null);
 
   useEffect(() => {
     fetch(`${API_URL}/show-products?link=${slug}`, {
@@ -74,6 +78,28 @@ function Store() {
       }
       return [...prev, { ...cartData, quantity: 1 }];
     });
+  }
+
+  // Category filtering
+  const filteredProducts = products.filter((product) => {
+    if (selectedCategory === "All Products") return true;
+    if (selectedCategory === "Available") return product.status === "AVAILABLE";
+    if (selectedCategory === "Out of Stock")
+      return product.status === "OUT_OF_STOCK" || product.status === "Out_Of_Stock";
+    return true;
+  });
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+  const paginatedProducts = filteredProducts.slice(
+    (page - 1) * pageSize,
+    page * pageSize,
+  );
+
+  function selectCategory(category) {
+    setSelectedCategory(category);
+    setPage(1);
+    setOpenDropdown(false);
   }
 
   return (
@@ -197,35 +223,26 @@ function Store() {
           </button>
 
           {openDropdown && (
-            <div className="absolute left-0 mt-2 z-10 bg-white text-center shadow-md rounded-lg border-default-medium rounded-base shadow-lg w-44">
+            <div className="absolute left-0 mt-2 z-10 bg-white text-center shadow-md rounded-lg border-default-medium rounded-base shadow-lg w-44 animate-slide-down">
               <ul
                 className="p-2 text-sm text-gray-600 text-body font-medium"
                 aria-label="Store dropdown"
               >
-                <li className="hover:bg-gray-100 rounded-lg">
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
-                    All Products
-                  </a>
-                </li>
-                <li className="hover:bg-gray-100 rounded-lg">
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
-                    Available
-                  </a>
-                </li>
-                <li className="hover:bg-gray-100 rounded-lg">
-                  <a
-                    href="#"
-                    className="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
-                  >
-                    Out of Stock
-                  </a>
-                </li>
+                {["All Products", "Available", "Out of Stock"].map((cat) => (
+                  <li key={cat} className="hover:bg-gray-100 rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => selectCategory(cat)}
+                      className={`inline-flex items-center w-full p-2 rounded cursor-pointer ${
+                        selectedCategory === cat
+                          ? "bg-blue-50 text-blue-600 font-semibold"
+                          : "hover:bg-neutral-tertiary-medium hover:text-heading"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
           )}
@@ -261,22 +278,48 @@ function Store() {
 
       {/* Product Grid - Fixed Arrangement */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.map((data) => (
-              <ProductCard
-                onClick={() => setOpenViewCard(true)}
-                key={data.id}
-                data={data}
-                img={data.img}
-                title={data.product_name}
-                price={data.price}
-                status={data.status}
-                addToCart={addToCart}
-                setOpenCart={setOpenCart}
-              />
-            ))}
-          </div>
+        {filteredProducts.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 animate-stagger">
+              {paginatedProducts.map((data) => (
+                <ProductCard
+                  key={data.id}
+                  data={data}
+                  img={data.img}
+                  title={data.product_name}
+                  price={data.price}
+                  status={data.status}
+                  addToCart={addToCart}
+                  setOpenCart={setOpenCart}
+                  setOpenViewCard={setOpenViewCard}
+                  setViewProductDetails={setViewProductDetails}
+                />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {filteredProducts.length > pageSize && (
+              <div className="mt-8 flex items-center justify-center gap-3 animate-fade-in">
+                <button
+                  onClick={() => setPage((value) => Math.max(1, value - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 rounded-lg border bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  Previous
+                </button>
+                <span className="text-sm text-gray-600">
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
+                  disabled={page === totalPages}
+                  className="px-4 py-2 rounded-lg border bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-12">
             <svg
@@ -293,10 +336,14 @@ function Store() {
               />
             </svg>
             <h3 className="text-lg font-medium text-gray-600">
-              No products found
+              {selectedCategory !== "All Products"
+                ? "No products in this category"
+                : "No products found"}
             </h3>
             <p className="text-gray-400">
-              This store doesn't have any products yet.
+              {selectedCategory !== "All Products"
+                ? "Try a different category."
+                : "This store doesn't have any products yet."}
             </p>
           </div>
         )}
@@ -310,7 +357,12 @@ function Store() {
           storeData={storeData}
         />
       )}
-      {openViewCard && <ViewProduct />}
+      {openViewCard && (
+        <ViewProduct
+          productDetails={viewProductDetails}
+          setViewOpen={setOpenViewCard}
+        />
+      )}
     </div>
   );
 }

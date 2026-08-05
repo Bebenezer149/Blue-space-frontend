@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
 
 function DeletePrompt({ 
   setDeleteOpen, 
@@ -16,7 +15,7 @@ function DeletePrompt({
       await deleteProduct(id);
      
       setDeleteOpen(false);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete product");
     } finally {
       setIsLoading(false);

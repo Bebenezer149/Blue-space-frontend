@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -16,6 +17,8 @@ function ProductPage() {
   const [id, setId] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [productName, setProductName] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
   // const [openAddProduct , setOpenAddProduct]= useState(false)
   const [productDetails, setProductDetails] = useState({
     id: "",
@@ -52,6 +55,7 @@ function ProductPage() {
       });
   }
 
+  // Load the current vendor's products on mount.
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -80,20 +84,22 @@ function ProductPage() {
   );
 
   const showProducts = searchText ? filteredProducts : products;
+  const totalPages = Math.max(1, Math.ceil(showProducts.length / pageSize));
+  const paginatedProducts = showProducts.slice((page - 1) * pageSize, page * pageSize);
 
   return (
     <div className="bg-gray-100 min-h-screen">
       <Header />
 
       <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 sm:gap-8">
-        <h1 className="font-semibold text-2xl sm:text-3xl text-gray-800">
+        <h1 className="font-semibold text-2xl sm:text-3xl text-gray-800 animate-fade-in-up">
           Your Products!
         </h1>
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
           <div className="border border-gray-300 flex h-10 w-full sm:max-w-xs rounded-md bg-white">
             <input
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={(e) => { setSearchText(e.target.value); setPage(1); }}
               value={searchText}
               type="text"
               className="outline-none px-3 flex-1 min-w-0 rounded-l-md"
@@ -139,7 +145,7 @@ function ProductPage() {
         </div>
 
         {/* Desktop table */}
-        <div className="hidden md:block rounded-lg border border-gray-200 overflow-x-auto bg-white">
+        <div className="hidden md:block rounded-lg border border-gray-200 overflow-x-auto bg-white animate-fade-in-up">
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50 border-b">
@@ -184,7 +190,7 @@ function ProductPage() {
                   </td>
                 </tr>
               ) : (
-                showProducts.map((data) => (
+                paginatedProducts.map((data) => (
                   <tr
                     key={data.id}
                     className="border-b border-gray-100 hover:bg-gray-50"
@@ -308,7 +314,7 @@ function ProductPage() {
         </div>
 
         {/* Mobile cards */}
-        <div className="md:hidden space-y-4">
+        <div className="md:hidden space-y-4 animate-fade-in-up">
           {isRefreshing ? (
             <div className="flex justify-center items-center gap-2 py-8">
               <span className="text-gray-500">Loading products</span>
@@ -319,7 +325,7 @@ function ProductPage() {
               No products available
             </p>
           ) : (
-            showProducts.map((data) => (
+            paginatedProducts.map((data) => (
               <div
                 key={data.id}
                 className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
@@ -389,6 +395,14 @@ function ProductPage() {
             ))
           )}
         </div>
+
+        {showProducts.length > pageSize && (
+          <div className="flex items-center justify-center gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <button onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={page === 1} className="rounded-lg border bg-white px-4 py-2 disabled:opacity-40">Previous</button>
+            <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
+            <button onClick={() => setPage((value) => Math.min(totalPages, value + 1))} disabled={page === totalPages} className="rounded-lg border bg-white px-4 py-2 disabled:opacity-40">Next</button>
+          </div>
+        )}
       </div>
 
       {/* Modals */}
