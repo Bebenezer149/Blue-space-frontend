@@ -4,7 +4,7 @@ import ProductCard from "../Components/Cards/ProductCard";
 import ViewProduct from "./ViewProduct";
 import Cart from "../Components/Cart/Cart";
 import { API_URL } from "../config";
-import { toast } from "react-toastify";
+import { toast } from "../toast";
 
 function Store() {
   const { slug } = useParams();

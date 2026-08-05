@@ -2,7 +2,7 @@
 import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "../toast";
 import { API_URL } from "../config";
 import ViewProduct from "./ViewProduct";
 import DeletePrompt from "../Components/Prompts/DeletePrompt";

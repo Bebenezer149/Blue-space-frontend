@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "../../toast";
 import { apiFetch } from "../../api";
 
 const Cart = ({ setOpenCart, cart, setCart }) => {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "../../toast";
 import { API_URL } from "../../config";
 
 function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdate }) {

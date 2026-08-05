@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "../toast";
 import { useSearchParams } from "react-router-dom";
 import { API_URL } from "../config";
 

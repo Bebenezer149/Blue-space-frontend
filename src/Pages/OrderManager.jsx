@@ -3,7 +3,7 @@ import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import OrderCard from "../Components/Cards/OrderCard";
 import ViewOrder from "./ViewOrder";
-import { toast } from "react-toastify";
+import { toast } from "../toast";
 import { API_URL } from "../config";
 
 function OrderManager() {

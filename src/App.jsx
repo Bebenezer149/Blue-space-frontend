@@ -5,7 +5,6 @@
 // import './App.css'
 import { Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login";
-import { ToastContainer } from "react-toastify";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import Profile from "./Pages/Profile";
@@ -21,26 +20,13 @@ import ViewOrder from "./Pages/ViewOrder";
 import Store from "./Pages/Store";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import ThemeToggle from "./Components/ThemeToggle";
+import ToastViewport from "./Components/ToastViewport";
 
 function App() {
   return (
     <>
       <ThemeToggle />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        className="app-toast-container"
-        toastClassName={({ type }) => `app-toast app-toast--${type || "default"}`}
-        bodyClassName="app-toast-body"
-        progressClassName="app-toast-progress"
-      />
+      <ToastViewport />
       {/* <Header/> */}
       <Routes>
         <Route path="/" element={<Landing/>}/>

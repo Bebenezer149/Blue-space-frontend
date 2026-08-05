@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast } from "../toast";
 import { API_URL } from "../config";
 import { compressImage } from "../utils/compressImage";
 

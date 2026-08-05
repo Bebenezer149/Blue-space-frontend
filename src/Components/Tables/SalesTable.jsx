@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_URL } from "../../config";
-import { toast } from "react-toastify";
+import { toast } from "../../toast";
 
 function SalesTable() {
   const [sales, setSales] = useState([]);
