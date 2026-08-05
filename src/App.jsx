@@ -19,13 +19,12 @@ import OrderManager from "./Pages/OrderManager";
 import ViewOrder from "./Pages/ViewOrder";
 import Store from "./Pages/Store";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import ThemeToggle from "./Components/ThemeToggle";
 import ToastViewport from "./Components/ToastViewport";
+import { Component } from "./Components/Button/Button";
 
 function App() {
   return (
     <>
-      <ThemeToggle />
       <ToastViewport />
       {/* <Header/> */}
       <Routes>
@@ -41,6 +40,8 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/reset-password" element={<ResetPassword/>}/>
         <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>}/>
+        {/* <Route path="/flowbite-test" element={<div className="min-h-screen bg-gray-100 p-8"><Buttons /></div>} /> */}
+        <Route  path="/buttons" element={<Component/>}/>
         
 
       </Routes>

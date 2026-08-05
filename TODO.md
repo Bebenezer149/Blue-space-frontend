@@ -13,3 +13,4 @@
 - [x] 9. Add modal entrance animations (ViewProduct, EditProduct, ViewOrder, DeletePrompt)
 - [x] 10. Add entrance animation to `src/Components/Cards/OrderCard.jsx`
 - [x] 11. Run lint/build to verify no errors
+- [x] 12. Remove dark mode feature (ThemeToggle.jsx, dark: classes, html.dark CSS)
