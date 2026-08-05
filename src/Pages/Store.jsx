@@ -14,7 +14,9 @@ function Store() {
   const [email, setEmail] = useState(" ");
   const [phone, setPhone] = useState(" ");
   const [openViewCard, setOpenViewCard] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(" ");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [banner, setBanner] = useState(null);
+  const [profileImageFailed, setProfileImageFailed] = useState(false);
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -36,15 +38,20 @@ function Store() {
       .then((res) => {
         console.log(res);
         setProducts(res.products || []);
-        setStoreData(res.store || null);
-        setBusinessName(res.business_name);
-        setPhone(res.phone_number);
-        setEmail(res.email);
-        setProfilePicture(res.profile_picture);
-        console.log(res.phone);
+        const store = res.store || null;
+        setStoreData(store);
+        setBusinessName(res.business_name || store?.business_name || "");
+        setPhone(res.phone_number || store?.phone_number || "");
+        setEmail(res.email || store?.email || "");
+        setProfilePicture(res.profile_picture || store?.profile_picture || store?.logo || null);
+        setBanner(res.banner || store?.banner || store?.banner_image || null);
+        setProfileImageFailed(false);
       })
       .catch((err) => console.log(err));
   }, [slug]);
+
+  const storeInitial = (businessName || slug || "S").charAt(0).toUpperCase();
+  const showProfilePicture = Boolean(profilePicture) && !profileImageFailed;
 
   useEffect(() => {
     function onDocMouseDown(e) {
@@ -105,7 +112,11 @@ function Store() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Store Banner - Flex content on both mobile and desktop */}
-      <div className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 p-4 sm:p-6 md:p-8 min-h-[180px] sm:min-h-[200px] md:min-h-[220px] overflow-hidden flex items-center">
+      <div
+        className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 bg-cover bg-center p-4 sm:p-6 md:p-8 min-h-[180px] sm:min-h-[200px] md:min-h-[220px] overflow-hidden flex items-center"
+        style={banner ? { backgroundImage: `url("${banner}")` } : undefined}
+      >
+        {banner && <div className="absolute inset-0 bg-slate-950/35" aria-hidden="true" />}
         <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -mr-48"></div>
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -ml-48"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-white/5 rounded-full blur-2xl"></div>
@@ -114,11 +125,18 @@ function Store() {
           {/* Store Logo */}
           <div className="relative shrink-0">
             <div className="h-30 w-30 sm:h-26 sm:w-26 md:h-28 md:w-28 rounded-full border-0.5 border-white/30 shadow-xl overflow-hidden p-0.5 bg-gray-100">
-              <img
-                className="h-full w-full object-cover rounded-full"
-                src={storeData?.logo || { profilePicture }}
-                alt={slug}
-              />
+              {showProfilePicture ? (
+                <img
+                  className="h-full w-full object-cover rounded-full"
+                  src={profilePicture}
+                  alt={`${businessName || slug} profile`}
+                  onError={() => setProfileImageFailed(true)}
+                />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center rounded-full bg-blue-100 text-3xl font-semibold text-blue-700">
+                  {storeInitial}
+                </span>
+              )}
             </div>
           </div>
 
