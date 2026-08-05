@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import mobileAppScreenshot from "../assets/bg-20c04bea-1d6e-4f74-b0b6-5a824b73866b.png";
-import bluespaceLogoSVG from "../assets/bluespace-logo.svg";
 import anass from "../assets/anass.jpeg";
 import cecil from "../assets/cecil-ofori.jpeg";
 import eben from "../assets/eben.jpeg";
@@ -294,11 +293,9 @@ function Landing() {
             }}
             className="flex items-center group"
           >
-            <img
-              src={bluespaceLogoSVG}
-              alt="Blue Space logo"
-              className="h-12 w-auto object-contain drop-shadow group-hover:scale-105 transition-transform duration-300"
-            />
+            <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-gradient group-hover:scale-105 transition-transform duration-300 inline-block">
+              Blue Space
+            </span>
           </a>
 
           {/* Desktop links */}
@@ -1039,11 +1036,9 @@ function Landing() {
       <footer className="bg-slate-900 text-slate-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
 <div className="flex items-center gap-2">
-            <img
-              src={bluespaceLogoSVG}
-              alt="Blue Space logo"
-              className="h-10 w-auto object-contain"
-            />
+            <span className="text-xl font-extrabold tracking-tight text-gradient-light">
+              Blue Space
+            </span>
           </div>
 
           <div className="flex items-center gap-6 text-sm">

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import bluespaceLogo from "../assets/remove-the--blue-space--text-at-the-bottom-of-the-.png";
 import { API_URL } from "../config";
 
 function Header() {
@@ -53,12 +52,7 @@ function Header() {
           to="/dashboard"
           className="flex items-center gap-2 group"
         >
-          <img
-            src={bluespaceLogo}
-            alt="Blue Space logo"
-            className="left-4 h-14 w-auto object-contain drop-shadow group-hover:scale-105 transition-transform duration-300"
-          />
-          <span className="text-xl md:text-2xl font-extrabold tracking-tight text-gradient">
+          <span className="text-xl md:text-2xl font-extrabold tracking-tight text-gradient group-hover:scale-105 transition-transform duration-300 inline-block">
             Blue Space
           </span>
         </Link>
