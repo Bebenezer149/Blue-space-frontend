@@ -12,12 +12,6 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
                   isUpdating;
   
   const token = localStorage.getItem("token");
-  const statusBorder = {
-    PENDING: "border-yellow-400 status-card--pending",
-    CONFIRMED: "border-blue-400 status-card--confirmed",
-    DELIVERED: "border-green-400 status-card--delivered",
-    CANCELLED: "border-red-400 status-card--cancelled",
-  };
 
   function advanceStatus() {
     if (isUpdating || disable) return;
@@ -65,7 +59,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
   }
 
   return (
-    <div className={`surface-card w-full bg-white border-2 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 relative animate-fade-in-up ${statusBorder[currentStatus] || "border-gray-300"}`}>
+    <div className="surface-card w-full bg-white border border-gray-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 relative animate-fade-in-up">
       {/* Close button - positioned at top right corner */}
       <button
         onClick={() => clearCard(order.id)}
