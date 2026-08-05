@@ -12,6 +12,9 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  const getAvailableQuantity = (item) =>
+    Math.max(0, Number(item.availableQuantity ?? item.stock_quantity ?? item.quantity) || 0);
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (loading) return;
@@ -63,9 +66,20 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
   };
 
   const handleIncreaseQuantity = (itemId) => {
+    const item = cart.find((cartItem) => cartItem.id === itemId);
+    if (!item) return;
+
+    const availableQuantity = getAvailableQuantity(item);
+    if (item.quantity >= availableQuantity) {
+      toast.warning(`Only ${availableQuantity} item${availableQuantity === 1 ? "" : "s"} available`);
+      return;
+    }
+
     setCart((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item,
+      prev.map((cartItem) =>
+        cartItem.id === itemId
+          ? { ...cartItem, quantity: Math.min(cartItem.quantity + 1, getAvailableQuantity(cartItem)) }
+          : cartItem,
       ),
     );
   };
@@ -231,11 +245,16 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                           </span>
                           <button
                             onClick={() => handleIncreaseQuantity(data.id)}
-                            className="w-7 h-7 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition text-sm hover:scale-110 active:scale-95"
+                            disabled={data.quantity >= getAvailableQuantity(data)}
+                            aria-label={`Increase ${data.product_name} quantity`}
+                            className="w-7 h-7 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition text-sm hover:scale-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
                           >
                             +
                           </button>
                         </div>
+                        <span className="text-xs text-gray-500">
+                          {getAvailableQuantity(data)} available
+                        </span>
                       </div>
                     </div>
                     <button

@@ -11,7 +11,7 @@ function ProductCard({
   setViewProductDetails,
 }) {
   const isOutOfStock =
-    status === "OUT_OF_STOCK" || status === "Out_Of_Stock";
+    status === "OUT_OF_STOCK" || status === "Out_Of_Stock" || Number(data.quantity) <= 0;
 
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white w-full h-full flex flex-col hover:-translate-y-1">

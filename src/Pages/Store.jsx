@@ -4,6 +4,7 @@ import ProductCard from "../Components/Cards/ProductCard";
 import ViewProduct from "./ViewProduct";
 import Cart from "../Components/Cart/Cart";
 import { API_URL } from "../config";
+import { toast } from "react-toastify";
 
 function Store() {
   const { slug } = useParams();
@@ -74,6 +75,19 @@ function Store() {
   }, [openDropdown]);
 
   function addToCart(cartData) {
+    const availableQuantity = Math.max(0, Number(cartData.quantity) || 0);
+    const itemInCart = cart.find((item) => item.id === cartData.id);
+
+    if (availableQuantity === 0) {
+      toast.warning("This product is out of stock");
+      return;
+    }
+
+    if (itemInCart && itemInCart.quantity >= availableQuantity) {
+      toast.warning(`Only ${availableQuantity} item${availableQuantity === 1 ? "" : "s"} available`);
+      return;
+    }
+
     setCart((prev) => {
       const exists = prev.find((item) => item.id === cartData.id);
       if (exists) {
@@ -83,7 +97,7 @@ function Store() {
             : item,
         );
       }
-      return [...prev, { ...cartData, quantity: 1 }];
+      return [...prev, { ...cartData, availableQuantity, quantity: 1 }];
     });
   }
 
