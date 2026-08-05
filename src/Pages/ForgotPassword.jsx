@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ function ForgotPassword() {
     setErrorMessage("");
     setLoading(true);
 
-    fetch("https://makola-2.onrender.com/api/forgot-password", {
+    fetch(`${API_URL}/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

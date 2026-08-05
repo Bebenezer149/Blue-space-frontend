@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "../Components/Header";
 import EditProfilePictureModal from "./EditProfilePictureModal";
 import EditProfileModal from "./EditProfileModal";
+import { API_URL } from "../config";
 
 function Profile() {
   const [isEditPictureOpen, setIsEditPictureOpen] = useState(false);
@@ -12,7 +13,7 @@ function Profile() {
   useEffect(() => {
     if (!token) return;
 
-    fetch("https://makola-2.onrender.com/api/user", {
+    fetch(`${API_URL}/user`, {
       method: "GET",
       headers: {
         Accept: "application/json",

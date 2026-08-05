@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
+import { API_URL } from "../config";
 
 
 function ResetPassword() {
@@ -36,7 +37,7 @@ function ResetPassword() {
     setErrorMessage("");
     setLoading(true);
 
-    fetch("https://makola-2.onrender.com/api/reset-password", {
+    fetch(`${API_URL}/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

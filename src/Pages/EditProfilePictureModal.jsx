@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
 
 function EditProfilePictureModal({ isOpen, onClose }) {
   const [step, setStep] = useState(1);
@@ -92,7 +93,7 @@ function EditProfilePictureModal({ isOpen, onClose }) {
         if (bannerUrl) payload.banner = bannerUrl;
         if (profileUrl) payload.profile_picture = profileUrl;
 
-        return fetch("https://makola-2.onrender.com/api/update-profile", {
+        return fetch(`${API_URL}/update-profile`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
