@@ -20,10 +20,12 @@ import OrderManager from "./Pages/OrderManager";
 import ViewOrder from "./Pages/ViewOrder";
 import Store from "./Pages/Store";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import ThemeToggle from "./Components/ThemeToggle";
 
 function App() {
   return (
     <>
+      <ThemeToggle />
       <ToastContainer
         position="top-right"
         autoClose={3000}
