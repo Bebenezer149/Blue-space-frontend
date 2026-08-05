@@ -59,7 +59,7 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
   }
 
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 relative animate-fade-in-up">
+    <div className="surface-card w-full bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 relative animate-fade-in-up">
       {/* Close button - positioned at top right corner */}
       <button
         onClick={() => clearCard(order.id)}

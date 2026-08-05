@@ -82,7 +82,7 @@ function StatCard({ data, icon: Icon, color = "blue" }) {
       w-full flex flex-col gap-3 
       p-5 sm:p-6 py-6 sm:py-8 
       rounded-xl 
-      bg-white
+      bg-white surface-card
       transition-all duration-300 
       hover:shadow-lg hover:-translate-y-1
       ${config.border} ${config.shadow}

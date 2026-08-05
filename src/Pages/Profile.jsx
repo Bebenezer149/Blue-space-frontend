@@ -44,7 +44,7 @@ function Profile() {
           My Profile
         </h1>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+        <div className="surface-card bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
           {/* Avatar + name section */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
             <div className="relative shrink-0">
