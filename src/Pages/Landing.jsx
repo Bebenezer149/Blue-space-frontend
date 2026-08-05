@@ -111,13 +111,13 @@ const FEATURES = [
 const TEAM = [
   {
     name: "Cecil Ofori",
-    role: "Founder & CEO",
+    role: "Founder & C(O",
     initials: "CO",
     image: cecil,
   },
   {
     name: "Baidoo Ebenezer",
-    role: "Founder & Chief Technology Officer",
+    role: "Founder & CTO",
     initials: "BE",
     image: eben,
   },
