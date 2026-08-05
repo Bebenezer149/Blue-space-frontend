@@ -191,6 +191,26 @@ html.dark .custom-toast {
 html.dark .custom-toast__close { color: #cbd5e1; }
 html.dark .custom-toast__close:hover { background: rgb(148 163 184 / 0.15); color: #fff; }
 
+/* Product management actions retain clear semantic contrast in dark mode. */
+html.dark .product-action--edit {
+  background-color: #2563eb !important;
+  color: #fff !important;
+}
+
+html.dark .product-action--view {
+  background-color: #16a34a !important;
+  color: #fff !important;
+}
+
+html.dark .product-action--delete {
+  background-color: #dc2626 !important;
+  color: #fff !important;
+}
+
+html.dark .product-action--edit:hover { background-color: #1d4ed8 !important; }
+html.dark .product-action--view:hover { background-color: #15803d !important; }
+html.dark .product-action--delete:hover { background-color: #b91c1c !important; }
+
 @keyframes toast-enter {
   from { opacity: 0; transform: translateX(1rem) scale(0.96); }
   to { opacity: 1; transform: translateX(0) scale(1); }

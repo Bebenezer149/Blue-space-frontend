@@ -367,7 +367,7 @@ function ProductPage() {
                       setEditOpen(true);
                       setProductDetails(data);
                     }}
-                    className="flex-1 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100"
+                    className="product-action--edit flex-1 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100"
                   >
                     Edit
                   </button>
@@ -376,7 +376,7 @@ function ProductPage() {
                       setViewOpen(true);
                       setProductDetails(data);
                     }}
-                    className="flex-1 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100"
+                    className="product-action--view flex-1 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100"
                   >
                     View
                   </button>
@@ -386,7 +386,7 @@ function ProductPage() {
                       setId(data.id);
                       setProductName(data.product_name);
                     }}
-                    className="flex-1 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100"
+                    className="product-action--delete flex-1 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100"
                   >
                     Delete
                   </button>
