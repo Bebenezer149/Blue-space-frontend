@@ -67,7 +67,7 @@ function ViewProduct({productDetails, setViewOpen}) {
               <label className="text-sm font-medium text-gray-500 block mb-1">
                 Status
               </label>
-              <span className={`inline-flex px-4 py-1.5 rounded-full text-sm font-semibold ${productDetails.status === "Available" ? " bg-green-100 text-green-700":"bg-yellow-100 text-yellow-700"}`}>
+              <span className={`inline-flex px-4 py-1.5 rounded-full text-sm font-semibold ${productDetails.status === "AVAILABLE" ? " bg-green-100 text-green-700":"bg-yellow-100 text-yellow-700"}`}>
                {productDetails.status ==="OUT_OF_STOCK" ? "Out of Stock":"Available"}
               </span>
             </div>
