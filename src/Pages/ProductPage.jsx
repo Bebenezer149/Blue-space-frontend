@@ -145,7 +145,7 @@ function ProductPage() {
         </div>
 
         {/* Desktop table */}
-        <div className="hidden md:block rounded-lg border border-gray-200 overflow-x-auto bg-white animate-fade-in-up">
+        <div className="surface-card hidden md:block rounded-2xl border border-gray-200 overflow-x-auto bg-white animate-fade-in-up">
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50 border-b">
@@ -328,7 +328,7 @@ function ProductPage() {
             paginatedProducts.map((data) => (
               <div
                 key={data.id}
-                className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm"
+                className="surface-card bg-white rounded-2xl border border-gray-200 p-4 shadow-sm"
               >
                 <div className="flex gap-4">
                   <img
