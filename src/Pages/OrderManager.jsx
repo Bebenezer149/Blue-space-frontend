@@ -186,28 +186,28 @@ const pendingOrders = orders.filter(
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 mt-6 sm:mt-8 animate-stagger">
-          <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
+          <div className="surface-card order-stat--total bg-white border-2 border-gray-400 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
             <p className="text-xs sm:text-sm text-gray-500">Total Orders</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1">
               {totalOrders}
             </h2>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
+          <div className="surface-card order-stat--pending bg-white border-2 border-yellow-400 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
             <p className="text-xs sm:text-sm text-gray-500">Pending</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-yellow-500 mt-1">
               {pendingOrders}
             </h2>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
+          <div className="surface-card order-stat--confirmed bg-white border-2 border-blue-400 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
             <p className="text-xs sm:text-sm text-gray-500">Confirmed</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-blue-500 mt-1">
               {confirmedOrders}
             </h2>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
+          <div className="surface-card order-stat--delivered bg-white border-2 border-green-400 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 p-4 sm:p-5">
             <p className="text-xs sm:text-sm text-gray-500">Delivered</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-green-500 mt-1">
               {deliveredOrders}
@@ -216,7 +216,7 @@ const pendingOrders = orders.filter(
         </div>
 
         {/* Orders Section */}
-        <div className="bg-white rounded-xl shadow-sm mt-6 sm:mt-8 overflow-hidden animate-fade-in-up">
+        <div className="surface-card bg-white rounded-2xl shadow-sm mt-6 sm:mt-8 overflow-hidden animate-fade-in-up">
           <div className="border-b border-gray-200 p-4 sm:p-5">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <h2 className="font-semibold text-lg sm:text-xl text-gray-800">

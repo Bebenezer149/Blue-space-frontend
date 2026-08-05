@@ -79,8 +79,9 @@ html.dark textarea::placeholder {
    without reducing readability. Dark mode uses low-contrast blue-gray layers. */
 .surface-card {
   background-image:
-    radial-gradient(circle at 100% 0%, rgb(59 130 246 / 0.10), transparent 34%),
-    repeating-linear-gradient(135deg, rgb(15 23 42 / 0.025) 0 1px, transparent 1px 7px);
+    linear-gradient(135deg, rgb(255 255 255 / 0.78), transparent 42%),
+    radial-gradient(circle at 100% 0%, rgb(96 165 250 / 0.17), transparent 36%),
+    radial-gradient(circle at 0% 100%, rgb(186 230 253 / 0.15), transparent 34%);
   border-color: rgb(148 163 184 / 0.38);
   box-shadow: 0 10px 28px rgb(15 23 42 / 0.07), inset 0 1px rgb(255 255 255 / 0.7);
 }
@@ -88,11 +89,22 @@ html.dark textarea::placeholder {
 html.dark .surface-card {
   background-color: #1f2937 !important;
   background-image:
-    radial-gradient(circle at 100% 0%, rgb(96 165 250 / 0.14), transparent 36%),
-    repeating-linear-gradient(135deg, rgb(255 255 255 / 0.018) 0 1px, transparent 1px 7px);
+    linear-gradient(135deg, rgb(255 255 255 / 0.055), transparent 42%),
+    radial-gradient(circle at 100% 0%, rgb(96 165 250 / 0.18), transparent 38%),
+    radial-gradient(circle at 0% 100%, rgb(14 165 233 / 0.09), transparent 36%);
   border-color: rgb(100 116 139 / 0.65) !important;
   box-shadow: 0 14px 32px rgb(0 0 0 / 0.24), inset 0 1px rgb(255 255 255 / 0.045);
 }
+
+/* Order status borders deliberately retain their semantic color in both themes. */
+.surface-card.status-card--pending,
+.surface-card.order-stat--pending { border-color: #facc15 !important; }
+.surface-card.status-card--confirmed,
+.surface-card.order-stat--confirmed { border-color: #60a5fa !important; }
+.surface-card.status-card--delivered,
+.surface-card.order-stat--delivered { border-color: #4ade80 !important; }
+.surface-card.status-card--cancelled { border-color: #f87171 !important; }
+.surface-card.order-stat--total { border-color: #94a3b8 !important; }
 
 /* Blue Space notifications */
 .app-toast-container {
