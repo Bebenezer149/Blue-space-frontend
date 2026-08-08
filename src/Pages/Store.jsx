@@ -177,7 +177,7 @@ function Store() {
                   />
                 </svg>
                 <span className="hidden xs:inline">{phone}</span>
-                <span className="xs:hidden">{phone?.slice(0, 10)}...</span>
+                <span className="xs:hidden">{phone?.slice(0, 10)}</span>
               </span>
 
               <span className="flex gap-1 sm:gap-2 text-[10px] sm:text-xs md:text-sm font-semibold text-white/90 items-center bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
@@ -196,7 +196,7 @@ function Store() {
                   />
                 </svg>
                 <span className="hidden xs:inline">{email}</span>
-                <span className="xs:hidden">{email}...</span>
+                <span className="xs:hidden">{email}</span>
               </span>
 
               <div className="flex items-center gap-1">
