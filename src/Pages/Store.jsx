@@ -196,7 +196,7 @@ function Store() {
                   />
                 </svg>
                 <span className="hidden xs:inline">{email}</span>
-                <span className="xs:hidden">{email?.slice(0, 12)}...</span>
+                <span className="xs:hidden">{email}...</span>
               </span>
 
               <div className="flex items-center gap-1">
