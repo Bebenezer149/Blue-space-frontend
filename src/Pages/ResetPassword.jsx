@@ -106,7 +106,7 @@ function ResetPassword() {
               className="w-full border p-2 mt-1 rounded-md outline-none text-sm sm:text-base"
               placeholder="Confirm new password"
               type="password"
-              name="passwordConfirmation"
+              name="password_confirmation"
               value={passwordConfirmation}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
               required
