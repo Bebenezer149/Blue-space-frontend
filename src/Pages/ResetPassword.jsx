@@ -43,7 +43,7 @@ function ResetPassword() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ token,email, password }),
+      body: JSON.stringify({ token,email, password, 'password_confirmation':passwordConfirmation }),
     })
       .then((res) => res.json())
       .then((res) => {

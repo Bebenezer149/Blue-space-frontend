@@ -384,7 +384,7 @@ function SignUp() {
                 <p className="text-xs text-red-500">Passwords do not match</p>
               )}
               {passwordConfirmation && passwordConfirmation === password && password.length >= 8 && (
-                <p className="text-xs text-green-500">✓ Passwords match</p>
+                <p className="text-xs text-green-500"> Passwords match</p>
               )}
             </div>
           </div>
