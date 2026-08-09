@@ -215,18 +215,20 @@ function Landing() {
         )}
       </header>
 
-      {/* Hero */}
+{/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-gray-900">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
-        >
-          <source src={HeroVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover object-center animate-hero-zoom"
+          >
+            <source src={HeroVideo} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
         <div className="absolute inset-0 bg-black/50" />
 
         <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">

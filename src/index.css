@@ -211,6 +211,20 @@ html {
   }
 }
 
+/* Slow Ken Burns zoom for the hero background video */
+@keyframes hero-zoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.12);
+  }
+}
+
+.animate-hero-zoom {
+  animation: hero-zoom 20s ease-in-out infinite alternate;
+}
+
 /* Animation utility classes */
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease-out both;
