@@ -73,10 +73,10 @@ const team = [
 ];
 
 const socials = [
-  { icon: FaInstagram, label: "Instagram", handle: "@bluespacegh", href: "#" },
-  { icon: FaFacebook, label: "Facebook", handle: "Blue Space Ghana", href: "#" },
+  { icon: FaInstagram, label: "Instagram", handle: "@bluespacegh", href: "@bluespace26" },
+  { icon: FaFacebook, label: "Facebook", handle: "Blue Space Ghana", href: "@bluespace26" },
   { icon: FaTwitter, label: "Twitter", handle: "@bluespacegh", href: "#" },
-  { icon: FaWhatsapp, label: "WhatsApp", handle: "+233 24 000 0000", href: "#" },
+  { icon: FaWhatsapp, label: "WhatsApp", handle: "+233 59 721 0306", href: "#" },
   { icon: FaTiktok, label: "TikTok", handle: "@bluespacegh", href: "#" },
   { icon: FaLinkedin, label: "LinkedIn", handle: "Blue Space", href: "#" },
 ];
@@ -95,7 +95,7 @@ const features = [
   {
     icon: HiOutlineCreditCard,
     title: "Flexible Payments",
-    text: "Mobile Money, cash on delivery and cards — pay your way.",
+    text: "Mobile Money or cash on delivery- pay your way.",
   },
   {
     icon: HiOutlineSparkles,
