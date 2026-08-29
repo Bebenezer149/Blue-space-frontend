@@ -9,6 +9,7 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import Profile from "./Pages/Profile";
 import Landing from "./Pages/Landing";
+import Marketplace from "./Pages/Marketplace";
 // import Header from "./Components/Header";
 // import Store from "./Pages/Store";
 import SignUp from "./Pages/SignUp";
@@ -28,22 +29,64 @@ function App() {
       <ToastViewport />
       {/* <Header/> */}
       <Routes>
-        <Route path="/" element={<Landing/>}/>
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<SignUp />} />
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/products" element={<ProtectedRoute><ProductPage /></ProtectedRoute>} />
-        <Route path="/add-products" element={<ProtectedRoute><AddProductPage /></ProtectedRoute>} />
-        <Route path="/order-manager" element={<ProtectedRoute><OrderManager/></ProtectedRoute>}/>
-        <Route path="/preview-order" element={<ProtectedRoute><ViewOrder/></ProtectedRoute>}/>
-        <Route path="/store/:slug" element={<Store/>}/>
-        <Route path="/forgot-password" element={<ForgotPassword/>}/>
-        <Route path="/reset-password" element={<ResetPassword/>}/>
-        <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>}/>
-        {/* <Route path="/flowbite-test" element={<div className="min-h-screen bg-gray-100 p-8"><Buttons /></div>} /> */}
-        <Route  path="/buttons" element={<Component/>}/>
-        
+        <Route path="/marketplace" element={<Marketplace />} />
 
+        <Route path="/register" element={<SignUp />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <ProductPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-products"
+          element={
+            <ProtectedRoute>
+              <AddProductPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/order-manager"
+          element={
+            <ProtectedRoute>
+              <OrderManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/preview-order"
+          element={
+            <ProtectedRoute>
+              <ViewOrder />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/store/:slug" element={<Store />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        {/* <Route path="/flowbite-test" element={<div className="min-h-screen bg-gray-100 p-8"><Buttons /></div>} /> */}
+        <Route path="/buttons" element={<Marketplace />} />
       </Routes>
     </>
   );
