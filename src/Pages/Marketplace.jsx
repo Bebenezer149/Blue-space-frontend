@@ -147,166 +147,172 @@ function Marketplace() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="border-b border-gray-200 bg-white shadow-sm">
-        <div className="px-4 sm:px-6 md:px-8 lg:px-4 xl:px-6">
-          <div className="flex flex-wrap items-center justify-between py-3 gap-3">
-            {/* Logo Section */}
-            <div className="flex flex-col flex-shrink-0">
-              <h1 className="font-bold text-xl sm:text-2xl text-blue-500">
-                Blue Space
-              </h1>
-              <h1 className="font-semibold text-xs sm:text-sm text-gray-600">
-                Marketplace
-              </h1>
-            </div>
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        {/* Header */}
+        <div className="border-b border-gray-200 bg-white shadow-sm">
+          <div className="px-4 sm:px-6 md:px-8 lg:px-4 xl:px-6">
+            <div className="flex flex-wrap items-center justify-between py-3 gap-3">
+              {/* Logo Section */}
+              <div className="flex flex-col flex-shrink-0">
+                <h1 className="font-bold text-xl sm:text-2xl text-blue-500">
+                  Blue Space
+                </h1>
+                <h1 className="font-semibold text-xs sm:text-sm text-gray-600">
+                  Marketplace
+                </h1>
+              </div>
 
-            <div className="hidden md:flex flex-1 max-w-xl mx-4">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search for products, brands and stores..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button className="absolute right-0 top-0 h-full px-4 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 transition-colors">
+              <div className="hidden md:flex flex-1 max-w-xl mx-4">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    placeholder="Search for products, brands and stores..."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <button className="absolute right-0 top-0 h-full px-4 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 transition-colors">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 sm:gap-4">
+                <button className="hidden sm:block cursor-pointer text-blue-500 font-semibold text-sm whitespace-nowrap hover:text-blue-700 transition-colors">
+                  Sell on Blue Space
+                </button>
+
+                <button className="text-gray-600 hover:text-gray-800 transition-colors p-1">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="size-5"
+                    className="size-5 sm:size-6"
                   >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                      d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                    />
+                  </svg>
+                </button>
+
+                <button className="text-gray-600 hover:text-gray-800 transition-colors p-1 relative">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-5 sm:size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                    />
+                  </svg>
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    0
+                  </span>
+                </button>
+
+                {/* Mobile Menu Button */}
+                <button
+                  className="md:hidden text-gray-600 hover:text-gray-800 p-1"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d={
+                        isMenuOpen
+                          ? "M6 18L18 6M6 6l12 12"
+                          : "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                      }
                     />
                   </svg>
                 </button>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-2 sm:gap-4">
-              <button className="hidden sm:block cursor-pointer text-blue-500 font-semibold text-sm whitespace-nowrap hover:text-blue-700 transition-colors">
-                Sell on Blue Space
-              </button>
-
-              <button className="text-gray-600 hover:text-gray-800 transition-colors p-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-5 sm:size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                  />
-                </svg>
-              </button>
-
-              <button className="text-gray-600 hover:text-gray-800 transition-colors p-1 relative">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-5 sm:size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-                  />
-                </svg>
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  0
-                </span>
-              </button>
-
-              {/* Mobile Menu Button */}
-              <button
-                className="md:hidden text-gray-600 hover:text-gray-800 p-1"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d={
-                      isMenuOpen
-                        ? "M6 18L18 6M6 6l12 12"
-                        : "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                    }
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Search */}
-          <div className="md:hidden pb-3">
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            {/* Mobile Search */}
+            <div className="md:hidden pb-3">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Navigation */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="px-4 sm:px-6 md:px-8 lg:px-4 xl:px-6">
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-10 py-3 overflow-x-auto">
-            {navItems.map((item) => (
-              <div
-                key={item}
-                className="text-sm font-medium text-gray-700 hover:text-blue-500 cursor-pointer whitespace-nowrap transition-colors"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-
-          {/* Mobile Navigation */}
-          <div className={`md:hidden ${isMenuOpen ? "block" : "hidden"} py-3`}>
-            <div className="flex flex-col space-y-3">
-              <button className="w-full text-left text-blue-500 font-semibold text-sm py-2 border-b border-gray-100">
-                Sell on Blue Space
-              </button>
+        {/* Navigation */}
+        <div className="border-b border-gray-200 bg-white">
+          <div className="px-4 sm:px-6 md:px-8 lg:px-4 xl:px-6">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-6 lg:gap-10 py-3 overflow-x-auto">
               {navItems.map((item) => (
                 <div
                   key={item}
-                  className="text-sm font-medium text-gray-700 hover:text-blue-500 cursor-pointer py-2 border-b border-gray-100"
+                  className="text-sm font-medium text-gray-700 hover:text-blue-500 cursor-pointer whitespace-nowrap transition-colors"
                 >
                   {item}
                 </div>
               ))}
             </div>
+
+            {/* Mobile Navigation */}
+            <div className={`md:hidden ${isMenuOpen ? "block" : "hidden"} py-3`}>
+              <div className="flex flex-col space-y-3">
+                <button className="w-full text-left text-blue-500 font-semibold text-sm py-2 border-b border-gray-100">
+                  Sell on Blue Space
+                </button>
+                {navItems.map((item) => (
+                  <div
+                    key={item}
+                    className="text-sm font-medium text-gray-700 hover:text-blue-500 cursor-pointer py-2 border-b border-gray-100"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Spacer to prevent content from hiding behind fixed header */}
+      <div className="h-[120px] md:h-[130px] lg:h-[140px]"></div>
 
       {/* Hero Section */}
       <div className="px-4 py-4 sm:px-6 md:px-8 lg:px-4 xl:px-6">
