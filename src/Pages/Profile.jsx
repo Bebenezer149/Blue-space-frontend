@@ -10,9 +10,8 @@ function Profile() {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
+  const fetchUserData = () => {
     if (!token) return;
-
     fetch(`${API_URL}/user`, {
       method: "GET",
       headers: {
@@ -28,7 +27,18 @@ function Profile() {
         console.error("Failed to fetch user data:", err);
         setUserData({});
       });
+  };
+
+  useEffect(() => {
+    fetchUserData();
   }, [token]);
+
+  // Refetch when edit profile modal closes
+  useEffect(() => {
+    if (!isEditProfileOpen) {
+      fetchUserData();
+    }
+  }, [isEditProfileOpen]);
 
   const firstName = userData.first_name || "";
   const lastName = userData.last_name || "";
@@ -149,4 +159,3 @@ function Profile() {
 }
 
 export default Profile;
-
