@@ -34,8 +34,14 @@ function EditProfileModal({ data, onClose }) {
     setError("");
     setSuccess("");
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No authentication token found. Please log in again.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/update-profile`, {
         method: "PUT",
         headers: {
@@ -59,7 +65,7 @@ function EditProfileModal({ data, onClose }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update profile");
+        throw new Error(`(${response.status}) ${errorData.message || "Failed to update profile"}`);
       }
 
       const result = await response.json();
