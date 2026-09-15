@@ -1,5 +1,5 @@
 const configuredApiUrl = (
-  import.meta.env.VITE_API_URL || "https://makola-2.onrender.com/api"
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"  
 ).replace(/\/+$/, "");
 
 // Laravel routes defined in routes/api.php are always prefixed with /api.

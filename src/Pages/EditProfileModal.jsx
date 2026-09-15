@@ -54,7 +54,7 @@ function EditProfileModal({ data, onClose }) {
           first_name: formData.full_name.split(" ")[0] || "",
           last_name: formData.full_name
             .split(" ")
-            .slice(1)
+            .slice(1) 
             .join(" ")
             .trim() || "",
           business_name: formData.business_name,
@@ -116,7 +116,7 @@ function EditProfileModal({ data, onClose }) {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mb-6">
+        <form  className="flex flex-col gap-4 mb-6">
           <div>
             <label className="block text-xs font-medium uppercase tracking-wide text-gray-400 mb-1">
               Full Name
@@ -179,9 +179,9 @@ function EditProfileModal({ data, onClose }) {
             Cancel
           </button>
           <button
-            type="submit"
+            onClick={handleSubmit}
             disabled={loading}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+            className="w-full sm:w-auto px-5 py-2.5 cursor-pointer rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>
