@@ -12,6 +12,7 @@ const PRODUCT_CATEGORIES = [
   "Fitness&Sports",
   "Others",
 ];
+const MAX_VARIANT_IMAGES = 6;
 
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
@@ -20,6 +21,7 @@ const AddProductPage = () => {
   const [status, setStatus] = useState("AVAILABLE");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
+  const [variantImages, setVariantImages] = useState([]);
 
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,37 +56,40 @@ const AddProductPage = () => {
 
     setLoading(true);
 
-    let uploadedImageUrl = "";
-    if (image) {
-      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-      const cloudPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const cloudPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+    const uploadImage = async (file) => {
       const cloudData = new FormData();
-      cloudData.append("file", image);
+      cloudData.append("file", file);
       cloudData.append("upload_preset", cloudPreset);
 
-      try {
-        const cloudResponse = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          {
-            method: "POST",
-            body: cloudData,
-          },
-        );
+      const cloudResponse = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+          method: "POST",
+          body: cloudData,
+        },
+      );
 
-        const res = await cloudResponse.json();
+      const res = await cloudResponse.json();
 
-        if (!cloudResponse.ok || !res?.secure_url) {
-          throw new Error("Couldn't upload to Cloudinary");
-        }
-
-        uploadedImageUrl = res.secure_url;
-      } catch (err) {
-        console.log(err);
-        toast.error("Couldn't upload image");
-        setLoading(false);
-        return;
+      if (!cloudResponse.ok || !res?.secure_url) {
+        throw new Error("Couldn't upload to Cloudinary");
       }
+
+      return res.secure_url;
+    };
+
+    let uploadedImageUrl;
+    let uploadedVariantUrls;
+    try {
+      uploadedImageUrl = await uploadImage(image);
+      uploadedVariantUrls = await Promise.all(variantImages.map(uploadImage));
+    } catch (err) {
+      console.log(err);
+      toast.error("Couldn't upload image");
+      setLoading(false);
+      return;
     }
 
     const formData = new FormData();
@@ -94,6 +99,7 @@ const AddProductPage = () => {
     formData.append("status", status);
     if (category) formData.append("category", category);
     if (uploadedImageUrl) formData.append("img", uploadedImageUrl);
+    uploadedVariantUrls.forEach((url) => formData.append("variant[]", url));
     formData.append("description", description);
 
     try {
@@ -131,13 +137,15 @@ const AddProductPage = () => {
       setStatus("Available");
       setCategory("");
       setImage(null);
+      setVariantImages([]);
       setDescription("");
 
       navigate("/products");
       toast.success("Product created");
 
-      const fileInput = document.querySelector('input[type="file"]');
-      if (fileInput) fileInput.value = "";
+      document.querySelectorAll('input[type="file"]').forEach((fileInput) => {
+        fileInput.value = "";
+      });
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -154,6 +162,24 @@ const AddProductPage = () => {
     }
 
     setImage(file);
+  };
+
+  const handleVariantImagesChange = (e) => {
+    const selectedImages = Array.from(e.target.files || []);
+    const updatedImages = [...variantImages, ...selectedImages];
+
+    if (updatedImages.length > MAX_VARIANT_IMAGES) {
+      toast.error(`You can add a maximum of ${MAX_VARIANT_IMAGES} additional pictures`);
+      e.target.value = "";
+      return;
+    }
+
+    setVariantImages(updatedImages);
+    e.target.value = "";
+  };
+
+  const removeVariantImage = (indexToRemove) => {
+    setVariantImages((images) => images.filter((_, index) => index !== indexToRemove));
   };
 
   return (
@@ -310,6 +336,46 @@ const AddProductPage = () => {
           </div>
 
           <div>
+            <div className="flex items-baseline justify-between gap-3 mb-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Add More Pictures
+              </label>
+              <span className="text-xs text-gray-500">
+                {variantImages.length}/{MAX_VARIANT_IMAGES}
+              </span>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              disabled={variantImages.length === MAX_VARIANT_IMAGES}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+              onChange={handleVariantImagesChange}
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Add up to 6 additional product pictures.
+            </p>
+
+            {variantImages.length > 0 && (
+              <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {variantImages.map((file, index) => (
+                  <li key={`${file.name}-${file.lastModified}-${index}`} className="flex min-w-0 items-center justify-between gap-2 rounded-md bg-gray-50 px-3 py-2 text-sm">
+                    <span className="truncate text-gray-700">{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeVariantImage(index)}
+                      className="shrink-0 text-xs font-medium text-red-600 hover:text-red-700"
+                      aria-label={`Remove ${file.name}`}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Category
             </label>
@@ -371,10 +437,12 @@ const AddProductPage = () => {
                 setStatus("Available");
                 setCategory("");
                 setImage(null);
+                setVariantImages([]);
                 setDescription("");
 
-                const fileInput = document.querySelector('input[type="file"]');
-                if (fileInput) fileInput.value = "";
+                document.querySelectorAll('input[type="file"]').forEach((fileInput) => {
+                  fileInput.value = "";
+                });
               }}
             >
               Clear
