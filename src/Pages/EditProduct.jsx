@@ -13,6 +13,7 @@ const PRODUCT_CATEGORIES = [
   "Fitness&Sports",
   "Others",
 ];
+const MAX_VARIANT_IMAGES = 6;
 
 function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [productName, setProductName] = useState("");
@@ -23,6 +24,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [variantImages, setVariantImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [compressing, setCompressing] = useState(false);
 
@@ -57,6 +59,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
     if (image) {
       formData.append("img", image);
     }
+    variantImages.forEach((variantImage) => formData.append("variant[]", variantImage));
 
     formData.append("_method", "PUT");
 
@@ -123,6 +126,30 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
     } finally {
       setCompressing(false);
     }
+  };
+
+  const handleVariantImagesChange = async (e) => {
+    const selectedImages = Array.from(e.target.files || []);
+    if (variantImages.length + selectedImages.length > MAX_VARIANT_IMAGES) {
+      toast.error(`You can add a maximum of ${MAX_VARIANT_IMAGES} additional pictures`);
+      e.target.value = "";
+      return;
+    }
+
+    setCompressing(true);
+    try {
+      const compressedImages = await Promise.all(selectedImages.map(compressImage));
+      setVariantImages((images) => [...images, ...compressedImages]);
+    } catch (err) {
+      toast.error(err.message || "Failed to process image");
+    } finally {
+      setCompressing(false);
+      e.target.value = "";
+    }
+  };
+
+  const removeVariantImage = (indexToRemove) => {
+    setVariantImages((images) => images.filter((_, index) => index !== indexToRemove));
   };
 
   return (
@@ -258,6 +285,46 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <div className="mb-1 flex items-baseline justify-between gap-3">
+              <label className="block text-sm font-medium text-gray-700">
+                Add More Pictures
+              </label>
+              <span className="text-xs text-gray-500">
+                {variantImages.length}/{MAX_VARIANT_IMAGES}
+              </span>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              disabled={variantImages.length === MAX_VARIANT_IMAGES || compressing}
+              onChange={handleVariantImagesChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              {compressing ? "Preparing pictures..." : "Add up to 6 additional product pictures."}
+            </p>
+
+            {variantImages.length > 0 && (
+              <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {variantImages.map((file, index) => (
+                  <li key={`${file.name}-${file.lastModified}-${index}`} className="flex min-w-0 items-center justify-between gap-2 rounded-md bg-gray-50 px-3 py-2 text-sm">
+                    <span className="truncate text-gray-700">{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeVariantImage(index)}
+                      className="shrink-0 text-xs font-medium text-red-600 hover:text-red-700"
+                      aria-label={`Remove ${file.name}`}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Image Preview */}

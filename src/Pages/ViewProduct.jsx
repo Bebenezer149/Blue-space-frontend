@@ -1,4 +1,72 @@
+import { useState } from "react";
+
+function getVariantImages(productDetails) {
+  const rawVariants = productDetails.variant ?? productDetails.variants;
+
+  if (!rawVariants) return [];
+
+  let variants = rawVariants;
+  if (typeof rawVariants === "string") {
+    try {
+      variants = JSON.parse(rawVariants);
+    } catch {
+      variants = [rawVariants];
+    }
+  }
+
+  return (Array.isArray(variants) ? variants : [variants])
+    .map((variant) => (typeof variant === "string" ? variant : variant?.url || variant?.img || variant?.image))
+    .filter(Boolean);
+}
+
+function VariantGallery({ variants }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeImage = variants[activeIndex] || variants[0];
+
+  return (
+    <section className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 sm:p-5">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-slate-800">Product variants</p>
+          <p className="mt-0.5 text-xs text-slate-500">Additional product views</p>
+        </div>
+        <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-blue-700 shadow-sm ring-1 ring-blue-100">
+          {variants.length} {variants.length === 1 ? "image" : "images"}
+        </span>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-white bg-white shadow-sm">
+        <img src={activeImage} alt={`Product variant ${activeIndex + 1}`} className="h-52 w-full object-cover sm:h-64" />
+      </div>
+
+      <div className="mt-4 flex gap-3 overflow-x-auto pb-1 scrollbar-hide" aria-label="Product variant images">
+        {variants.map((image, index) => (
+          <button
+            key={`${image}-${index}`}
+            type="button"
+            onClick={() => setActiveIndex(index)}
+            className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:h-20 sm:w-20 ${
+              index === activeIndex
+                ? "scale-105 border-blue-600 shadow-md shadow-blue-200"
+                : "border-white opacity-70 hover:opacity-100"
+            }`}
+            aria-label={`View variant ${index + 1}`}
+            aria-pressed={index === activeIndex}
+          >
+            <img src={image} alt="" className="h-full w-full object-cover" />
+            <span className={`absolute inset-x-0 bottom-0 bg-slate-950/60 py-0.5 text-[10px] font-semibold text-white transition-opacity ${index === activeIndex ? "opacity-100" : "opacity-0"}`}>
+              {index + 1}
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function ViewProduct({productDetails, setViewOpen}) {
+  const variantImages = getVariantImages(productDetails);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-modal-in">
@@ -35,6 +103,8 @@ function ViewProduct({productDetails, setViewOpen}) {
               />
             </div>
           </div>
+
+          {variantImages.length > 0 && <VariantGallery key={productDetails.id} variants={variantImages} />}
 
           {/* Product Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

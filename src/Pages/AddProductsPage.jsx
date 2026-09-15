@@ -99,7 +99,7 @@ const AddProductPage = () => {
     formData.append("status", status);
     if (category) formData.append("category", category);
     if (uploadedImageUrl) formData.append("img", uploadedImageUrl);
-    uploadedVariantUrls.forEach((url) => formData.append("variants[]", url));
+    uploadedVariantUrls.forEach((url) => formData.append("variant[]", url));
     formData.append("description", description);
 
     try {
