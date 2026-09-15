@@ -217,7 +217,7 @@ function ProductPage() {
                             : "bg-yellow-100 text-yellow-700"
                         }`}
                       >
-                        {data.status}
+                        {data.status === "AVAILABLE"? "Available":"Out of Stock"}
                       </span>
                     </td>
 

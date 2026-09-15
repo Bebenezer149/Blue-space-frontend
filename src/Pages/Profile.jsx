@@ -4,14 +4,47 @@ import EditProfilePictureModal from "./EditProfilePictureModal";
 import EditProfileModal from "./EditProfileModal";
 import { API_URL } from "../config";
 
+function ProfileSkeleton() {
+  return (
+    <div
+      className="surface-card animate-pulse bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8"
+      aria-busy="true"
+      aria-label="Loading profile"
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
+        <div className="h-20 w-20 shrink-0 rounded-full bg-gray-200" />
+        <div className="space-y-2">
+          <div className="h-6 w-40 rounded bg-gray-200" />
+          <div className="h-4 w-24 rounded bg-gray-100" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {[0, 1, 2, 3].map((item) => (
+          <div key={item} className="space-y-2">
+            <div className="h-3 w-20 rounded bg-gray-100" />
+            <div className="h-5 w-3/4 rounded bg-gray-200" />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+        <div className="h-10 w-full rounded-lg bg-gray-200 sm:w-28" />
+      </div>
+    </div>
+  );
+}
+
 function Profile() {
+  const token = localStorage.getItem("token");
   const [isEditPictureOpen, setIsEditPictureOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
-  const token = localStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(Boolean(token));
 
-  const fetchUserData = () => {
+  useEffect(() => {
     if (!token) return;
+
     fetch(`${API_URL}/user`, {
       method: "GET",
       headers: {
@@ -26,19 +59,9 @@ function Profile() {
       .catch((err) => {
         console.error("Failed to fetch user data:", err);
         setUserData({});
-      });
-  };
-
-  useEffect(() => {
-    fetchUserData();
+      })
+      .finally(() => setIsLoading(false));
   }, [token]);
-
-  // Refetch when edit profile modal closes
-  useEffect(() => {
-    if (!isEditProfileOpen) {
-      fetchUserData();
-    }
-  }, [isEditProfileOpen]);
 
   const firstName = userData.first_name || "";
   const lastName = userData.last_name || "";
@@ -54,7 +77,10 @@ function Profile() {
           My Profile
         </h1>
 
-        <div className="surface-card bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+        {isLoading ? (
+          <ProfileSkeleton />
+        ) : (
+          <div className="surface-card bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
           {/* Avatar + name section */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
             <div className="relative shrink-0">
@@ -141,7 +167,8 @@ function Profile() {
               Update Info
             </button>
           </div>
-        </div>
+          </div>
+        )}
       </main>
 
       <EditProfilePictureModal

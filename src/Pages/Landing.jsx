@@ -76,8 +76,8 @@ const socials = [
   { icon: FaInstagram, label: "Instagram", handle: "@bluespacegh", href: "@bluespace26" },
   { icon: FaFacebook, label: "Facebook", handle: "Blue Space Ghana", href: "@bluespace26" },
   { icon: FaTwitter, label: "Twitter", handle: "@bluespacegh", href: "#" },
-  { icon: FaWhatsapp, label: "WhatsApp", handle: "+233 59 721 0306", href: "#" },
-  { icon: FaTiktok, label: "TikTok", handle: "@bluespacegh", href: "#" },
+  { icon: FaWhatsapp, label: "WhatsApp", handle: "+233 59 721 0306", href: "https://wa.me/+233597210306" },
+  // { icon: FaTiktok, label: "TikTok", handle: "@bluespacegh", href: "#" },
   { icon: FaLinkedin, label: "LinkedIn", handle: "Blue Space", href: "#" },
 ];
 
@@ -432,7 +432,7 @@ function Landing() {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">Call Us</p>
-                  <p className="text-sm text-gray-500">+233 24 000 0000</p>
+                  <a href="tel:+233539378827" className="text-sm text-gray-500">+233539278827</a>
                 </div>
               </div>
               <div className="flex items-start gap-4 bg-white border border-gray-200 rounded-2xl p-4">
@@ -441,7 +441,7 @@ function Landing() {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">Email Us</p>
-                  <p className="text-sm text-gray-500">hello@bluespace.gh</p>
+                  <p className="text-sm text-gray-500">bluespacegh00@gmail.com</p>
                 </div>
               </div>
             </div>
