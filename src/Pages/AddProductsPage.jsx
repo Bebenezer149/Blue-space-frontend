@@ -3,12 +3,22 @@ import { useState } from "react";
 import { toast } from "../toast";
 import { API_URL } from "../config";
 
+const PRODUCT_CATEGORIES = [
+  "Food&Drinks",
+  "Electronics",
+  "Housing&Furniture",
+  "Books&Stationery",
+  "Jewelries&Accessories",
+  "Fitness&Sports",
+  "Others",
+];
 
 const AddProductPage = () => {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [status, setStatus] = useState("AVAILABLE");
+  const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
 
   const [description, setDescription] = useState("");
@@ -82,6 +92,7 @@ const AddProductPage = () => {
     formData.append("price", String(parsedPrice));
     formData.append("quantity", String(parsedQuantity));
     formData.append("status", status);
+    if (category) formData.append("category", category);
     if (uploadedImageUrl) formData.append("img", uploadedImageUrl);
     formData.append("description", description);
 
@@ -118,6 +129,7 @@ const AddProductPage = () => {
       setPrice("");
       setQuantity("");
       setStatus("Available");
+      setCategory("");
       setImage(null);
       setDescription("");
 
@@ -299,6 +311,25 @@ const AddProductPage = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
+              Category
+            </label>
+            <select
+              name="category"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="">Select a category (optional)</option>
+              {PRODUCT_CATEGORIES.map((categoryOption) => (
+                <option key={categoryOption} value={categoryOption}>
+                  {categoryOption}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea
@@ -338,6 +369,7 @@ const AddProductPage = () => {
                 setPrice("");
                 setQuantity("");
                 setStatus("Available");
+                setCategory("");
                 setImage(null);
                 setDescription("");
 

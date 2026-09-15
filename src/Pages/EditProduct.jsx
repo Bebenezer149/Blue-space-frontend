@@ -4,12 +4,23 @@ import { toast } from "../toast";
 import { API_URL } from "../config";
 import { compressImage } from "../utils/compressImage";
 
+const PRODUCT_CATEGORIES = [
+  "Food&Drinks",
+  "Electronics",
+  "Housing&Furniture",
+  "Books&Stationery",
+  "Jewelries&Accessories",
+  "Fitness&Sports",
+  "Others",
+];
+
 function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
+  const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -26,6 +37,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
       setQuantity(productDetails.quantity || "");
       setDescription(productDetails.description || "");
       setStatus(productDetails.status || "Available");
+      setCategory(productDetails.category || "");
     }
   }, [productDetails]);
 
@@ -40,6 +52,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
     formData.append("quantity", quantity || productDetails.quantity);
     formData.append("description", description || productDetails.description);
     formData.append("status", status || productDetails.status);
+    formData.append("category", category);
 
     if (image) {
       formData.append("img", image);
@@ -226,6 +239,25 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
                   : "Leave empty to keep current image — large photos are compressed automatically"}
               </p>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Category
+            </label>
+            <select
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all"
+            >
+              <option value="">Select a category (optional)</option>
+              {PRODUCT_CATEGORIES.map((categoryOption) => (
+                <option key={categoryOption} value={categoryOption}>
+                  {categoryOption}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Image Preview */}

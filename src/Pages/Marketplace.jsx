@@ -10,7 +10,7 @@ import { Dumbbell } from "lucide-react";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { CiLock } from "react-icons/ci";
 import { CiDeliveryTruck } from "react-icons/ci";
-
+import { Link } from "react-router-dom";
 function Marketplace() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -194,7 +194,7 @@ function Marketplace() {
               {/* Action Buttons */}
               <div className="flex items-center gap-2 sm:gap-4">
                 <button className="hidden sm:block cursor-pointer text-blue-500 font-semibold text-sm whitespace-nowrap hover:text-blue-700 transition-colors">
-                  Sell on Blue Space
+                  <Link to={"/Login"}>Sell on Blue Space</Link>
                 </button>
 
                 <button className="text-gray-600 hover:text-gray-800 transition-colors p-1">
