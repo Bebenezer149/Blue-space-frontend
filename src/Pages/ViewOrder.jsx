@@ -275,12 +275,34 @@ function ViewOrder({ setIsOpen, orderDetails }) {
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Items Bought
             </label>
-            <div className="mt-2">
+            <div className="mt-3">
               {items && items.length > 0 ? (
-                <ul className="list-disc list-inside space-y-1">
+                <ul className="space-y-3">
                   {items.map((item, index) => (
-                    <li key={index} className="text-gray-800 font-medium">
-                      {item.product?.product_name || item.name || item.product_name || `Item ${index + 1}`}
+                    <li key={item.id || item.product_id || index} className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3">
+                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-gray-100">
+                        <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-gray-400" aria-hidden="true">
+                          {(item.product?.product_name || item.name || item.product_name || "I").charAt(0).toUpperCase()}
+                        </div>
+                        {(item.product?.img || item.img || item.product_image) && (
+                          <img
+                            src={item.product?.img || item.img || item.product_image}
+                            alt={item.product?.product_name || item.name || item.product_name || `Item ${index + 1}`}
+                            className="absolute inset-0 h-full w-full object-cover"
+                            onError={(event) => {
+                              event.currentTarget.style.display = "none";
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-medium text-gray-800">
+                          {item.product?.product_name || item.name || item.product_name || `Item ${index + 1}`}
+                        </p>
+                        <p className="mt-0.5 text-sm text-gray-500">
+                          Quantity: <span className="font-semibold text-gray-700">{item.quantity ?? item.qty ?? item.pivot?.quantity ?? 1}</span>
+                        </p>
+                      </div>
                     </li>
                   ))}
                 </ul>

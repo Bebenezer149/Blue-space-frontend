@@ -73,9 +73,9 @@ const team = [
 ];
 
 const socials = [
-  { icon: FaInstagram, label: "Instagram", handle: "@bluespacegh", href: "@bluespace26" },
-  { icon: FaFacebook, label: "Facebook", handle: "Blue Space Ghana", href: "@bluespace26" },
-  { icon: FaTwitter, label: "Twitter", handle: "@bluespacegh", href: "#" },
+  { icon: FaInstagram, label: "Instagram", handle: "@bluespaceofficial26", href: "https://www.instagram.com/bluespaceofficial26?igsh=MXgzM3pkZzloYnpqZg%3D%3D&utm_source=qr" },
+  { icon: FaFacebook, label: "Facebook", handle: "Blue Space ", href: "https://www.facebook.com/profile.php?id=61592502765679&mibextid=wwXIfr" },
+  { icon: FaTwitter, label: "Twitter", handle: "@bluespacegh", href: "" },
   { icon: FaWhatsapp, label: "WhatsApp", handle: "+233 59 721 0306", href: "https://wa.me/+233597210306" },
   // { icon: FaTiktok, label: "TikTok", handle: "@bluespacegh", href: "#" },
   { icon: FaLinkedin, label: "LinkedIn", handle: "Blue Space", href: "#" },
