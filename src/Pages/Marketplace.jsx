@@ -17,7 +17,23 @@ import { API_URL } from "../config";
 function Marketplace() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [products, setProducts]=useState([])
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 5;
+
+  const filteredProducts = products.filter((product) =>
+    product.product_name?.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage));
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage,
+  );
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
 
   const categories = [
     {
@@ -191,7 +207,7 @@ function Marketplace() {
                     placeholder="Search for products, brands and stores..."
                     className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={handleSearchChange}
                   />
                   <button className="absolute right-0 top-0 h-full px-4 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 transition-colors">
                     <svg
@@ -290,7 +306,7 @@ function Marketplace() {
                   placeholder="Search products..."
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearchChange}
                 />
               </div>
             </div>
@@ -405,11 +421,50 @@ function Marketplace() {
           ))}
         </div>
       </div>
-     <div className="flex gap-10 justify-between overflow-auto mt-18 grid-rows-4 mx-3 sm:grid-rows-2">
-       {
-        products.map((item,key)=>(<ProductCard key={key} data={item} img={item.img} price={item.price} title={item.product_name}/>))
-      }
-     </div>
+      <section className="mx-4 mt-18">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {paginatedProducts.map((item) => (
+            <ProductCard
+              key={item.id}
+              data={item}
+              img={item.img}
+              price={item.price}
+              title={item.product_name}
+            />
+          ))}
+        </div>
+
+        {filteredProducts.length === 0 && (
+          <p className="py-10 text-center text-gray-500">No products found.</p>
+        )}
+
+        {totalPages > 1 && (
+          <nav
+            className="mt-8 flex items-center justify-center gap-3"
+            aria-label="Product pagination"
+          >
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={currentPage === 1}
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-gray-600">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              disabled={currentPage === totalPages}
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+            </button>
+          </nav>
+        )}
+      </section>
     </div>
   );
 }
