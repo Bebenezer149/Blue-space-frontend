@@ -18,21 +18,13 @@ function Marketplace() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 5;
 
   const filteredProducts = products.filter((product) =>
     product.product_name?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage));
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * productsPerPage,
-    currentPage * productsPerPage,
-  );
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const categories = [
@@ -423,7 +415,7 @@ function Marketplace() {
       </div>
       <section className="mx-4 mt-18">
         <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-6 md:overflow-visible lg:grid-cols-3 xl:grid-cols-5">
-          {paginatedProducts.map((item) => (
+          {filteredProducts.map((item) => (
             <div key={item.id} className="w-72 shrink-0 snap-start md:w-auto md:shrink">
               <ProductCard
                 data={item}
@@ -439,32 +431,6 @@ function Marketplace() {
           <p className="py-10 text-center text-gray-500">No products found.</p>
         )}
 
-        {totalPages > 1 && (
-          <nav
-            className="mt-8 flex items-center justify-center gap-3"
-            aria-label="Product pagination"
-          >
-            <button
-              type="button"
-              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-              disabled={currentPage === 1}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-gray-600">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              type="button"
-              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-              disabled={currentPage === totalPages}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Next
-            </button>
-          </nav>
-        )}
       </section>
     </div>
   );
