@@ -422,15 +422,16 @@ function Marketplace() {
         </div>
       </div>
       <section className="mx-4 mt-18">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-6 md:overflow-visible lg:grid-cols-3 xl:grid-cols-5">
           {paginatedProducts.map((item) => (
-            <ProductCard
-              key={item.id}
-              data={item}
-              img={item.img}
-              price={item.price}
-              title={item.product_name}
-            />
+            <div key={item.id} className="w-72 shrink-0 snap-start md:w-auto md:shrink">
+              <ProductCard
+                data={item}
+                img={item.img}
+                price={item.price}
+                title={item.product_name}
+              />
+            </div>
           ))}
         </div>
 
