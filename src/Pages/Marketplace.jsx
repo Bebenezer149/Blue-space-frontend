@@ -164,14 +164,14 @@ function Marketplace() {
         Accept: "application/json",
       },
     })
-    .then((res) => {
-       return res.json();
+      .then((res) => {
+        return res.json();
       })
-    .then((res) => {
-        console.log(res)
-        setProducts(res)
-  })
-    .catch((err) => console.log(err));
+      .then((res) => {
+        console.log(res);
+        setProducts(res);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (
@@ -413,25 +413,34 @@ function Marketplace() {
           ))}
         </div>
       </div>
-      <section className="mx-4 mt-18">
-        <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-6 md:overflow-visible lg:grid-cols-3 xl:grid-cols-5">
-          {filteredProducts.map((item) => (
-            <div key={item.id} className="w-72 shrink-0 snap-start md:w-auto md:shrink">
-              <ProductCard
-                data={item}
-                img={item.img}
-                price={item.price}
-                title={item.product_name}
-              />
-            </div>
-          ))}
-        </div>
+      {categories.map((item) => (
+        <section className="mx-4 mt-18">
+          <div className="m-3">
+            <h1 className="text-2xl font-semibold">{item.title}</h1>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-6 md:overflow-visible lg:grid-cols-3 xl:grid-cols-5">
+            {filteredProducts.map((item) => (
+              <div
+                key={item.id}
+                className="w-72 shrink-0 snap-start md:w-auto md:shrink"
+              >
+                <ProductCard
+                  data={item}
+                  img={item.img}
+                  price={item.price}
+                  title={item.product_name}
+                />
+              </div>
+            ))}
+          </div>
 
-        {filteredProducts.length === 0 && (
-          <p className="py-10 text-center text-gray-500">No products found.</p>
-        )}
-
-      </section>
+          {filteredProducts.length === 0 && (
+            <p className="py-10 text-center text-gray-500">
+              No products found.
+            </p>
+          )}
+        </section>
+      ))}
     </div>
   );
 }
