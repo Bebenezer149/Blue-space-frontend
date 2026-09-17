@@ -18,6 +18,8 @@ function Marketplace() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState([]);
+  const [expandedCategories, setExpandedCategories] = useState({});
+  const initialProductCount = 10;
 
   const filteredProducts = products.filter((product) =>
     product.product_name?.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -25,6 +27,7 @@ function Marketplace() {
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+    setExpandedCategories({});
   };
 
   const categories = [
@@ -413,13 +416,19 @@ function Marketplace() {
           ))}
         </div>
       </div>
-      {categories.map((item) => (
-        <section className="mx-4 mt-18">
+      {categories.map((item) => {
+        const isExpanded = expandedCategories[item.title];
+        const visibleProducts = isExpanded
+          ? filteredProducts
+          : filteredProducts.slice(0, initialProductCount);
+
+        return (
+        <section key={item.title} className="mx-4 mt-18">
           <div className="m-3">
             <h1 className="text-2xl font-semibold">{item.title}</h1>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-6 md:overflow-visible lg:grid-cols-3 xl:grid-cols-5">
-            {filteredProducts.map((item) => (
+            {visibleProducts.map((item) => (
               <div
                 key={item.id}
                 className="w-72 shrink-0 snap-start md:w-auto md:shrink"
@@ -439,8 +448,25 @@ function Marketplace() {
               No products found.
             </p>
           )}
+          {filteredProducts.length > initialProductCount && (
+            <div className="mt-6 flex justify-center">
+              <button
+                type="button"
+                onClick={() =>
+                  setExpandedCategories((expanded) => ({
+                    ...expanded,
+                    [item.title]: !isExpanded,
+                  }))
+                }
+                className="rounded-md bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+              >
+                {isExpanded ? "Show less" : "Show more"}
+              </button>
+            </div>
+          )}
         </section>
-      ))}
+        );
+      })}
     </div>
   );
 }
