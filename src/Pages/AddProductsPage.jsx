@@ -58,7 +58,7 @@ const AddProductPage = () => {
 
     const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
     const cloudPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-    const uploadImage = async (file) => {
+    const uploadToCloudinary = async (file) => {
       const cloudData = new FormData();
       cloudData.append("file", file);
       cloudData.append("upload_preset", cloudPreset);
@@ -83,11 +83,11 @@ const AddProductPage = () => {
     let uploadedImageUrl;
     let uploadedVariantUrls;
     try {
-      uploadedImageUrl = await uploadImage(image);
-      uploadedVariantUrls = await Promise.all(variantImages.map(uploadImage));
+      uploadedImageUrl = await uploadToCloudinary(image);
+      uploadedVariantUrls = await Promise.all(variantImages.map(uploadToCloudinary));
     } catch (err) {
-      console.log(err);
-      toast.error("Couldn't upload image");
+      console.error(err);
+      toast.error("Couldn't upload product pictures");
       setLoading(false);
       return;
     }
@@ -99,7 +99,7 @@ const AddProductPage = () => {
     formData.append("status", status);
     if (category) formData.append("category", category);
     if (uploadedImageUrl) formData.append("img", uploadedImageUrl);
-    uploadedVariantUrls.forEach((url) => formData.append("variant[]", url));
+    uploadedVariantUrls.forEach((variantUrl) => formData.append("variant[]", variantUrl));
     formData.append("description", description);
 
     try {
@@ -336,7 +336,7 @@ const AddProductPage = () => {
           </div>
 
           <div>
-            <div className="flex items-baseline justify-between gap-3 mb-1">
+            <div className="mb-1 flex items-baseline justify-between gap-3">
               <label className="block text-sm font-medium text-gray-700">
                 Add More Pictures
               </label>
@@ -352,9 +352,7 @@ const AddProductPage = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
               onChange={handleVariantImagesChange}
             />
-            <p className="mt-1 text-xs text-gray-500">
-              Add up to 6 additional product pictures.
-            </p>
+            <p className="mt-1 text-xs text-gray-500">Add up to 6 additional product pictures.</p>
 
             {variantImages.length > 0 && (
               <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">

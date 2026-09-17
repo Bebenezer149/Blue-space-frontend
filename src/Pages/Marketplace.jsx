@@ -11,48 +11,52 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { CiLock } from "react-icons/ci";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { Link } from "react-router-dom";
+import ProductCard from "../Components/Cards/ProductCard";
+import { useEffect } from "react";
+import { API_URL } from "../config";
 function Marketplace() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [products, setProducts]=useState([])
+
   const categories = [
     {
       icon: <Handbag color="purple" />,
       title: "Fashion",
-      color: "bg-purple-50"
+      color: "bg-purple-50",
     },
     {
       icon: <Smartphone color="blue" />,
       title: "Electronics",
-      color: "bg-blue-50"
+      color: "bg-blue-50",
     },
     {
       icon: <House color="violet" />,
       title: "Housing & Furniture",
-      color: "bg-violet-50"
+      color: "bg-violet-50",
     },
     {
       icon: <Utensils color="orange" />,
       title: "Food & Drinks",
-      color: "bg-orange-50"
+      color: "bg-orange-50",
     },
     {
       icon: <Book color="green" />,
       title: "Books & Stationery",
-      color: "bg-green-50"
+      color: "bg-green-50",
     },
     {
       icon: <Gem color="pink" />,
       title: "Jewelry & Accessories",
-      color: "bg-pink-50"
+      color: "bg-pink-50",
     },
     {
       icon: <Dumbbell color="red" />,
       title: "Fitness & Sports",
-      color: "bg-red-50"
+      color: "bg-red-50",
     },
   ];
-  
+
   const navItems = [
     "Deals",
     "Top Sellers",
@@ -61,7 +65,7 @@ function Marketplace() {
     "Track Order",
     "Help",
   ];
-  
+
   const noticeItems = [
     {
       icon: (
@@ -144,7 +148,24 @@ function Marketplace() {
       text: "Get help when you need it",
     },
   ];
-  
+
+  useEffect(() => {
+    fetch(`${API_URL}/market-products`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+    .then((res) => {
+       return res.json();
+      })
+    .then((res) => {
+        console.log(res)
+        setProducts(res)
+  })
+    .catch((err) => console.log(err));
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Fixed Header */}
@@ -292,7 +313,9 @@ function Marketplace() {
             </div>
 
             {/* Mobile Navigation */}
-            <div className={`md:hidden ${isMenuOpen ? "block" : "hidden"} py-3`}>
+            <div
+              className={`md:hidden ${isMenuOpen ? "block" : "hidden"} py-3`}
+            >
               <div className="flex flex-col space-y-3">
                 <button className="w-full text-left text-blue-500 font-semibold text-sm py-2 border-b border-gray-100">
                   Sell on Blue Space
@@ -328,7 +351,9 @@ function Marketplace() {
           >
             <div className="text-blue-500 flex-shrink-0">{item.icon}</div>
             <div className="flex flex-col">
-              <h1 className="font-semibold text-sm sm:text-base">{item.title}</h1>
+              <h1 className="font-semibold text-sm sm:text-base">
+                {item.title}
+              </h1>
               <p className="text-xs sm:text-sm text-gray-600">{item.text}</p>
             </div>
           </div>
@@ -339,20 +364,24 @@ function Marketplace() {
       <div className="m-4 px-4 flex items-center justify-start">
         <h1 className="font-semibold text-xl">Shop by Categories</h1>
       </div>
-      
+
       {/* Horizontal scrolling on mobile, grid on larger screens */}
       <div className="px-4 mt-4">
         {/* Mobile - Horizontal Scroll */}
         <div className="flex md:hidden gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
           {categories.map((item, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="flex-shrink-0 flex flex-col items-center gap-2 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer hover:scale-105 w-[100px] snap-start"
             >
-              <div className={`h-16 w-16 shadow-sm ${item.color} flex items-center justify-center rounded-full`}>
+              <div
+                className={`h-16 w-16 shadow-sm ${item.color} flex items-center justify-center rounded-full`}
+              >
                 {item.icon}
               </div>
-              <h1 className="font-semibold text-sm text-center">{item.title}</h1>
+              <h1 className="font-semibold text-sm text-center">
+                {item.title}
+              </h1>
             </div>
           ))}
         </div>
@@ -360,18 +389,27 @@ function Marketplace() {
         {/* Desktop - Grid Layout */}
         <div className="hidden md:grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
           {categories.map((item, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="flex flex-col items-center gap-2 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer hover:scale-105"
             >
-              <div className={`h-16 w-16 shadow-sm ${item.color} flex items-center justify-center rounded-full`}>
+              <div
+                className={`h-16 w-16 shadow-sm ${item.color} flex items-center justify-center rounded-full`}
+              >
                 {item.icon}
               </div>
-              <h1 className="font-semibold text-sm text-center">{item.title}</h1>
+              <h1 className="font-semibold text-sm text-center">
+                {item.title}
+              </h1>
             </div>
           ))}
         </div>
       </div>
+     <div className="flex gap-10 justify-between overflow-auto mt-18 grid-rows-4 mx-3 sm:grid-rows-2">
+       {
+        products.map((item,key)=>(<ProductCard key={key} data={item} img={item.img} price={item.price} title={item.product_name}/>))
+      }
+     </div>
     </div>
   );
 }

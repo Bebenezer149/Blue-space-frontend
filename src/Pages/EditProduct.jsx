@@ -43,7 +43,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
     }
   }, [productDetails]);
 
-  function updateProduct(e) {
+  async function updateProduct(e) {
     e.preventDefault();
     setLoading(true);
 
@@ -59,7 +59,38 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
     if (image) {
       formData.append("img", image);
     }
-    variantImages.forEach((variantImage) => formData.append("variant[]", variantImage));
+
+    if (variantImages.length > 0) {
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+      const cloudPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+      const uploadVariantImage = async (variantImage) => {
+        const cloudData = new FormData();
+        cloudData.append("file", variantImage);
+        cloudData.append("upload_preset", cloudPreset);
+
+        const cloudResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          { method: "POST", body: cloudData },
+        );
+        const cloudResult = await cloudResponse.json();
+
+        if (!cloudResponse.ok || !cloudResult?.secure_url) {
+          throw new Error("Couldn't upload variant image to Cloudinary");
+        }
+
+        return cloudResult.secure_url;
+      };
+
+      try {
+        const variantUrls = await Promise.all(variantImages.map(uploadVariantImage));
+        variantUrls.forEach((variantUrl) => formData.append("variant[]", variantUrl));
+      } catch (err) {
+        console.error(err);
+        toast.error("Couldn't upload additional product pictures");
+        setLoading(false);
+        return;
+      }
+    }
 
     formData.append("_method", "PUT");
 
