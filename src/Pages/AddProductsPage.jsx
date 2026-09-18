@@ -22,36 +22,35 @@ const AddProductPage = () => {
   const [status, setStatus] = useState("AVAILABLE");
   const [category, setCategory] = useState("");
 
-  // Main/cover image
+  // File objects are stored here.
+  // The actual <input type="file"> elements are NOT controlled.
   const [image, setImage] = useState(null);
-
-  // Additional product images
   const [images, setImages] = useState([]);
 
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const [disable, setDisable] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
   const navigate = useNavigate();
-
-  const token = localStorage.getItem("token");
-
-  // =========================================================
-  // SUBMIT PRODUCT
-  // =========================================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setSuccess(false);
     setErrorMessage(false);
-    setDisable(false);
 
-    // Product image is required
-    if (!productName || !price || !quantity || !image || !description) {
+    /*
+     * Basic validation
+     */
+    if (
+      !productName.trim() ||
+      price === "" ||
+      quantity === "" ||
+      !image ||
+      !description.trim()
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -67,12 +66,26 @@ const AddProductPage = () => {
       return;
     }
 
-    setLoading(true);
+    if (parsedPrice < 0) {
+      toast.error("Price cannot be negative");
+      return;
+    }
 
-    // =========================================================
-    // CLOUDINARY CONFIGURATION
-    // =========================================================
+    if (parsedQuantity < 0) {
+      toast.error("Stock quantity cannot be negative");
+      return;
+    }
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("You are not logged in");
+      return;
+    }
+
+    /*
+     * Cloudinary configuration
+     */
     const cloudName =
       import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
@@ -80,26 +93,31 @@ const AddProductPage = () => {
       import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
     if (!cloudName || !cloudPreset) {
-      toast.error("Cloudinary configuration is missing");
-      setLoading(false);
+      console.error("Cloudinary configuration is missing:", {
+        cloudName,
+        cloudPreset,
+      });
+
+      toast.error(
+        "Cloudinary configuration is missing. Check your .env file."
+      );
+
       return;
     }
 
-    // =========================================================
-    // CLOUDINARY UPLOAD FUNCTION
-    // =========================================================
+    setLoading(true);
 
+    /*
+     * Upload one image to Cloudinary
+     */
     const uploadToCloudinary = async (file) => {
       if (!file) {
-        throw new Error("No image file provided");
+        throw new Error("No image selected");
       }
 
       const cloudData = new FormData();
 
-      // The actual image file
       cloudData.append("file", file);
-
-      // Cloudinary unsigned upload preset
       cloudData.append("upload_preset", cloudPreset);
 
       const cloudResponse = await fetch(
@@ -110,64 +128,107 @@ const AddProductPage = () => {
         }
       );
 
-      const res = await cloudResponse.json();
+      /*
+       * Read the response as text first.
+       *
+       * This prevents:
+       * Unexpected token '<'
+       *
+       * if Cloudinary happens to return HTML.
+       */
+      const responseText = await cloudResponse.text();
 
-      if (!cloudResponse.ok || !res?.secure_url) {
-        console.error("Cloudinary response:", res);
+      let cloudResult;
+
+      try {
+        cloudResult = JSON.parse(responseText);
+      } catch (error) {
+        console.error(
+          "Cloudinary returned a non-JSON response:",
+          responseText
+        );
 
         throw new Error(
-          res?.error?.message ||
-            "Couldn't upload image to Cloudinary"
+          "Cloudinary returned an invalid response."
         );
       }
 
-      // Return the Cloudinary URL
-      return res.secure_url;
+      if (!cloudResponse.ok) {
+        console.error(
+          "Cloudinary upload failed:",
+          cloudResult
+        );
+
+        throw new Error(
+          cloudResult?.error?.message ||
+            "Couldn't upload image to Cloudinary."
+        );
+      }
+
+      if (!cloudResult?.secure_url) {
+        console.error(
+          "Cloudinary response did not contain secure_url:",
+          cloudResult
+        );
+
+        throw new Error(
+          "Cloudinary did not return an image URL."
+        );
+      }
+
+      return cloudResult.secure_url;
     };
 
-    // =========================================================
-    // UPLOAD IMAGES
-    // =========================================================
-
-    let uploadedImageUrl;
-    let uploadedImageUrls = [];
+    /*
+     * Upload all product pictures
+     */
+    let uploadedMainImageUrl = "";
+    let uploadedAdditionalImageUrls = [];
 
     try {
-      // -----------------------------------------
-      // Upload main image
-      // -----------------------------------------
+      /*
+       * Upload the main product image
+       */
+      uploadedMainImageUrl =
+        await uploadToCloudinary(image);
 
-      uploadedImageUrl = await uploadToCloudinary(image);
-
-      // -----------------------------------------
-      // Upload additional images
-      // -----------------------------------------
-
+      /*
+       * Upload the additional images.
+       *
+       * Promise.all allows the uploads to happen
+       * concurrently.
+       */
       if (images.length > 0) {
-        uploadedImageUrls = await Promise.all(
-          images.map((file) => uploadToCloudinary(file))
-        );
+        uploadedAdditionalImageUrls =
+          await Promise.all(
+            images.map((file) =>
+              uploadToCloudinary(file)
+            )
+          );
       }
-    } catch (err) {
-      console.error("Cloudinary upload error:", err);
+    } catch (error) {
+      console.error(
+        "Cloudinary product image upload error:",
+        error
+      );
 
       toast.error(
-        err?.message || "Couldn't upload product pictures"
+        error?.message ||
+          "Couldn't upload product pictures."
       );
 
       setLoading(false);
       return;
     }
 
-    // =========================================================
-    // CREATE PRODUCT FORM DATA
-    // =========================================================
-
+    /*
+     * Prepare data for Laravel
+     */
     const formData = new FormData();
 
     formData.append(
       "product_name",
-      productName
+      productName.trim()
     );
 
     formData.append(
@@ -192,87 +253,183 @@ const AddProductPage = () => {
       );
     }
 
-    // Main product image
+    /*
+     * Main product image.
+     *
+     * Laravel will store this in:
+     * products.img
+     */
     formData.append(
       "img",
-      uploadedImageUrl
+      uploadedMainImageUrl
     );
 
-    // Additional product images
-    uploadedImageUrls.forEach((imageUrl) => {
-      formData.append(
-        "images[]",
-        imageUrl
-      );
-    });
+    /*
+     * Additional product images.
+     *
+     * IMPORTANT:
+     * This must be images[] because the Laravel
+     * controller validates:
+     *
+     * images => array
+     * images.* => url
+     */
+    uploadedAdditionalImageUrls.forEach(
+      (imageUrl) => {
+        formData.append(
+          "images[]",
+          imageUrl
+        );
+      }
+    );
 
     formData.append(
       "description",
-      description
+      description.trim()
     );
 
-    // =========================================================
-    // SEND PRODUCT TO LARAVEL
-    // =========================================================
-
+    /*
+     * Send product to Laravel
+     */
     try {
-      const res = await fetch(
+      const response = await fetch(
         `${API_URL}/create-product`,
         {
           method: "POST",
 
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
 
           body: formData,
         }
       );
 
-      // Request payload was too large
-      if (res.status === 413) {
-        throw new Error(
-          "Image is too large. Try a smaller photo."
-        );
-      }
+      /*
+       * Read the response as text first.
+       *
+       * This is important because if Laravel returns
+       * an HTML error page, calling response.json()
+       * directly causes:
+       *
+       * Unexpected token '<'
+       */
+      const responseText =
+        await response.text();
 
-      const contentType =
-        res.headers.get("content-type") || "";
+      console.log(
+        "Create Product Status:",
+        response.status
+      );
 
-      if (!res.ok) {
-        if (
-          contentType.includes(
-            "application/json"
-          )
-        ) {
-          const data = await res.json();
+      console.log(
+        "Create Product Response:",
+        responseText
+      );
+
+      let data = null;
+
+      /*
+       * Try to convert Laravel response into JSON.
+       */
+      if (responseText) {
+        try {
+          data = JSON.parse(responseText);
+        } catch (error) {
+          console.error(
+            "Laravel returned non-JSON response:",
+            responseText
+          );
+
+          if (response.status === 404) {
+            throw new Error(
+              "Create product API route was not found. Check your Laravel route."
+            );
+          }
+
+          if (response.status === 401) {
+            throw new Error(
+              "Your login session has expired. Please log in again."
+            );
+          }
+
+          if (response.status === 403) {
+            throw new Error(
+              "You are not authorized to create this product."
+            );
+          }
+
+          if (response.status === 419) {
+            throw new Error(
+              "Your session has expired. Please log in again."
+            );
+          }
+
+          if (response.status === 422) {
+            throw new Error(
+              "Some product information is invalid."
+            );
+          }
+
+          if (response.status >= 500) {
+            throw new Error(
+              "The server encountered an error while creating the product."
+            );
+          }
 
           throw new Error(
-            data.message ||
-              "Failed to create product"
+            `Server returned an invalid response (${response.status}).`
+          );
+        }
+      }
+
+      /*
+       * Handle HTTP errors
+       */
+      if (!response.ok) {
+        console.error(
+          "Product creation failed:",
+          data
+        );
+
+        /*
+         * Laravel validation errors
+         */
+        if (
+          response.status === 422 &&
+          data?.errors
+        ) {
+          const validationMessages =
+            Object.values(data.errors)
+              .flat()
+              .join(" ");
+
+          throw new Error(
+            validationMessages ||
+              "Please check the product information."
           );
         }
 
         throw new Error(
-          `Server error (${res.status}). Please try again.`
+          data?.message ||
+            `Failed to create product (${response.status}).`
         );
       }
 
-      const data = await res.json();
-
+      /*
+       * Product created successfully
+       */
       console.log(
         "Product created successfully:",
         data
       );
 
-      // =====================================================
-      // RESET FORM
-      // =====================================================
-
       setSuccess(true);
-      setLoading(false);
-      setDisable(true);
 
+      /*
+       * Reset all React state
+       */
       setProductName("");
       setPrice("");
       setQuantity("");
@@ -282,7 +439,18 @@ const AddProductPage = () => {
       setImages([]);
       setDescription("");
 
-      // Clear file inputs
+      /*
+       * IMPORTANT:
+       *
+       * We only clear file inputs by setting their
+       * value to an empty string.
+       *
+       * We NEVER set:
+       *
+       * value={image}
+       *
+       * on a file input.
+       */
       document
         .querySelectorAll(
           'input[type="file"]'
@@ -291,33 +459,69 @@ const AddProductPage = () => {
           fileInput.value = "";
         });
 
-      toast.success("Product created");
-
-      navigate("/products");
-    } catch (err) {
-      console.error(
-        "Product creation error:",
-        err
+      toast.success(
+        data?.message ||
+          "Product created successfully"
       );
 
-      setLoading(false);
+      /*
+       * Give the success toast a moment to appear
+       * before navigating.
+       */
+      setTimeout(() => {
+        navigate("/products");
+      }, 500);
+    } catch (error) {
+      console.error(
+        "Product creation error:",
+        error
+      );
+
       setErrorMessage(true);
 
       toast.error(
-        err?.message ||
-          "Something went wrong"
+        error?.message ||
+          "Something went wrong while creating the product."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
-  // =========================================================
-  // MAIN IMAGE SELECTION
-  // =========================================================
-
+  /*
+   * Main image handler
+   */
   const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
+    const file =
+      e.target.files?.[0];
 
     if (!file) {
+      setImage(null);
+      return;
+    }
+
+    /*
+     * Basic file validation
+     */
+    if (!file.type.startsWith("image/")) {
+      toast.error(
+        "Please select an image file."
+      );
+
+      e.target.value = "";
+      setImage(null);
+      return;
+    }
+
+    /*
+     * 5MB limit
+     */
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(
+        "Main image must be less than 5MB."
+      );
+
+      e.target.value = "";
       setImage(null);
       return;
     }
@@ -325,78 +529,143 @@ const AddProductPage = () => {
     setImage(file);
   };
 
-  // =========================================================
-  // ADDITIONAL IMAGE SELECTION
-  // =========================================================
-
+  /*
+   * Additional images handler
+   */
   const handleImagesChange = (e) => {
-    const selectedImages = Array.from(
-      e.target.files || []
-    );
+    const selectedImages =
+      Array.from(
+        e.target.files || []
+      );
 
     if (selectedImages.length === 0) {
       return;
     }
 
-    const availableSlots =
-      MAX_IMAGES - images.length;
+    /*
+     * Validate every selected image
+     */
+    const invalidImage =
+      selectedImages.find(
+        (file) =>
+          !file.type.startsWith("image/")
+      );
 
-    if (availableSlots <= 0) {
+    if (invalidImage) {
       toast.error(
-        `You can add a maximum of ${MAX_IMAGES} additional pictures`
+        "Only image files are allowed."
       );
 
       e.target.value = "";
       return;
     }
 
-    const imagesToAdd =
-      selectedImages.slice(
-        0,
-        availableSlots
+    /*
+     * Check image sizes
+     */
+    const oversizedImage =
+      selectedImages.find(
+        (file) =>
+          file.size > 5 * 1024 * 1024
       );
 
-    if (
-      selectedImages.length >
-      availableSlots
-    ) {
+    if (oversizedImage) {
       toast.error(
-        `Only ${availableSlots} more picture(s) can be added`
+        "Each additional image must be less than 5MB."
       );
+
+      e.target.value = "";
+      return;
     }
 
-    setImages((previousImages) => [
-      ...previousImages,
-      ...imagesToAdd,
-    ]);
+    /*
+     * Combine previously selected images
+     * with newly selected images.
+     */
+    const updatedImages = [
+      ...images,
+      ...selectedImages,
+    ];
 
-    // Allow selecting the same file again
+    /*
+     * Maximum of 6 additional images
+     */
+    if (
+      updatedImages.length >
+      MAX_IMAGES
+    ) {
+      toast.error(
+        `You can add a maximum of ${MAX_IMAGES} additional pictures.`
+      );
+
+      /*
+       * Clear the file input.
+       *
+       * This is allowed because we're setting
+       * it to an empty string.
+       */
+      e.target.value = "";
+
+      return;
+    }
+
+    setImages(updatedImages);
+
+    /*
+     * Clear the input so the user can select
+     * the same file again if necessary.
+     */
     e.target.value = "";
   };
 
-  // =========================================================
-  // REMOVE ADDITIONAL IMAGE
-  // =========================================================
-
+  /*
+   * Remove an additional image
+   */
   const removeImage = (indexToRemove) => {
-    setImages((previousImages) =>
-      previousImages.filter(
+    setImages((currentImages) =>
+      currentImages.filter(
         (_, index) =>
           index !== indexToRemove
       )
     );
   };
 
-  // =========================================================
-  // PAGE
-  // =========================================================
+  /*
+   * Clear form
+   */
+  const handleClear = () => {
+    setProductName("");
+    setPrice("");
+    setQuantity("");
+    setStatus("AVAILABLE");
+    setCategory("");
+    setImage(null);
+    setImages([]);
+    setDescription("");
+
+    setSuccess(false);
+    setErrorMessage(false);
+
+    /*
+     * File inputs can safely be reset
+     * to an empty string.
+     */
+    document
+      .querySelectorAll(
+        'input[type="file"]'
+      )
+      .forEach((fileInput) => {
+        fileInput.value = "";
+      });
+  };
 
   return (
     <div className="p-4 sm:p-6 min-h-screen flex items-center justify-center w-full bg-gradient-to-br from-blue-400 to-blue-600">
       <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 w-full max-w-2xl">
 
-        {/* HEADER */}
+        {/* Header */}
         <div className="flex justify-between items-start gap-4 mb-6">
+
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
             Add New Product
           </h2>
@@ -405,6 +674,7 @@ const AddProductPage = () => {
             <button
               type="button"
               className="cursor-pointer text-gray-500 hover:text-gray-700 p-1"
+              aria-label="Close"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -422,11 +692,13 @@ const AddProductPage = () => {
               </svg>
             </button>
           </Link>
+
         </div>
 
-        {/* SUCCESS MESSAGE */}
+        {/* Success message */}
         {success && (
           <div className="w-full p-4 rounded-lg border border-green-400 bg-green-50 text-green-700 my-4">
+
             <h1 className="flex gap-2 items-center justify-between text-sm sm:text-base">
               Product Added Successfully
 
@@ -444,13 +716,16 @@ const AddProductPage = () => {
                   d="m4.5 12.75 6 6 9-13.5"
                 />
               </svg>
+
             </h1>
+
           </div>
         )}
 
-        {/* ERROR MESSAGE */}
+        {/* Error message */}
         {errorMessage && (
           <div className="w-full p-4 rounded-lg border border-red-400 bg-red-50 text-red-700 my-4">
+
             <h1 className="flex gap-2 items-center text-sm sm:text-base">
               Something went wrong
 
@@ -468,17 +743,21 @@ const AddProductPage = () => {
                   d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
+
             </h1>
+
           </div>
         )}
 
+        {/* Form */}
         <form
           onSubmit={handleSubmit}
           className="space-y-4"
         >
 
-          {/* PRODUCT NAME */}
+          {/* Product Name */}
           <div>
+
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Product Name
             </label>
@@ -496,12 +775,15 @@ const AddProductPage = () => {
               }
               required
             />
+
           </div>
 
-          {/* PRICE + QUANTITY */}
+          {/* Price + Quantity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+            {/* Price */}
             <div>
+
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Price (GH₵)
               </label>
@@ -521,9 +803,12 @@ const AddProductPage = () => {
                 }
                 required
               />
+
             </div>
 
+            {/* Quantity */}
             <div>
+
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Stock Quantity
               </label>
@@ -542,15 +827,17 @@ const AddProductPage = () => {
                 }
                 required
               />
+
             </div>
 
           </div>
 
-          {/* STATUS + MAIN IMAGE */}
+          {/* Status + Main Image */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            {/* STATUS */}
+            {/* Status */}
             <div>
+
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Status
               </label>
@@ -568,39 +855,55 @@ const AddProductPage = () => {
                 <option value="AVAILABLE">
                   Available
                 </option>
+
+                <option value="OUT_OF_STOCK">
+                  Out of Stock
+                </option>
               </select>
+
             </div>
 
-            {/* MAIN IMAGE */}
+            {/* Main Image */}
             <div>
+
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Product Image
               </label>
 
+              {/*
+                 IMPORTANT:
+
+                 There is NO value prop here.
+
+                 DO NOT add:
+
+                 value={image}
+
+                 to a file input.
+               */}
               <input
                 type="file"
                 accept="image/*"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                onChange={
-                  handleImageChange
-                }
+                onChange={handleImageChange}
+                required
               />
 
               <p className="text-xs text-gray-500 mt-1">
-                Upload the main product image.
+                Upload an image less than 5MB.
               </p>
 
-              {/* MAIN IMAGE NAME */}
               {image && (
-                <p className="text-xs text-gray-600 mt-2 truncate">
+                <p className="text-xs text-green-600 mt-1 truncate">
                   Selected: {image.name}
                 </p>
               )}
+
             </div>
 
           </div>
 
-          {/* ADDITIONAL IMAGES */}
+          {/* Additional Images */}
           <div>
 
             <div className="mb-1 flex items-baseline justify-between gap-3">
@@ -620,20 +923,18 @@ const AddProductPage = () => {
               accept="image/*"
               multiple
               disabled={
-                images.length >=
+                images.length ===
                 MAX_IMAGES
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
-              onChange={
-                handleImagesChange
-              }
+              onChange={handleImagesChange}
             />
 
             <p className="mt-1 text-xs text-gray-500">
-              Add up to {MAX_IMAGES} additional product pictures.
+              Add up to 6 additional product pictures.
             </p>
 
-            {/* SELECTED ADDITIONAL IMAGES */}
+            {/* Selected additional images */}
             {images.length > 0 && (
               <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
 
@@ -670,7 +971,7 @@ const AddProductPage = () => {
 
           </div>
 
-          {/* CATEGORY */}
+          {/* Category */}
           <div>
 
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -707,7 +1008,7 @@ const AddProductPage = () => {
 
           </div>
 
-          {/* DESCRIPTION */}
+          {/* Description */}
           <div>
 
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -730,16 +1031,15 @@ const AddProductPage = () => {
 
           </div>
 
-          {/* BUTTONS */}
+          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
 
+            {/* Submit */}
             <button
               type="submit"
-              disabled={
-                disable || loading
-              }
+              disabled={loading}
               className={`flex-1 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium ${
-                disable || loading
+                loading
                   ? "opacity-50 cursor-not-allowed"
                   : ""
               }`}
@@ -749,7 +1049,7 @@ const AddProductPage = () => {
                 <div className="flex gap-4 items-center justify-center">
 
                   <h1>
-                    Uploading...
+                    Creating
                   </h1>
 
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
@@ -761,34 +1061,12 @@ const AddProductPage = () => {
 
             </button>
 
+            {/* Clear */}
             <button
               type="button"
-              className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
-              onClick={() => {
-
-                setProductName("");
-                setPrice("");
-                setQuantity("");
-                setStatus("AVAILABLE");
-                setCategory("");
-                setImage(null);
-                setImages([]);
-                setDescription("");
-                setSuccess(false);
-                setErrorMessage(false);
-                setDisable(false);
-
-                document
-                  .querySelectorAll(
-                    'input[type="file"]'
-                  )
-                  .forEach(
-                    (fileInput) => {
-                      fileInput.value = "";
-                    }
-                  );
-
-              }}
+              onClick={handleClear}
+              disabled={loading}
+              className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Clear
             </button>
