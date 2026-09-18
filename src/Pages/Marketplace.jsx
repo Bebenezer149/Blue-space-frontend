@@ -424,8 +424,22 @@ function Marketplace() {
 
         return (
         <section key={item.title} className="mx-4 mt-18">
-          <div className="m-3">
+          <div className="m-3 flex items-center justify-between gap-4">
             <h1 className="text-2xl font-semibold">{item.title}</h1>
+            {filteredProducts.length > initialProductCount && (
+              <button
+                type="button"
+                onClick={() =>
+                  setExpandedCategories((expanded) => ({
+                    ...expanded,
+                    [item.title]: !isExpanded,
+                  }))
+                }
+                className="shrink-0 rounded-md bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+              >
+                {isExpanded ? "Show less" : "Show more"}
+              </button>
+            )}
           </div>
           <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-2 md:gap-6 md:overflow-visible lg:grid-cols-3 xl:grid-cols-5">
             {visibleProducts.map((item) => (
@@ -447,22 +461,6 @@ function Marketplace() {
             <p className="py-10 text-center text-gray-500">
               No products found.
             </p>
-          )}
-          {filteredProducts.length > initialProductCount && (
-            <div className="mt-6 flex justify-center">
-              <button
-                type="button"
-                onClick={() =>
-                  setExpandedCategories((expanded) => ({
-                    ...expanded,
-                    [item.title]: !isExpanded,
-                  }))
-                }
-                className="rounded-md bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-              >
-                {isExpanded ? "Show less" : "Show more"}
-              </button>
-            </div>
           )}
         </section>
         );
