@@ -14,7 +14,7 @@ function VerifyAccount({ phone_number }) {
 
   function verifyOtp() {
     setLoading(true);
-    fetch(`${API_URL}/verify-otp?otp=${otpCode}&&phone_number=${phone_number}`, {
+    fetch(`${API_URL}/verify-otp?otp=${otpCode}&&phone_number=0539278827`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
