@@ -1,7 +1,8 @@
 import { useState } from "react";
+
 function OtpInput({ length, onChangeOTP }) {
   const [otp, setOtp] = useState(new Array(length).fill(""));
-
+  
   function handleChange(element, index) {
     // Get the value
     const value = element.value;

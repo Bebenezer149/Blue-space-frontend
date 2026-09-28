@@ -1,16 +1,42 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import OtpInput from "../Components/OtpInput/OtpInput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
-function VerifyAccount({ phone_number }) {
+function VerifyAccount({ phone_number , handleSubmit}) {
   const [otpCode, setOtpCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate=useNavigate()
   function onChangeOtp(newOtp) {
     console.log(newOtp);
     setOtpCode(newOtp);
   }
 
 
+  function sendOtp(){
+      fetch(`${API_URL}/send-otp?phone_number=0539278827`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+
+        }
+        
+      })
+      .then((res)=>{
+        if(!res.ok){
+          throw new Error("Unable to send otp")
+        }
+        res.json()
+      })
+      .then((res)=>{
+        console.log(res)
+      })
+      .catch(err=>console.log(err))
+  }
+
+  useEffect(()=>{
+    sendOtp()
+  },[])
 
   function verifyOtp() {
     setLoading(true);
@@ -32,6 +58,11 @@ function VerifyAccount({ phone_number }) {
       .then((res) => {
         console.log(res);
         setLoading(false);
+        if(res.status ==="true"){
+          handleSubmit
+          navigate("/dashboard")
+          
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -85,7 +116,7 @@ function VerifyAccount({ phone_number }) {
 
           <p className="text-[11px] sm:text-xs text-gray-400 text-center md:text-left">
             Didn't receive a code?{" "}
-            <button className="text-blue-500 cursor-pointer font-medium hover:underline">
+            <button onClick={sendOtp} className="text-blue-500 cursor-pointer font-medium hover:underline">
               Resend
             </button>
           </p>
