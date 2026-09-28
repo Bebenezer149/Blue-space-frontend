@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import VerifyAccount from "./VerifyAccount";
 
 function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -443,6 +444,7 @@ function SignUp() {
           </button>
         </form>
       </div>
+      <VerifyAccount phone_number={phoneNumber}/>
     </div>
   );
 }
