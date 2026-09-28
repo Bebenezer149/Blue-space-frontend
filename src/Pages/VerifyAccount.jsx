@@ -10,20 +10,17 @@ function VerifyAccount({ phone_number }) {
     setOtpCode(newOtp);
   }
 
-  const data={
-    otp:otpCode,
-    phone_number:phone_number
-  }
+
 
   function verifyOtp() {
     setLoading(true);
-    fetch(`${API_URL}/verify-otp`, {
+    fetch(`${API_URL}/verify-otp?otp=${otpCode}&&phone_number=${phone_number}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept":"application/json"
+      
       },
-      body:JSON.stringify(data)
+      
        
     })
       .then((res) => {
