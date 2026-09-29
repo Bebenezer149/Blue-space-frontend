@@ -3,9 +3,11 @@ import OtpInput from "../Components/OtpInput/OtpInput";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import { toast } from "../toast";
 function VerifyAccount({ phone_number , handleSubmit}) {
   const [otpCode, setOtpCode] = useState("");
   const [loading, setLoading] = useState(false);
+  
   const navigate=useNavigate()
   function onChangeOtp(newOtp) {
     console.log(newOtp);
@@ -60,6 +62,7 @@ function VerifyAccount({ phone_number , handleSubmit}) {
         setLoading(false);
         if(res.status ==="true"){
           handleSubmit
+          toast.success("Congratulations your account has been verified!")
           navigate("/dashboard")
           
         }
@@ -71,11 +74,11 @@ function VerifyAccount({ phone_number , handleSubmit}) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-3 sm:p-4 md:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-blue-500 p-3 sm:p-4 md:p-6 overflow-y-auto">
       <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-3xl overflow-hidden flex flex-col md:flex-row my-auto">
         {/* Lottie — shows on top for mobile, on right for md+ */}
         <div className="order-first md:order-last flex items-center justify-center bg-slate-50 p-4 md:p-6 md:flex-1">
-          <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-full md:max-w-[200px] lg:max-w-[280px] md:aspect-square">
+          <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-full md:max-w-[300px] lg:max-w-[300px] md:aspect-square">
             <DotLottieReact
               src="https://lottie.host/3a489ca6-f5c9-4cbe-b00c-4c505c2aa092/yrWhWIBozY.lottie"
               loop

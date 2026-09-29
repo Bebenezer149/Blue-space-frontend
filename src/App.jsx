@@ -10,6 +10,7 @@ import ResetPassword from "./Pages/ResetPassword";
 import Profile from "./Pages/Profile";
 import Landing from "./Pages/Landing";
 import Marketplace from "./Pages/Marketplace";
+import VerifyAccount from "./Pages/VerifyAccount";
 // import Header from "./Components/Header";
 // import Store from "./Pages/Store";
 import SignUp from "./Pages/SignUp";
@@ -86,7 +87,7 @@ function App() {
           }
         />
         {/* <Route path="/flowbite-test" element={<div className="min-h-screen bg-gray-100 p-8"><Buttons /></div>} /> */}
-        <Route path="/buttons" element={<Marketplace />} />
+        <Route path="/verify-account" element={<VerifyAccount />} />
       </Routes>
     </>
   );

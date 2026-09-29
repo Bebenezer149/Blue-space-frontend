@@ -92,7 +92,7 @@ function SignUp() {
 
         // Redirect after showing success
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/verify-account");
         }, 1500);
       })
       .catch((err) => {
@@ -103,22 +103,22 @@ function SignUp() {
       });
   }
 
-  function handleOpenVerificationModal(e) {
-    e.preventDefault();
+  // function handleOpenVerificationModal(e) {
+  //   e.preventDefault();
 
-    if (
-      firstName &&
-      lastName &&
-      businessName &&
-      email &&
-      password &&
-      passwordConfirmation
-    ) {
-      setOpenVerificationModal(true);
-    } else {
-      toast.error("Kindly fill the forms");
-    }
-  }
+  //   if (
+  //     firstName &&
+  //     lastName &&
+  //     businessName &&
+  //     email &&
+  //     password &&
+  //     passwordConfirmation
+  //   ) {
+  //     setOpenVerificationModal(true);
+  //   } else {
+  //     toast.error("Kindly fill the forms");
+  //   }
+  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 flex justify-center items-center p-4">
@@ -205,7 +205,7 @@ function SignUp() {
 
         <form
           className="flex flex-col gap-4"
-          onSubmit={(e) => handleOpenVerificationModal(e)}
+          onSubmit={handleSubmit}
         >
           {/* First Name + Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
