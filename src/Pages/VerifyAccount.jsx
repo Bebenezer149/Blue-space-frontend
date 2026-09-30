@@ -16,7 +16,7 @@ function VerifyAccount({ phone_number , handleSubmit}) {
 
 
   function sendOtp(){
-      fetch(`${API_URL}/send-otp?phone_number=0539278827`,{
+      fetch(`${API_URL}/send-otp?phone_number=${phone_number}`,{
         method:'POST',
         headers:{
           'Content-Type':'application/json'
@@ -27,6 +27,7 @@ function VerifyAccount({ phone_number , handleSubmit}) {
       .then((res)=>{
         if(!res.ok){
           throw new Error("Unable to send otp")
+          
         }
         res.json()
       })
@@ -54,11 +55,12 @@ function VerifyAccount({ phone_number , handleSubmit}) {
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
+          
         }
         return res.json();
       })
       .then((res) => {
-        console.log(res);
+        
         setLoading(false);
         if(res.status ==="true"){
           handleSubmit
@@ -66,9 +68,12 @@ function VerifyAccount({ phone_number , handleSubmit}) {
           navigate("/dashboard")
           
         }
+        else{
+          toast.error("Your OTP is invalid please try again")
+        }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Couldn't verify phone number please try again")
         setLoading(false);
       });
   }
