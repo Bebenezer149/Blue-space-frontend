@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "../../toast";
 import { apiFetch } from "../../api";
+import { API_URL } from "../../config";
 
 const Cart = ({ setOpenCart, cart, setCart }) => {
   const [step, setStep] = useState(1); // 1: Confirm Items, 2: Delivery Details
@@ -13,7 +14,11 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const getAvailableQuantity = (item) =>
-    Math.max(0, Number(item.availableQuantity ?? item.stock_quantity ?? item.quantity) || 0);
+    Math.max(
+      0,
+      Number(item.availableQuantity ?? item.stock_quantity ?? item.quantity) ||
+        0,
+    );
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -71,14 +76,22 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
 
     const availableQuantity = getAvailableQuantity(item);
     if (item.quantity >= availableQuantity) {
-      toast.warning(`Only ${availableQuantity} item${availableQuantity === 1 ? "" : "s"} available`);
+      toast.warning(
+        `Only ${availableQuantity} item${availableQuantity === 1 ? "" : "s"} available`,
+      );
       return;
     }
 
     setCart((prev) =>
       prev.map((cartItem) =>
         cartItem.id === itemId
-          ? { ...cartItem, quantity: Math.min(cartItem.quantity + 1, getAvailableQuantity(cartItem)) }
+          ? {
+              ...cartItem,
+              quantity: Math.min(
+                cartItem.quantity + 1,
+                getAvailableQuantity(cartItem),
+              ),
+            }
           : cartItem,
       ),
     );
@@ -147,9 +160,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
             <span className="hidden xs:inline">
               {step === 1 ? "Your Cart" : "Delivery Details"}
             </span>
-            <span className="xs:hidden">
-              {step === 1 ? "Cart" : "Details"}
-            </span>
+            <span className="xs:hidden">{step === 1 ? "Cart" : "Details"}</span>
           </h2>
           <button
             onClick={() => setOpenCart(false)}
@@ -163,20 +174,30 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
         <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center justify-between max-w-xs mx-auto">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300 ${step >= 1 ? 'bg-blue-600 text-white scale-100' : 'bg-gray-300 text-gray-600 scale-95'}`}>
+              <div
+                className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300 ${step >= 1 ? "bg-blue-600 text-white scale-100" : "bg-gray-300 text-gray-600 scale-95"}`}
+              >
                 1
               </div>
-              <span className={`text-xs sm:text-sm transition-colors duration-300 ${step >= 1 ? 'text-gray-800 font-medium' : 'text-gray-400'}`}>
+              <span
+                className={`text-xs sm:text-sm transition-colors duration-300 ${step >= 1 ? "text-gray-800 font-medium" : "text-gray-400"}`}
+              >
                 <span className="hidden xs:inline">Cart</span>
                 <span className="xs:hidden">Items</span>
               </span>
             </div>
-            <div className={`flex-1 h-0.5 mx-1 sm:mx-2 transition-all duration-500 ${step >= 2 ? 'bg-blue-600' : 'bg-gray-300'}`} />
+            <div
+              className={`flex-1 h-0.5 mx-1 sm:mx-2 transition-all duration-500 ${step >= 2 ? "bg-blue-600" : "bg-gray-300"}`}
+            />
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300 ${step >= 2 ? 'bg-blue-600 text-white scale-100' : 'bg-gray-300 text-gray-600 scale-95'}`}>
+              <div
+                className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300 ${step >= 2 ? "bg-blue-600 text-white scale-100" : "bg-gray-300 text-gray-600 scale-95"}`}
+              >
                 2
               </div>
-              <span className={`text-xs sm:text-sm transition-colors duration-300 ${step >= 2 ? 'text-gray-800 font-medium' : 'text-gray-400'}`}>
+              <span
+                className={`text-xs sm:text-sm transition-colors duration-300 ${step >= 2 ? "text-gray-800 font-medium" : "text-gray-400"}`}
+              >
                 <span className="hidden xs:inline">Details</span>
                 <span className="xs:hidden">Info</span>
               </span>
@@ -187,9 +208,13 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 relative">
           {/* Step 1: Cart Items */}
-          <div className={`transition-all duration-500 transform ${isTransitioning ? 'opacity-0 -translate-x-4' : 'opacity-100 translate-x-0'} ${step === 1 ? 'block' : 'hidden'}`}>
+          <div
+            className={`transition-all duration-500 transform ${isTransitioning ? "opacity-0 -translate-x-4" : "opacity-100 translate-x-0"} ${step === 1 ? "block" : "hidden"}`}
+          >
             <div className="space-y-4 mb-6">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-700">Confirm Your Items</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-700">
+                Confirm Your Items
+              </h3>
 
               {cart.length === 0 ? (
                 <div className="text-center py-8 sm:py-12">
@@ -206,8 +231,12 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                       d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                   </svg>
-                  <h3 className="text-base sm:text-lg font-medium text-gray-600">Your cart is empty</h3>
-                  <p className="text-gray-400 mt-1 text-sm sm:text-base">Add some items to get started!</p>
+                  <h3 className="text-base sm:text-lg font-medium text-gray-600">
+                    Your cart is empty
+                  </h3>
+                  <p className="text-gray-400 mt-1 text-sm sm:text-base">
+                    Add some items to get started!
+                  </p>
                 </div>
               ) : (
                 cart.map((data, index) => (
@@ -245,7 +274,9 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                           </span>
                           <button
                             onClick={() => handleIncreaseQuantity(data.id)}
-                            disabled={data.quantity >= getAvailableQuantity(data)}
+                            disabled={
+                              data.quantity >= getAvailableQuantity(data)
+                            }
                             aria-label={`Increase ${data.product_name} quantity`}
                             className="w-7 h-7 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition text-sm hover:scale-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
                           >
@@ -283,7 +314,9 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
           </div>
 
           {/* Step 2: Delivery Details */}
-          <div className={`transition-all duration-500 transform ${isTransitioning ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'} ${step === 2 ? 'block' : 'hidden'}`}>
+          <div
+            className={`transition-all duration-500 transform ${isTransitioning ? "opacity-0 translate-x-4" : "opacity-100 translate-x-0"} ${step === 2 ? "block" : "hidden"}`}
+          >
             <div className="border-t border-gray-200 pt-2">
               <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-4">
                 Delivery Details
@@ -306,7 +339,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                 </div>
 
                 {/* Phone Number */}
-                <div className="animate-slideInUp" style={{ animationDelay: '50ms' }}>
+                <div
+                  className="animate-slideInUp"
+                  style={{ animationDelay: "50ms" }}
+                >
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Phone Number <span className="text-red-500">*</span>
                   </label>
@@ -321,7 +357,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                 </div>
 
                 {/* Delivery Location */}
-                <div className="animate-slideInUp" style={{ animationDelay: '100ms' }}>
+                <div
+                  className="animate-slideInUp"
+                  style={{ animationDelay: "100ms" }}
+                >
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Delivery Location <span className="text-red-500">*</span>
                   </label>
@@ -336,7 +375,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                 </div>
 
                 {/* Payment Method */}
-                <div className="animate-slideInUp" style={{ animationDelay: '150ms' }}>
+                <div
+                  className="animate-slideInUp"
+                  style={{ animationDelay: "150ms" }}
+                >
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Payment Method <span className="text-red-500">*</span>
                   </label>
@@ -350,7 +392,9 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                         className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="flex items-center gap-2 mr-12 sm:mr-20">
-                        <span className="font-medium text-sm sm:text-base">Mobile Money</span>
+                        <span className="font-medium text-sm sm:text-base">
+                          Mobile Money
+                        </span>
                       </span>
                     </label>
                     <label className="relative flex items-center justify-between p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50 hover:scale-105 active:scale-95">
@@ -363,14 +407,19 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                         required
                       />
                       <span className="flex items-center gap-2 mr-12 sm:mr-20">
-                        <span className="font-medium text-sm sm:text-base">Cash on Delivery</span>
+                        <span className="font-medium text-sm sm:text-base">
+                          Cash on Delivery
+                        </span>
                       </span>
                     </label>
                   </div>
                 </div>
 
                 {/* Additional Notes */}
-                <div className="animate-slideInUp" style={{ animationDelay: '200ms' }}>
+                <div
+                  className="animate-slideInUp"
+                  style={{ animationDelay: "200ms" }}
+                >
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Additional Notes
                   </label>
@@ -423,13 +472,15 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                 <span className="text-sm sm:text-base">Back</span>
               </button>
             )}
-            
+
             {step === 1 ? (
               <button
                 onClick={goToStep2}
                 disabled={cart.length === 0}
                 className={`w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 active:scale-95 ${
-                  cart.length === 0 ? 'opacity-50 cursor-not-allowed hover:scale-100' : ''
+                  cart.length === 0
+                    ? "opacity-50 cursor-not-allowed hover:scale-100"
+                    : ""
                 }`}
               >
                 <span className="text-sm sm:text-base">Review & Continue</span>
@@ -456,7 +507,9 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                 <span>
                   {loading ? (
                     <div className="flex gap-4 items-center">
-                      <span className="text-sm sm:text-base">Placing Order</span>
+                      <span className="text-sm sm:text-base">
+                        Placing Order
+                      </span>
                       <div className="h-5 w-5 animate-spin rounded-full border-3 border-gray-100 border-t-transparent"></div>
                     </div>
                   ) : (
