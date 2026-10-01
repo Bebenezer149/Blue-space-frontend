@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import Header from "../Components/Header";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "../toast";
 import { API_URL } from "../config";
@@ -33,7 +33,13 @@ function ProductPage() {
 
   const token = localStorage.getItem("token");
 
-  function fetchProducts() {
+  const fetchProducts = useCallback(() => {
+    if (!token) {
+      setProducts([]);
+      setIsRefreshing(false);
+      return;
+    }
+
     setIsRefreshing(true);
     fetch(`${API_URL}/products`, {
       method: "GET",
@@ -53,12 +59,12 @@ function ProductPage() {
         console.log(err);
         setIsRefreshing(false);
       });
-  }
+  }, [token]);
 
   // Load the current vendor's products on mount.
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   function DeleteProduct(id) {
     fetch(`${API_URL}/delete-product?id=${id}`, {
