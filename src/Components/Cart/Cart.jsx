@@ -55,6 +55,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       });
 
       const authorizationUrl = response?.payment_data?.authorization_url;
+      console.log(authorizationUrl)
 
       if (authorizationUrl) {
         console.log("Authorization URL:", authorizationUrl);
