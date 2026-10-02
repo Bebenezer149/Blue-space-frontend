@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { toast } from "../../toast";
 import { apiFetch } from "../../api";
-import { API_URL } from "../../config";
 
 const Cart = ({ setOpenCart, cart, setCart }) => {
   const [step, setStep] = useState(1); // 1: Confirm Items, 2: Delivery Details
