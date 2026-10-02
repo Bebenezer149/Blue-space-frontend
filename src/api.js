@@ -20,6 +20,6 @@ export async function apiFetch(path, options = {}) {
     }
     throw new Error(message);
   }
-  console.log(data.paymentResponse.original.moolre_response)
+  console.log(data.paymentResponse.moolre_response)
   return data;
 }
