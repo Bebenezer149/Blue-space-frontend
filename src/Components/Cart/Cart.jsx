@@ -49,11 +49,20 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       items,
     };
     try {
-      await apiFetch("/create-order", {
+      const response = await apiFetch("/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+
+      const authorizationUrl = response?.payment_data?.authorization_url;
+
+      if (authorizationUrl) {
+        console.log("Authorization URL:", authorizationUrl);
+        window.location.href = authorizationUrl;
+        return;
+      }
+
       setOpenCart(false);
       setCart([]);
       toast.success("Order placed successfully");
