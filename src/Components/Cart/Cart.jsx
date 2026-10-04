@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "../../toast";
 import { apiFetch } from "../../api";
 
-const Cart = ({ setOpenCart, cart, setCart }) => {
+const Cart = ({ setOpenCart, cart, setCart, storeSlug }) => {
   const [step, setStep] = useState(1); // 1: Confirm Items, 2: Delivery Details
   const [customer, setCustomer] = useState("");
   const [phone, setPhone] = useState("");
@@ -11,6 +12,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const navigate = useNavigate();
 
   const getAvailableQuantity = (item) =>
     Math.max(
@@ -65,7 +67,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
 
       setOpenCart(false);
       setCart([]);
-      toast.success("Order placed successfully");
+      navigate("/success", { state: { storeSlug } });
     } catch (err) {
       toast.error(err.message || "Failed to place order");
     } finally {

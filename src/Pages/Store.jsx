@@ -387,6 +387,7 @@ function Store() {
           setCart={setCart}
           setOpenCart={setOpenCart}
           storeData={storeData}
+          storeSlug={slug}
         />
       )}
       {openViewCard && (
