@@ -48,20 +48,20 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       items,
     };
     try {
-      const response = await apiFetch("/create-order", {
+      await apiFetch("/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
-      const authorizationUrl = response?.payment_data?.authorization_url;
-      console.log(authorizationUrl)
+      // const authorizationUrl = response?.payment_data?.authorization_url;
+      // console.log(authorizationUrl)
 
-      if (authorizationUrl) {
-        console.log("Authorization URL:", authorizationUrl);
-        window.location.href = authorizationUrl;
-        return;
-      }
+      // if (authorizationUrl) {
+      //   console.log("Authorization URL:", authorizationUrl);
+      //   window.location.href = authorizationUrl;
+      //   return;
+      // }
 
       setOpenCart(false);
       setCart([]);
