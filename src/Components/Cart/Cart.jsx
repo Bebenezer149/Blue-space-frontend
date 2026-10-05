@@ -67,7 +67,7 @@ const Cart = ({ setOpenCart, cart, setCart, storeSlug }) => {
 
       setOpenCart(false);
       setCart([]);
-      navigate("/success", { state: { storeSlug } });
+      
     } catch (err) {
       toast.error(err.message || "Failed to place order");
     } finally {
