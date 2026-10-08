@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import VerifyAccount from "./VerifyAccount";
 import { toast } from "../toast";
+import { captureEvent } from "../analytics";
 
 function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -75,6 +76,7 @@ function SignUp() {
       })
       .then((res) => {
         console.log(res);
+        captureEvent("user_signed_up");
         setFirstName("");
         setLastName("");
         setBusinessName("");

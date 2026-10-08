@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import { captureEvent } from "../analytics";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -36,6 +37,7 @@ function Login() {
       })
       .then((res) => {
         console.log(res);
+        captureEvent("user_logged_in");
         setEmail("");
         setPassword("");
         setSuccess(true);
