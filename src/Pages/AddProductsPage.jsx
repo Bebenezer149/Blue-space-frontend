@@ -41,30 +41,30 @@ const AddProductPage = () => {
       return JSON.parse(text);
     } catch (error) {
       if (response.status === 404) {
-        throw new Error("Create product API route was not found. Check your Laravel route.");
+        throw new Error("Create product API route was not found. Check your Laravel route.", { cause: error });
       }
 
       if (response.status === 401) {
-        throw new Error("Your login session has expired. Please log in again.");
+        throw new Error("Your login session has expired. Please log in again.", { cause: error });
       }
 
       if (response.status === 403) {
-        throw new Error("You are not authorized to create this product.");
+        throw new Error("You are not authorized to create this product.", { cause: error });
       }
 
       if (response.status === 419) {
-        throw new Error("Your session has expired. Please log in again.");
+        throw new Error("Your session has expired. Please log in again.", { cause: error });
       }
 
       if (response.status === 422) {
-        throw new Error("Some product information is invalid.");
+        throw new Error("Some product information is invalid.", { cause: error });
       }
 
       if (response.status >= 500) {
-        throw new Error("The server encountered an error while creating the product.");
+        throw new Error("The server encountered an error while creating the product.", { cause: error });
       }
 
-      throw new Error(`Server returned an invalid response (${response.status}).`);
+      throw new Error(`Server returned an invalid response (${response.status}).`, { cause: error });
     }
   };
 
@@ -88,8 +88,13 @@ const AddProductPage = () => {
     const parsedPrice = Number(price);
     const parsedQuantity = Number(quantity);
 
-    if (Number.isNaN(parsedPrice) || Number.isNaN(parsedQuantity)) {
+    if (!Number.isFinite(parsedPrice) || !Number.isFinite(parsedQuantity)) {
       toast.error("Price and Stock Quantity must be valid numbers");
+      return;
+    }
+
+    if (!Number.isInteger(parsedQuantity)) {
+      toast.error("Stock quantity must be a whole number");
       return;
     }
 
@@ -145,7 +150,7 @@ const AddProductPage = () => {
         cloudResult = JSON.parse(responseText);
       } catch (error) {
         console.error("Cloudinary returned a non-JSON response:", responseText);
-        throw new Error("Cloudinary returned an invalid response.");
+        throw new Error("Cloudinary returned an invalid response.", { cause: error });
       }
 
       if (!cloudResponse.ok) {
@@ -161,7 +166,7 @@ const AddProductPage = () => {
       return cloudResult.secure_url;
     };
 
-    let uploadedMainImageUrl = "";
+    let uploadedMainImageUrl;
     let uploadedAdditionalImageUrls = [];
 
     try {

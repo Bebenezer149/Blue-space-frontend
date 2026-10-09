@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import VerifyAccount from "./VerifyAccount";
-import { toast } from "../toast";
+// import { toast } from "../toast";
 import { captureEvent } from "../analytics";
 
 function SignUp() {
@@ -20,6 +20,7 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [openVerificationModal, setOpenVerificationModal] = useState(false);
+  const [pendingAccount, setPendingAccount] = useState(null);
 
   const navigate = useNavigate();
 
@@ -75,27 +76,21 @@ function SignUp() {
         return res.json();
       })
       .then((res) => {
-        console.log(res);
+        if (!res?.token || !res?.user) {
+          throw new Error("Registration succeeded, but the account response was incomplete.");
+        }
+
         captureEvent("user_signed_up");
-        setFirstName("");
-        setLastName("");
-        setBusinessName("");
-        setEmail("");
-        setPhoneNumber("");
-        setPassword("");
-        setPasswordConfirmation("");
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("first_name", res.user.first_name);
-        localStorage.setItem("slug", res.user.link);
-        localStorage.setItem("business", res.user.business_name);
+        setPendingAccount({
+          token: res.token,
+          firstName: res.user.first_name,
+          slug: res.user.link,
+          businessName: res.user.business_name,
+        });
+        setOpenVerificationModal(true);
         setMessage("Account created successfully! ");
         setSuccess(true);
         setLoading(false);
-
-        // Redirect after showing success
-        setTimeout(() => {
-          navigate("/verify-account");
-        }, 1500);
       })
       .catch((err) => {
         console.log(err);
@@ -105,22 +100,22 @@ function SignUp() {
       });
   }
 
-  // function handleOpenVerificationModal(e) {
-  //   e.preventDefault();
+  function handleVerified() {
+    if (!pendingAccount) {
+      setMessage("Registration details are missing. Please sign up again.");
+      setErrorMessage(true);
+      setOpenVerificationModal(false);
+      return;
+    }
 
-  //   if (
-  //     firstName &&
-  //     lastName &&
-  //     businessName &&
-  //     email &&
-  //     password &&
-  //     passwordConfirmation
-  //   ) {
-  //     setOpenVerificationModal(true);
-  //   } else {
-  //     toast.error("Kindly fill the forms");
-  //   }
-  // }
+    localStorage.setItem("token", pendingAccount.token);
+    localStorage.setItem("first_name", pendingAccount.firstName || "");
+    localStorage.setItem("slug", pendingAccount.slug || "");
+    localStorage.setItem("business", pendingAccount.businessName || "");
+    setOpenVerificationModal(false);
+    navigate("/dashboard");
+  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 flex justify-center items-center p-4">
@@ -621,7 +616,7 @@ function SignUp() {
         </form>
       </div>
       {openVerificationModal && (
-        <VerifyAccount phone_number={phoneNumber} handleSubmit={handleSubmit} />
+        <VerifyAccount phone_number={phoneNumber} onVerified={handleVerified} />
       )}
     </div>
   );

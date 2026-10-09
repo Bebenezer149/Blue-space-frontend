@@ -179,6 +179,9 @@ function Profile() {
         <EditProfileModal
           data={userData}
           onClose={() => setIsEditProfileOpen(false)}
+          onUpdated={(updatedProfile) =>
+            setUserData((currentData) => ({ ...currentData, ...updatedProfile }))
+          }
         />
       )}
     </div>

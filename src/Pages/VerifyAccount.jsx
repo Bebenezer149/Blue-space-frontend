@@ -1,81 +1,96 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import OtpInput from "../Components/OtpInput/OtpInput";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { API_URL } from "../config";
 import { toast } from "../toast";
-function VerifyAccount({ phone_number , handleSubmit}) {
+
+function VerifyAccount({ phone_number, onVerified }) {
   const [otpCode, setOtpCode] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  const navigate=useNavigate()
+  const [sending, setSending] = useState(false);
+  const initialOtpSent = useRef(false);
+
   function onChangeOtp(newOtp) {
-    console.log(newOtp);
     setOtpCode(newOtp);
   }
 
+  const sendOtp = useCallback(async () => {
+    if (!phone_number) {
+      throw new Error("A phone number is required to send a verification code.");
+    }
 
-  function sendOtp(){
-      fetch(`${API_URL}/send-otp?phone_number=${phone_number}`,{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
-
-        }
-        
-      })
-      .then((res)=>{
-        if(!res.ok){
-          throw new Error("Unable to send otp")
-          
-        }
-        res.json()
-      })
-      .then((res)=>{
-        console.log(res)
-      })
-      .catch(err=>console.log(err))
-  }
-
-  useEffect(()=>{
-    sendOtp()
-  },[])
-
-  function verifyOtp() {
-    setLoading(true);
-    fetch(`${API_URL}/verify-otp?otp=${otpCode}&&phone_number=0539278827`, {
+    const params = new URLSearchParams({ phone_number });
+    const response = await fetch(`${API_URL}/send-otp?${params}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-      
       },
-      
-       
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-          
-        }
-        return res.json();
-      })
-      .then((res) => {
-        
-        setLoading(false);
-        if(res.status ==="true"){
-          handleSubmit
-          toast.success("Congratulations your account has been verified!")
-          navigate("/dashboard")
-          
-        }
-        else{
-          toast.error("Your OTP is invalid please try again")
-        }
-      })
-      .catch((err) => {
-        toast.error("Couldn't verify phone number please try again")
-        setLoading(false);
+    });
+
+    if (!response.ok) {
+      throw new Error("Unable to send verification code.");
+    }
+
+    toast.success("Verification code sent.");
+  }, [phone_number]);
+
+  useEffect(() => {
+    if (initialOtpSent.current) return;
+    initialOtpSent.current = true;
+    sendOtp().catch((error) => {
+      toast.error(error.message || "Unable to send verification code.");
+    });
+  }, [sendOtp]);
+
+  async function handleResendOtp() {
+    setSending(true);
+    try {
+      await sendOtp();
+    } catch (error) {
+      toast.error(error.message || "Unable to send verification code.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function verifyOtp() {
+    if (otpCode.length !== 6) {
+      toast.error("Enter the 6-digit verification code.");
+      return;
+    }
+
+    setLoading(true);
+    let isVerified = false;
+    try {
+      const params = new URLSearchParams({
+        otp: otpCode,
+        phone_number,
       });
+      const response = await fetch(`${API_URL}/verify-otp?${params}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (result.status === "true" || result.status === true) {
+        toast.success("Congratulations, your account has been verified!");
+        isVerified = true;
+      } else {
+        toast.error("Your verification code is invalid. Please try again.");
+      }
+    } catch {
+      toast.error("Couldn't verify the phone number. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+
+    if (isVerified) onVerified();
   }
 
   return (
@@ -124,8 +139,13 @@ function VerifyAccount({ phone_number , handleSubmit}) {
 
           <p className="text-[11px] sm:text-xs text-gray-400 text-center md:text-left">
             Didn't receive a code?{" "}
-            <button onClick={sendOtp} className="text-blue-500 cursor-pointer font-medium hover:underline">
-              Resend
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={sending}
+              className="text-blue-500 cursor-pointer font-medium hover:underline"
+            >
+              {sending ? "Sending..." : "Resend"}
             </button>
           </p>
         </div>

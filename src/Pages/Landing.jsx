@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import HeroVideo from "../assets/herovideo.mp4";
+import HowItWorksVideo from "../assets/iPhone-14-PRO-blue-space-gh.vercel.app-41ed262k5-b7_c.webm";
 import cart from "../assets/buying.jpg";
 import anass from "../assets/anass.jpeg";
 import cecil from "../assets/cecil-ofori.jpeg";
@@ -27,7 +29,6 @@ import {
   FaFacebook,
   FaTwitter,
   FaWhatsapp,
-  FaTiktok,
   FaLinkedin,
 } from "react-icons/fa6";
 
@@ -105,8 +106,16 @@ const features = [
 ];
 
 function SectionHeading({ title, subtitle, light }) {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
+    <motion.div
+      className="max-w-2xl mx-auto text-center mb-12 lg:mb-16"
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+    >
       <h2
         className={`text-3xl sm:text-4xl font-bold mb-4 ${
           light ? "text-white" : "text-gray-900"
@@ -119,12 +128,13 @@ function SectionHeading({ title, subtitle, light }) {
       >
         {subtitle}
       </p>
-    </div>
+    </motion.div>
   );
 }
 
 function Landing() {
   const [openMenu, setOpenMenu] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   const navItems = [
     { href: "#how", label: "How It Works" },
@@ -136,7 +146,12 @@ function Landing() {
   return (
 <div className="min-h-screen bg-slate-50 text-gray-900 antialiased">
 {/* Header */}
-      <header className="fixed top-4 inset-x-4 max-w-6xl mx-auto z-50">
+      <motion.header
+        className="fixed top-4 inset-x-4 max-w-6xl mx-auto z-50"
+        initial={reduceMotion ? false : { opacity: 0, y: -18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      >
         {/* Header bar (stays fixed height) */}
         <div className="bg-white/40 backdrop-blur-md border border-gray-200 rounded-full shadow-sm px-4 sm:px-6 py-2.5">
           <div className="flex items-center justify-between gap-2">
@@ -185,8 +200,15 @@ function Landing() {
         </div>
 
         {/* Mobile dropdown (rendered below the bar, doesn't stretch the bar) */}
+        <AnimatePresence initial={false}>
         {openMenu && (
-          <div className="absolute top-full right-0 left-0 mt-3 lg:hidden bg-white rounded-3xl border border-gray-100 shadow-lg p-4 animate-slide-down">
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-full right-0 left-0 mt-3 lg:hidden bg-white rounded-3xl border border-gray-100 shadow-lg p-4"
+          >
             {navItems.map((item) => (
               <a
                 key={item.label}
@@ -211,58 +233,97 @@ function Landing() {
                 Get Started
               </a>
             </div>
-          </div>
+          </motion.div>
         )}
-      </header>
+        </AnimatePresence>
+      </motion.header>
 
 {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0">
-          <video
+          <motion.video
             autoPlay
             loop
             muted
             playsInline
             className="w-full h-full object-cover object-center animate-hero-zoom"
+            initial={reduceMotion ? false : { scale: 1.06 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 1.4, ease: "easeOut" }}
           >
             <source src={HeroVideo} type="video/mp4" />
             Your browser does not support the video tag.
-          </video>
+          </motion.video>
         </div>
         <div className="absolute inset-0 bg-black/50" />
 
         <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
-          <div className="max-w-2xl text-white animate-fade-in-up">
+          <motion.div
+            className="max-w-2xl text-white animate-fade-in-up"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: {
+                transition: { staggerChildren: reduceMotion ? 0 : 0.12, delayChildren: 0.15 },
+              },
+            }}
+          >
             {/* <span className="inline-flex items-center gap-2 text-sm font-semibold text-blue-200 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full mb-6">
               <HiOutlineGlobe className="h-4 w-4" />
               Made for Ghana's businesses
             </span> */}
-            <h1 className="text-4xl sm:text-5xl xl:text-6xl font-bold leading-tight mb-6">
+            <motion.h1
+              className="text-4xl sm:text-5xl xl:text-6xl font-bold leading-tight mb-6"
+              variants={{
+                hidden: { opacity: 0, y: 26 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            >
               One Sign Up. <span className="text-blue-500">One Link.</span>
               <br />
               Unlimited Possibilities
-            </h1>
-            <p className="text-lg text-gray-200 mb-8 max-w-xl">
+            </motion.h1>
+            <motion.p
+              className="text-lg text-gray-200 mb-8 max-w-xl"
+              variants={{
+                hidden: { opacity: 0, y: 18 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.6 }}
+            >
               Blue Space is here to grow your business online. The fear of
               spending too much on websites is over. With just a sign up, you
               can serve your customers anywhere in Ghana.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a
+            </motion.p>
+            <motion.div
+              className="flex flex-col sm:flex-row gap-3"
+              variants={{
+                hidden: { opacity: 0, y: 14 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.55 }}
+            >
+              <motion.a
                 href="/register"
                 className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-7 py-3.5 rounded-full font-semibold hover:bg-blue-50 transition-colors"
+                whileHover={reduceMotion ? undefined : { y: -3, scale: 1.04 }}
+                whileTap={reduceMotion ? undefined : { scale: 0.97 }}
               >
                 Get Your Store Now
                 <HiOutlineArrowRight className="h-5 w-5" />
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="#how"
                 className="inline-flex items-center justify-center gap-2 bg-white/10 text-white border border-white/30 px-7 py-3.5 rounded-full font-semibold hover:bg-white/20 transition-colors"
+                whileHover={reduceMotion ? undefined : { y: -3, scale: 1.03 }}
+                whileTap={reduceMotion ? undefined : { scale: 0.97 }}
               >
                 See How It Works
-              </a>
-            </div>
-          </div>
+              </motion.a>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -277,15 +338,23 @@ function Landing() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {steps.map((step, idx) => (
-              <div
+              <motion.div
                 key={step.title}
-                className="flex gap-5 bg-white border border-blue-100 rounded-3xl p-6 sm:p-8 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 animate-fade-in-up"
-                style={{ animationDelay: `${idx * 80}ms` }}
+                className="flex gap-5 bg-white border border-blue-100 rounded-3xl p-6 sm:p-8 hover:shadow-xl transition-shadow duration-300"
+                initial={reduceMotion ? false : { opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                whileHover={reduceMotion ? undefined : { y: -6, scale: 1.015 }}
+                transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="shrink-0">
-                  <div className="h-14 w-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center">
+                  <motion.div
+                    className="h-14 w-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center"
+                    whileHover={reduceMotion ? undefined : { rotate: [0, -8, 8, 0] }}
+                    transition={{ duration: 0.45 }}
+                  >
                     <step.icon className="h-7 w-7" />
-                  </div>
+                  </motion.div>
                 </div>
                 <div>
                   <div className="flex items-center gap-3 mb-2">
@@ -298,8 +367,48 @@ function Landing() {
                   </h3>
                   <p className="text-gray-500 leading-relaxed">{step.text}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
+          </div>
+
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="walkthrough-heading"
+        className="bg-slate-50 py-16 lg:py-24"
+      >
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12 lg:px-8">
+          <div className="max-w-lg">
+            <span className="mb-4 inline-flex rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
+              A closer look
+            </span>
+            <h2
+              id="walkthrough-heading"
+              className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl"
+            >
+              See Blue Space in action
+            </h2>
+            <p className="leading-relaxed text-gray-500">
+              Take a quick tour of the experience and see how simple it is to
+              bring your business online.
+            </p>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl bg-blue-600 p-1.5 shadow-2xl ring-1 ring-blue-700/20">
+            <video
+              className="mx-auto block max-h-[32rem] w-full rounded-2xl object-contain"
+              autoPlay
+              controls
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              aria-label="Blue Space walkthrough"
+            >
+              <source src={HowItWorksVideo} type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       </section>
@@ -324,9 +433,14 @@ function Landing() {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {features.map((f) => (
-                  <div
+                  <motion.div
                     key={f.title}
-                    className="bg-white border border-gray-200 rounded-2xl p-5 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+                    className="bg-white border border-gray-200 rounded-2xl p-5 hover:shadow-md transition-shadow duration-300"
+                    initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    whileHover={reduceMotion ? undefined : { y: -5, scale: 1.02 }}
+                    transition={{ duration: 0.45, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
                       <f.icon className="h-5 w-5" />
@@ -335,13 +449,20 @@ function Landing() {
                       {f.title}
                     </h4>
                     <p className="text-xs text-gray-500">{f.text}</p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
 
             <div className="animate-slide-in-right">
-              <div className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
+              <motion.div
+                className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden"
+                initial={reduceMotion ? false : { opacity: 0, x: 28 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                whileHover={reduceMotion ? undefined : { y: -5 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <img
                   src={cart}
                   alt="Blue Space quality services"
@@ -359,7 +480,7 @@ function Landing() {
                     serving your customers and growing your business.
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -373,22 +494,31 @@ function Landing() {
             subtitle="Meet the people behind Blue Space and what drives us."
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto animate-stagger">
-            {team.map((m) => (
-              <div
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {team.map((m, idx) => (
+              <motion.div
                 key={m.name}
-                className="bg-white border border-gray-200 rounded-3xl p-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
+                className="bg-white border border-gray-200 rounded-3xl p-6 text-center hover:shadow-lg transition-shadow duration-300"
+                initial={reduceMotion ? false : { opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                whileHover={reduceMotion ? undefined : { y: -6 }}
+                transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="h-28 w-28 rounded-full overflow-hidden mx-auto mb-5 border-4 border-blue-100">
+                <motion.div
+                  className="h-28 w-28 rounded-full overflow-hidden mx-auto mb-5 border-4 border-blue-100"
+                  whileHover={reduceMotion ? undefined : { scale: 1.08, rotate: 4 }}
+                  transition={{ duration: 0.25 }}
+                >
                   <img
                     src={m.img}
                     alt={m.name}
                     className="h-full w-full object-cover"
                   />
-                </div>
+                </motion.div>
                 <h3 className="text-lg font-bold text-gray-900">{m.name}</h3>
                 <p className="text-sm text-blue-600 font-medium">{m.role}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -404,12 +534,18 @@ function Landing() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
             {/* Social handles */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-stagger">
-              {socials.map((s) => (
-                <a
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {socials.map((s, idx) => (
+                <motion.a
                   key={s.label}
                   href={s.href}
                   className="flex items-center gap-4 bg-white border border-gray-200 rounded-2xl p-4 hover:-translate-y-1 hover:border-blue-200 hover:shadow-md transition-all duration-300"
+                  initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  whileHover={reduceMotion ? undefined : { y: -4, scale: 1.015 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                  transition={{ duration: 0.45, delay: idx * 0.06, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <div className="h-11 w-11 shrink-0 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                     <s.icon className="h-5 w-5" />
@@ -420,7 +556,7 @@ function Landing() {
                     </p>
                     <p className="text-xs text-gray-400 truncate">{s.handle}</p>
                   </div>
-                </a>
+                </motion.a>
               ))}
             </div>
 
@@ -452,7 +588,13 @@ function Landing() {
       {/* CTA */}
       <section className="py-16 lg:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-blue-600 rounded-3xl p-8 sm:p-12 text-center animate-fade-in-up">
+          <motion.div
+            className="bg-blue-600 rounded-3xl p-8 sm:p-12 text-center"
+            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Ready to grow your business online?
             </h2>
@@ -475,7 +617,7 @@ function Landing() {
                 Talk to Us
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 

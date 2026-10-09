@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { API_URL } from "../config";
 
-function EditProfileModal({ data, onClose }) {
+function EditProfileModal({ data, onClose, onUpdated }) {
   const [formData, setFormData] = useState({
     full_name: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
     business_name: data.business_name || "",
@@ -11,15 +11,6 @@ function EditProfileModal({ data, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  useEffect(() => {
-    setFormData({
-      full_name: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
-      business_name: data.business_name || "",
-      phone_number: data.phone_number || "",
-      email: data.email || "",
-    });
-  }, [data]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +33,14 @@ function EditProfileModal({ data, onClose }) {
     }
 
     try {
+      const [firstName = "", ...lastNameParts] = formData.full_name.trim().split(/\s+/);
+      const updatedProfile = {
+        first_name: firstName,
+        last_name: lastNameParts.join(" "),
+        business_name: formData.business_name,
+        phone_number: formData.phone_number,
+        email: formData.email,
+      };
       const response = await fetch(`${API_URL}/update-profile`, {
         method: "PUT",
         headers: {
@@ -49,18 +48,7 @@ function EditProfileModal({ data, onClose }) {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          // split full_name into first_name and last_name
-          first_name: formData.full_name.split(" ")[0] || "",
-          last_name: formData.full_name
-            .split(" ")
-            .slice(1) 
-            .join(" ")
-            .trim() || "",
-          business_name: formData.business_name,
-          phone_number: formData.phone_number,
-          email: formData.email,
-        }),
+        body: JSON.stringify(updatedProfile),
       });
 
       if (!response.ok) {
@@ -68,7 +56,7 @@ function EditProfileModal({ data, onClose }) {
         throw new Error(`(${response.status}) ${errorData.message || "Failed to update profile"}`);
       }
 
-      const result = await response.json();
+      onUpdated?.(updatedProfile);
       setSuccess("Profile updated successfully!");
       // Optionally close modal after delay
       setTimeout(() => {

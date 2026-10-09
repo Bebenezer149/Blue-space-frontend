@@ -1,9 +1,25 @@
-import { useState } from "react";
+function getVariantImages(productDetails) {
+  const images = productDetails.variant ?? productDetails.images ?? [];
+  if (Array.isArray(images)) {
+    return images.filter((image) => typeof image === "string" && image);
+  }
 
+  if (typeof images === "string" && images) {
+    try {
+      const parsedImages = JSON.parse(images);
+      if (Array.isArray(parsedImages)) {
+        return parsedImages.filter((image) => typeof image === "string" && image);
+      }
+    } catch {
+      return [images];
+    }
+  }
 
+  return [];
+}
 
-function ViewProduct({productDetails, setViewOpen}) {
-  // const variantImages = getVariantImages(productDetails);
+function ViewProduct({ productDetails, setViewOpen }) {
+  const variantImages = getVariantImages(productDetails);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
@@ -42,7 +58,18 @@ function ViewProduct({productDetails, setViewOpen}) {
             </div>
           </div>
 
-          {variantImages.length > 0 && <VariantGallery key={productDetails.id} variants={variantImages} />}
+          {variantImages.length > 0 && (
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+              {variantImages.map((image, index) => (
+                <img
+                  key={`${image}-${index}`}
+                  src={image}
+                  alt={`${productDetails.product_name || "Product"} variant ${index + 1}`}
+                  className="h-24 w-full rounded-lg border border-gray-200 object-cover"
+                />
+              ))}
+            </div>
+          )}
 
           {/* Product Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

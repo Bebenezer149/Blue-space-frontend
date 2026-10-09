@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "../../toast";
 import { apiFetch } from "../../api";
 
-const Cart = ({ setOpenCart, cart, setCart, storeSlug }) => {
+const Cart = ({ setOpenCart, cart, setCart }) => {
   const [step, setStep] = useState(1); // 1: Confirm Items, 2: Delivery Details
   const [customer, setCustomer] = useState("");
   const [phone, setPhone] = useState("");
@@ -12,7 +11,6 @@ const Cart = ({ setOpenCart, cart, setCart, storeSlug }) => {
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const navigate = useNavigate();
 
   const getAvailableQuantity = (item) =>
     Math.max(
@@ -31,10 +29,9 @@ const Cart = ({ setOpenCart, cart, setCart, storeSlug }) => {
       quantity: item.quantity,
     }));
     if (
-      customer === "" ||
-      phone === "" ||
-      deliveryTo === "" ||
-      notes === "" ||
+      !customer.trim() ||
+      !phone.trim() ||
+      !deliveryTo.trim() ||
       paymentMethod === ""
     ) {
       toast.error("Every field must be filled");
@@ -55,15 +52,6 @@ const Cart = ({ setOpenCart, cart, setCart, storeSlug }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-
-      // const authorizationUrl = response?.payment_data?.authorization_url;
-      // console.log(authorizationUrl)
-
-      // if (authorizationUrl) {
-      //   console.log("Authorization URL:", authorizationUrl);
-      //   window.location.href = authorizationUrl;
-      //   return;
-      // }
 
       setOpenCart(false);
       setCart([]);

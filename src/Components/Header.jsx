@@ -14,6 +14,7 @@ function Header() {
     { to: "/dashboard", label: "Home" },
     { to: "/products", label: "Products" },
     { to: "/order-manager", label: "Orders" },
+    { to: "/transactions", label: "Transactions" },
     { to: "/profile", label: "Profile" },
   ];
 

@@ -20,8 +20,10 @@ export async function apiFetch(path, options = {}) {
     }
     throw new Error(message);
   }
-  const authorization_url=data.payment_data.original.moolre_response.data.authorization_url
-
-  window.location.href=authorization_url
+  const authorizationUrl =
+    data?.payment_data?.original?.moolre_response?.data?.authorization_url;
+  if (typeof authorizationUrl === "string" && authorizationUrl) {
+    window.location.assign(authorizationUrl);
+  }
   return data;
 }

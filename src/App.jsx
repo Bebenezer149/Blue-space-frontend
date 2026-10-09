@@ -10,8 +10,8 @@ import ResetPassword from "./Pages/ResetPassword";
 import Profile from "./Pages/Profile";
 import Landing from "./Pages/Landing";
 import Marketplace from "./Pages/Marketplace";
-import VerifyAccount from "./Pages/VerifyAccount";
 import SuccessPage from "./Pages/SuccessPage";
+import Transactions from "./Pages/Transactions";
 // import Header from "./Components/Header";
 // import Store from "./Pages/Store";
 import SignUp from "./Pages/SignUp";
@@ -23,7 +23,6 @@ import ViewOrder from "./Pages/ViewOrder";
 import Store from "./Pages/Store";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import ToastViewport from "./Components/ToastViewport";
-import { Component } from "./Components/Button/Button";
 
 function App() {
   return (
@@ -69,6 +68,14 @@ function App() {
           }
         />
         <Route
+          path="/transactions"
+          element={
+            <ProtectedRoute>
+              <Transactions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/preview-order"
           element={
             <ProtectedRoute>
@@ -88,7 +95,6 @@ function App() {
           }
         />
         {/* <Route path="/flowbite-test" element={<div className="min-h-screen bg-gray-100 p-8"><Buttons /></div>} /> */}
-        <Route path="/verify-account" element={<VerifyAccount />} />
         <Route path="/success" element={<SuccessPage />} />
         
       </Routes>

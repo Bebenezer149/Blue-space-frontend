@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import Header from "../Components/Header";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import OrderCard from "../Components/Cards/OrderCard";
 import ViewOrder from "./ViewOrder";
 import { toast } from "../toast";
@@ -30,7 +30,7 @@ function OrderManager() {
 
   const token = localStorage.getItem("token");
 
-  function fetchOrders() {
+  const fetchOrders = useCallback(() => {
     setIsRefreshing(true);
     fetch(`${API_URL}/orders`, {
       method: "GET",
@@ -50,12 +50,12 @@ function OrderManager() {
         console.log(err);
         setIsRefreshing(false);
       });
-  }
+  }, [token]);
 
   // Refresh after the details modal closes so status changes are reflected.
   useEffect(() => {
     fetchOrders();
-  }, [isOpen]);
+  }, [fetchOrders, isOpen]);
 
   const filteredOrders = orders.filter((order) =>
     order.customer_name.toLowerCase().includes(search.toLowerCase()),

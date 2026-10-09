@@ -2,15 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import hero1 from "../assets/hero1.png";
 import hero2 from "../assets/hero2.png";
+import promotionImage from "../assets/buying.jpg";
 
 const carouselData = [
   { id: 1, url: hero1, placeholder: "Sales" },
   { id: 2, url: hero2, placeholder: "Discount" },
-  {
-    id: 3,
-    url: "https://www.shutterstock.com/shutterstock/photos/2828314497/display_1500/stock-photo-elegant-black-friday-promotional-banner-featuring-a-d-realistic-black-gift-box-wrapped-in-a-shiny-2828314497.jpg",
-    placeholder: "Discount",
-  },
+  { id: 3, url: promotionImage, placeholder: "Shopping promotion" },
 ];
 
 function Hero() {
