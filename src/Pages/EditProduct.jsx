@@ -15,6 +15,32 @@ const PRODUCT_CATEGORIES = [
 ];
 const MAX_VARIANT_IMAGES = 6;
 
+function getExistingProductImages(product) {
+  if (Array.isArray(product.product_image)) {
+    return product.product_image
+      .map((image) => image?.secondary_url)
+      .filter((image) => typeof image === "string" && image);
+  }
+
+  const legacyImages = product.images ?? product.variant ?? [];
+  if (Array.isArray(legacyImages)) {
+    return legacyImages.filter((image) => typeof image === "string" && image);
+  }
+
+  if (typeof legacyImages === "string" && legacyImages) {
+    try {
+      const parsedImages = JSON.parse(legacyImages);
+      return Array.isArray(parsedImages)
+        ? parsedImages.filter((image) => typeof image === "string" && image)
+        : [legacyImages];
+    } catch {
+      return [legacyImages];
+    }
+  }
+
+  return [];
+}
+
 function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
@@ -24,6 +50,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [existingImages, setExistingImages] = useState([]);
   const [variantImages, setVariantImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [compressing, setCompressing] = useState(false);
@@ -40,12 +67,37 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
       setDescription(productDetails.description || "");
       setStatus(productDetails.status || "Available");
       setCategory(productDetails.category || "");
+      setExistingImages(getExistingProductImages(productDetails));
+      setVariantImages([]);
     }
   }, [productDetails]);
 
   async function updateProduct(e) {
     e.preventDefault();
     setLoading(true);
+
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const cloudPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+    const uploadImage = async (file) => {
+      if (!cloudName || !cloudPreset) {
+        throw new Error("Cloudinary configuration is missing. Check your .env file.");
+      }
+
+      const cloudData = new FormData();
+      cloudData.append("file", file);
+      cloudData.append("upload_preset", cloudPreset);
+      const cloudResponse = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        { method: "POST", body: cloudData },
+      );
+      const cloudResult = await cloudResponse.json();
+
+      if (!cloudResponse.ok || !cloudResult?.secure_url) {
+        throw new Error(cloudResult?.error?.message || "Couldn't upload product image to Cloudinary.");
+      }
+
+      return cloudResult.secure_url;
+    };
 
     const formData = new FormData();
 
@@ -56,40 +108,24 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
     formData.append("status", status || productDetails.status);
     formData.append("category", category);
 
-    if (image) {
-      formData.append("img", image);
-    }
+    formData.append("images_present", "1");
 
-    if (variantImages.length > 0) {
-      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-      const cloudPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-      const uploadVariantImage = async (variantImage) => {
-        const cloudData = new FormData();
-        cloudData.append("file", variantImage);
-        cloudData.append("upload_preset", cloudPreset);
-
-        const cloudResponse = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          { method: "POST", body: cloudData },
-        );
-        const cloudResult = await cloudResponse.json();
-
-        if (!cloudResponse.ok || !cloudResult?.secure_url) {
-          throw new Error("Couldn't upload variant image to Cloudinary");
-        }
-
-        return cloudResult.secure_url;
-      };
-
-      try {
-        const variantUrls = await Promise.all(variantImages.map(uploadVariantImage));
-        variantUrls.forEach((variantUrl) => formData.append("variant[]", variantUrl));
-      } catch (err) {
-        console.error(err);
-        toast.error("Couldn't upload additional product pictures");
-        setLoading(false);
-        return;
+    try {
+      if (image) {
+        formData.append("img", await uploadImage(image));
       }
+
+      const uploadedAdditionalImages = variantImages.length > 0
+        ? await Promise.all(variantImages.map(uploadImage))
+        : [];
+      [...existingImages, ...uploadedAdditionalImages].forEach((imageUrl) => {
+        formData.append("images[]", imageUrl);
+      });
+    } catch (err) {
+      console.error("Cloudinary product image upload error:", err);
+      toast.error(err.message || "Couldn't upload product pictures");
+      setLoading(false);
+      return;
     }
 
     formData.append("_method", "PUT");
@@ -161,7 +197,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
 
   const handleVariantImagesChange = async (e) => {
     const selectedImages = Array.from(e.target.files || []);
-    if (variantImages.length + selectedImages.length > MAX_VARIANT_IMAGES) {
+    if (existingImages.length + variantImages.length + selectedImages.length > MAX_VARIANT_IMAGES) {
       toast.error(`You can add a maximum of ${MAX_VARIANT_IMAGES} additional pictures`);
       e.target.value = "";
       return;
@@ -181,6 +217,10 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
 
   const removeVariantImage = (indexToRemove) => {
     setVariantImages((images) => images.filter((_, index) => index !== indexToRemove));
+  };
+
+  const removeExistingImage = (indexToRemove) => {
+    setExistingImages((images) => images.filter((_, index) => index !== indexToRemove));
   };
 
   return (
@@ -324,20 +364,39 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
                 Add More Pictures
               </label>
               <span className="text-xs text-gray-500">
-                {variantImages.length}/{MAX_VARIANT_IMAGES}
+                {existingImages.length + variantImages.length}/{MAX_VARIANT_IMAGES}
               </span>
             </div>
             <input
               type="file"
               accept="image/*"
               multiple
-              disabled={variantImages.length === MAX_VARIANT_IMAGES || compressing}
+              disabled={existingImages.length + variantImages.length >= MAX_VARIANT_IMAGES || compressing}
               onChange={handleVariantImagesChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
             />
             <p className="mt-1 text-xs text-gray-500">
-              {compressing ? "Preparing pictures..." : "Add up to 6 additional product pictures."}
+              {compressing ? "Preparing pictures..." : "Keep, remove, or add up to 6 additional product pictures."}
             </p>
+
+            {existingImages.length > 0 && (
+              <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {existingImages.map((imageUrl, index) => (
+                  <li key={`${imageUrl}-${index}`} className="flex min-w-0 items-center gap-2 rounded-md bg-gray-50 px-3 py-2 text-sm">
+                    <img src={imageUrl} alt={`Current additional product image ${index + 1}`} className="h-10 w-10 shrink-0 rounded object-cover" />
+                    <span className="min-w-0 flex-1 truncate text-gray-700">Current picture {index + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeExistingImage(index)}
+                      className="shrink-0 text-xs font-medium text-red-600 hover:text-red-700"
+                      aria-label={`Remove current additional picture ${index + 1}`}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             {variantImages.length > 0 && (
               <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -420,7 +479,7 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
           <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || compressing}
               className={`flex-1 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 cursor-pointer ${
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}

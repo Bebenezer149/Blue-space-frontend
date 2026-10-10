@@ -1,4 +1,12 @@
+import { useState } from "react";
+
 function getVariantImages(productDetails) {
+  if (Array.isArray(productDetails.product_image)) {
+    return productDetails.product_image
+      .map((image) => image?.secondary_url)
+      .filter((image) => typeof image === "string" && image);
+  }
+
   const images = productDetails.variant ?? productDetails.images ?? [];
   if (Array.isArray(images)) {
     return images.filter((image) => typeof image === "string" && image);
@@ -20,6 +28,9 @@ function getVariantImages(productDetails) {
 
 function ViewProduct({ productDetails, setViewOpen }) {
   const variantImages = getVariantImages(productDetails);
+  const images = [productDetails.img, ...variantImages].filter(Boolean);
+  const [selectedImage, setSelectedImage] = useState(productDetails.img);
+  const activeImage = images.includes(selectedImage) ? selectedImage : productDetails.img;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
@@ -51,22 +62,30 @@ function ViewProduct({ productDetails, setViewOpen }) {
           <div className="flex justify-center">
             <div className="w-48 sm:w-60 h-48 sm:h-60 rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-md">
               <img
-                src={productDetails.img}
-                alt="Product"
+                src={activeImage}
+                alt={`${productDetails.product_name || "Product"} image`}
                 className="w-full h-full object-cover"
               />
             </div>
           </div>
 
-          {variantImages.length > 0 && (
+          {images.length > 1 && (
             <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-              {variantImages.map((image, index) => (
-                <img
+              {images.map((image, index) => (
+                <button
                   key={`${image}-${index}`}
-                  src={image}
-                  alt={`${productDetails.product_name || "Product"} variant ${index + 1}`}
-                  className="h-24 w-full rounded-lg border border-gray-200 object-cover"
-                />
+                  type="button"
+                  onClick={() => setSelectedImage(image)}
+                  aria-label={`View ${index === 0 ? "main" : `additional`} product image ${index + 1}`}
+                  aria-pressed={activeImage === image}
+                  className={`overflow-hidden rounded-lg border-2 ${activeImage === image ? "border-blue-500" : "border-gray-200"}`}
+                >
+                  <img
+                    src={image}
+                    alt={`${productDetails.product_name || "Product"} image ${index + 1}`}
+                    className="h-24 w-full object-cover"
+                  />
+                </button>
               ))}
             </div>
           )}
