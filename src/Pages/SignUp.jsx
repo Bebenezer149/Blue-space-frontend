@@ -370,7 +370,7 @@ function SignUp() {
                 name="phone_number"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="+233 24 000 0000"
+                placeholder="0240000000"
                 required
               />
             </div>
