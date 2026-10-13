@@ -76,6 +76,7 @@ function Transactions() {
   const token = localStorage.getItem("token");
   const [islive, setIsLive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus]=useState("Inactive")
 
   function activateWallet() {
     setIsLoading(true);
@@ -107,7 +108,12 @@ function Transactions() {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        setBalance(res.available_balance);
+        
+        if(res.status === "live"){
+          setIsLive(true)
+          setBalance(res.available_balance);
+        }
+       
       })
       .catch((err) => console.log(err));
   }
