@@ -20,6 +20,7 @@ import ProductPage from "./Pages/ProductPage";
 import AddProductPage from "./Pages/AddProductsPage";
 import OrderManager from "./Pages/OrderManager";
 import ViewOrder from "./Pages/ViewOrder";
+import OrderConfirmation from "./Pages/OrderConfirmation";
 import Store from "./Pages/Store";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import ToastViewport from "./Components/ToastViewport";
@@ -96,6 +97,7 @@ function App() {
         />
         {/* <Route path="/flowbite-test" element={<div className="min-h-screen bg-gray-100 p-8"><Buttons /></div>} /> */}
         <Route path="/success" element={<SuccessPage />} />
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
         
       </Routes>
     </>

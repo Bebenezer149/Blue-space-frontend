@@ -141,17 +141,19 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
               View
             </button>
 
-            <button
-              onClick={advanceStatus}
-              disabled={disable}
-              className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                disable
-                  ? "bg-gray-300 cursor-not-allowed text-gray-500"
-                  : "bg-green-600 hover:bg-green-700 hover:scale-105 hover:shadow-md cursor-pointer text-white"
-              }`}
-            >
-              {isUpdating ? "Updating..." : currentStatus === "PENDING" ? "Confirm" : "Mark delivered"}
-            </button>
+            {currentStatus === "PENDING" && (
+              <button
+                onClick={advanceStatus}
+                disabled={disable}
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  disable
+                    ? "bg-gray-300 cursor-not-allowed text-gray-500"
+                    : "bg-green-600 hover:bg-green-700 hover:scale-105 hover:shadow-md cursor-pointer text-white"
+                }`}
+              >
+                {isUpdating ? "Updating..." : "Confirm"}
+              </button>
+            )}
           </div>
         </div>
       </div>

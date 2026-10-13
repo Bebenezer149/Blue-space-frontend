@@ -1,4 +1,6 @@
 import Header from "../Components/Header";
+import { useState, useEffect } from "react";
+import { API_URL } from "../config";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -10,6 +12,7 @@ import {
   MoreHorizontal,
   Smartphone,
 } from "lucide-react";
+// import { setWasmUrl } from "@lottiefiles/dotlottie-react/webgpu";
 
 const transactions = [
   {
@@ -68,6 +71,28 @@ function StatusBadge({ status }) {
 }
 
 function Transactions() {
+  const [balance, setBalance]=useState(0)
+  const token = localStorage.getItem("token");
+
+  function fetchBalance() {
+    fetch(`${API_URL}/ledger`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setBalance(res.available_balance)
+      })
+      .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    fetchBalance();
+  }, []);
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -86,7 +111,7 @@ function Transactions() {
             </div>
             <button
               type="button"
-              className="inline-flex min-h-10 items-center justify-center gap-2 self-start rounded-lg border border-gray-300 bg-white px-3.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 sm:self-auto"
+              className="inline-flex cursor-pointer min-h-10 items-center justify-center gap-2 self-start rounded-lg border border-gray-300 bg-white px-3.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 sm:self-auto"
             >
               <Download size={16} />
               Export
@@ -116,7 +141,7 @@ function Transactions() {
                   <span className="mr-2 text-xl font-medium text-blue-200 sm:text-2xl">
                     GH₵
                   </span>
-                  1,245.00
+                 {balance}
                 </p>
                 <p className="mt-2 flex items-center gap-1.5 text-xs text-blue-100">
                   <Check size={14} />
@@ -128,13 +153,13 @@ function Transactions() {
                   Funds become available after an order is delivered and
                   confirmed.
                 </p>
-                <a
+                {/* <a
                   href="#withdraw"
                   className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-white px-4 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
                 >
                   Withdraw funds
                   <ArrowUpRight size={16} />
-                </a>
+                </a> */}
               </div>
             </div>
           </div>
@@ -142,7 +167,9 @@ function Transactions() {
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
             <article className="surface-card flex items-center justify-between gap-4 rounded-2xl border bg-white p-5 sm:p-6">
               <div>
-                <p className="text-sm font-medium text-gray-500">Held in escrow</p>
+                <p className="text-sm font-medium text-gray-500">
+                  Held in escrow
+                </p>
                 <p className="mt-2 text-2xl font-semibold tracking-tight text-gray-900">
                   <span className="mr-1 text-base font-medium text-gray-500">
                     GH₵
@@ -167,7 +194,9 @@ function Transactions() {
                   </span>
                   4,580.00
                 </p>
-                <p className="mt-1 text-xs text-gray-500">Across 12 transfers</p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Across 12 transfers
+                </p>
               </div>
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-600">
                 <Banknote size={20} />
@@ -351,16 +380,29 @@ function Transactions() {
             <table className="w-full min-w-[760px] text-left">
               <thead className="bg-gray-50/80 text-xs font-medium text-gray-500">
                 <tr>
-                  <th scope="col" className="px-6 py-3.5">Transaction</th>
-                  <th scope="col" className="px-4 py-3.5">Reference</th>
-                  <th scope="col" className="px-4 py-3.5">Date</th>
-                  <th scope="col" className="px-4 py-3.5">Status</th>
-                  <th scope="col" className="px-6 py-3.5 text-right">Amount</th>
+                  <th scope="col" className="px-6 py-3.5">
+                    Transaction
+                  </th>
+                  <th scope="col" className="px-4 py-3.5">
+                    Reference
+                  </th>
+                  <th scope="col" className="px-4 py-3.5">
+                    Date
+                  </th>
+                  <th scope="col" className="px-4 py-3.5">
+                    Status
+                  </th>
+                  <th scope="col" className="px-6 py-3.5 text-right">
+                    Amount
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-sm">
                 {transactions.map((transaction) => (
-                  <tr key={transaction.reference} className="hover:bg-gray-50/70">
+                  <tr
+                    key={transaction.reference}
+                    className="hover:bg-gray-50/70"
+                  >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <span
@@ -406,7 +448,9 @@ function Transactions() {
           </div>
 
           <div className="flex items-center justify-between border-t border-gray-200 px-5 py-4 sm:px-6">
-            <p className="text-xs text-gray-500">Showing 4 of 24 transactions</p>
+            <p className="text-xs text-gray-500">
+              Showing 4 of 24 transactions
+            </p>
             <div className="flex items-center gap-2">
               <button
                 type="button"

@@ -55,7 +55,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
 
       setOpenCart(false);
       setCart([]);
-      
+
     } catch (err) {
       toast.error(err.message || "Failed to place order");
     } finally {
