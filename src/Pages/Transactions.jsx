@@ -1,6 +1,7 @@
 import Header from "../Components/Header";
 import { useState, useEffect } from "react";
 import { API_URL } from "../config";
+import { toast } from "../toast";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -71,8 +72,29 @@ function StatusBadge({ status }) {
 }
 
 function Transactions() {
-  const [balance, setBalance]=useState(0)
+  const [balance, setBalance] = useState(0);
   const token = localStorage.getItem("token");
+  const [islive, setIsLive] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  function activateWallet() {
+    setIsLoading(true);
+    fetch(`${API_URL}/activate-ledger`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res.message);
+        toast.info(res.message)
+        setIsLive(true);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
+  }
 
   function fetchBalance() {
     fetch(`${API_URL}/ledger`, {
@@ -85,7 +107,7 @@ function Transactions() {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        setBalance(res.available_balance)
+        setBalance(res.available_balance);
       })
       .catch((err) => console.log(err));
   }
@@ -110,11 +132,25 @@ function Transactions() {
               </p>
             </div>
             <button
+              onClick={activateWallet}
               type="button"
               className="inline-flex cursor-pointer min-h-10 items-center justify-center gap-2 self-start rounded-lg border border-gray-300 bg-white px-3.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 sm:self-auto"
             >
-              <Download size={16} />
-              Export
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6 text-blue-400"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3"
+                />
+              </svg>
+              {isLoading ? "Activating" : "Activate Wallet"}
             </button>
           </div>
         </div>
@@ -141,7 +177,7 @@ function Transactions() {
                   <span className="mr-2 text-xl font-medium text-blue-200 sm:text-2xl">
                     GH₵
                   </span>
-                 {balance}
+                  {balance}
                 </p>
                 <p className="mt-2 flex items-center gap-1.5 text-xs text-blue-100">
                   <Check size={14} />
@@ -153,13 +189,14 @@ function Transactions() {
                   Funds become available after an order is delivered and
                   confirmed.
                 </p>
-                {/* <a
-                  href="#withdraw"
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-white px-4 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
+                <div
+                  className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-white px-4 text-sm font-semibold ${islive ? "text-green-500" : "text-red-500"} transition hover:bg-blue-50`}
                 >
-                  Withdraw funds
-                  <ArrowUpRight size={16} />
-                </a> */}
+                  {islive ? "Live" : "Inactive"}
+                  <div
+                    className={`rounded-full h-2 w-2 ${islive ? "bg-green-400" : "bg-red-500"} animate-pulse`}
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
