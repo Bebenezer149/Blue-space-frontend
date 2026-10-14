@@ -13,6 +13,7 @@ import {
   MoreHorizontal,
   Smartphone,
 } from "lucide-react";
+import { div } from "motion/react-client";
 // import { setWasmUrl } from "@lottiefiles/dotlottie-react/webgpu";
 
 const transactions = [
@@ -72,11 +73,57 @@ function StatusBadge({ status }) {
 }
 
 function Transactions() {
-  const [balance, setBalance] = useState(0);
+  const [withdrawalBalance, setWithdrawalBalance] = useState(0.0);
+  const [pendingBalance, setPendingBalance] = useState(0.0);
+  const [payoutBalance,setPayoutBalance]=useState(0.00)
   const token = localStorage.getItem("token");
   const [islive, setIsLive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus]=useState("Inactive")
+  const [channel,setChannel]=useState(1);
+  const [receiverPhone, setReceiverPhone]=useState("");
+  const [amountToWithdraw,setAmountToWithdraw]=useState(0.00)
+  const [state,setState]=useState(false)
+
+  const withdrawData={
+    channel:channel,
+    receiver:receiverPhone,
+    amount:amountToWithdraw,
+    idempotency_key:crypto.randomUUID()
+  }
+  // const [status, setStatus] = useState("Inactive");
+
+  async function makeWithdrawal() {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/transfer`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(withdrawData),
+      });
+      const contentType = response.headers.get("content-type") || "";
+      const result = contentType.includes("application/json")
+        ? await response.json()
+        : null;
+
+      if (!response.ok) {
+        throw new Error(
+          result?.message || `Withdrawal failed (${response.status}).`,
+        );
+      }
+
+      console.log(result);
+      setState(true)
+      toast.success("Withdrawal successful")
+    } catch (error) {
+      toast.error(error.message || "Unable to process the withdrawal.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   function activateWallet() {
     setIsLoading(true);
@@ -90,11 +137,27 @@ function Transactions() {
       .then((res) => res.json())
       .then((res) => {
         console.log(res.message);
-        toast.info(res.message)
+        toast.info(res.message);
         setIsLive(true);
         setIsLoading(false);
       })
       .catch((err) => console.log(err));
+  }
+
+ function fetchSecondaryBalance() {
+    fetch(`${API_URL}/balance-details`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setPendingBalance(res.pending_payments);
+        setPayoutBalance(res.total_payouts)
+      });
   }
 
   function fetchBalance() {
@@ -108,19 +171,20 @@ function Transactions() {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        
-        if(res.status === "live"){
-          setIsLive(true)
-          setBalance(res.available_balance);
+
+        if (res.status === "live") {
+          setIsLive(true);
+          setWithdrawalBalance(res.available_balance);
+          fetchSecondaryBalance()
         }
-       
       })
       .catch((err) => console.log(err));
   }
 
+ 
   useEffect(() => {
     fetchBalance();
-  }, []);
+  }, [state]);
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -134,7 +198,7 @@ function Transactions() {
                 Transactions
               </h1>
               <p className="mt-1 text-sm text-gray-500">
-                Track order payments, escrow and seller payouts.
+                Track order payments, holdings and  payouts.
               </p>
             </div>
             <button
@@ -183,7 +247,7 @@ function Transactions() {
                   <span className="mr-2 text-xl font-medium text-blue-200 sm:text-2xl">
                     GH₵
                   </span>
-                  {balance}
+                  {withdrawalBalance}
                 </p>
                 <p className="mt-2 flex items-center gap-1.5 text-xs text-blue-100">
                   <Check size={14} />
@@ -217,7 +281,7 @@ function Transactions() {
                   <span className="mr-1 text-base font-medium text-gray-500">
                     GH₵
                   </span>
-                  860.00
+                  {pendingBalance}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
                   3 orders awaiting confirmation
@@ -235,7 +299,7 @@ function Transactions() {
                   <span className="mr-1 text-base font-medium text-gray-500">
                     GH₵
                   </span>
-                  4,580.00
+                  {payoutBalance}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
                   Across 12 transfers
@@ -281,14 +345,15 @@ function Transactions() {
                   className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 />
                 <select
-                  defaultValue="mtn"
+                  defaultValue="1"
+                  onChange={(e)=>setChannel(e.target.value)}
                   aria-label="Payout method"
                   className="h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white pl-9 pr-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
-                  <option value="mtn">MTN Mobile Money</option>
-                  <option value="telecel">Telecel Cash</option>
-                  <option value="at">AT Money</option>
-                  <option value="bank">Bank transfer</option>
+                  <option value="1">MTN Mobile Money</option>
+                  <option value="2">Telecel Cash</option>
+                  <option value="3">AT Money</option>
+                  <option value="4">Bank transfer</option>
                 </select>
               </span>
             </label>
@@ -299,6 +364,7 @@ function Transactions() {
               </span>
               <input
                 type="text"
+                onChange={(e)=>setReceiverPhone(e.target.value)}
                 placeholder="e.g. 024 123 4567"
                 className="h-11 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-800 outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
@@ -315,6 +381,7 @@ function Transactions() {
                 <input
                   type="text"
                   inputMode="decimal"
+                  onChange={(e)=>setAmountToWithdraw(e.target.value)}
                   placeholder="0.00"
                   className="min-w-0 flex-1 px-3 text-sm text-gray-800 outline-none placeholder:text-gray-400"
                 />
@@ -323,9 +390,17 @@ function Transactions() {
 
             <button
               type="button"
+              onClick={makeWithdrawal}
               className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             >
-              Withdraw
+              {
+                isLoading ? (
+                  <h1>
+                    <span>Withdrawing...</span>
+                    <span className="h-3 w-3 animate spin border-b-2 border-white"></span>
+                  </h1>
+                ):'Withdraw'
+              }
               <ArrowUpRight size={16} />
             </button>
           </div>
@@ -360,7 +435,7 @@ function Transactions() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-600"
+                className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-600"
               >
                 All transactions
                 <MoreHorizontal size={15} className="rotate-90" />

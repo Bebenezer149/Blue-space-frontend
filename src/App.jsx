@@ -97,7 +97,8 @@ function App() {
         />
         {/* <Route path="/flowbite-test" element={<div className="min-h-screen bg-gray-100 p-8"><Buttons /></div>} /> */}
         <Route path="/success" element={<SuccessPage />} />
-        <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        {/* <Route path="/order-confirmation" element={<OrderConfirmation />} /> */}
+        <Route path="/confirm-order/:token" element={<OrderConfirmation />} />
         
       </Routes>
     </>
