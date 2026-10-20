@@ -179,4 +179,4 @@ function EditProfileModal({ data, onClose, onUpdated }) {
   );
 }
 
-export default EditProfileModal;
+export default EditProfileModal

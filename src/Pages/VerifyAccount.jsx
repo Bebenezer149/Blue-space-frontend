@@ -24,6 +24,7 @@ function VerifyAccount({ phone_number, onVerified }) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 
@@ -70,6 +71,7 @@ function VerifyAccount({ phone_number, onVerified }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
       });
 

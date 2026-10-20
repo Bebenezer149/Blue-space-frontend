@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import { captureEvent } from "../analytics";
+import VerifyAccount from "./VerifyAccount";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,8 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isNotVerified, setIsNotVerified] = useState(false);
+  const [pendingLogin, setPendingLogin] = useState(null);
 
   const navigate = useNavigate();
 
@@ -18,7 +21,7 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    
+
     const data = { email, password };
 
     fetch(`${API_URL}/login`, {
@@ -36,28 +39,57 @@ function Login() {
         return res.json();
       })
       .then((res) => {
-        console.log(res);
-        captureEvent("user_logged_in");
-        setEmail("");
-        setPassword("");
-        setSuccess(true);
-        setUser(res.user.first_name);
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("first_name", res.user.first_name);
-        localStorage.setItem("slug", res.user.link)
-        localStorage.setItem('business', res.user.business_name)
-        setLoading(false);
-        
-        // Small delay before navigation to show success message
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 500);
+        if (!res?.user || !res.token) {
+          throw new Error("The login response was incomplete.");
+        }
+
+        if (!res.user.is_verified) {
+          localStorage.removeItem("token");
+          setPendingLogin(res);
+          setIsNotVerified(true);
+          setLoading(false);
+          return;
+        }
+
+        completeLogin(res);
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
         setError("Invalid email or password. Please try again.");
       });
+  }
+
+  function completeLogin(loginResponse) {
+    const { user: loggedInUser, token } = loginResponse;
+
+    captureEvent("user_logged_in");
+    setEmail("");
+    setPassword("");
+    setSuccess(true);
+    setUser(loggedInUser.first_name);
+    localStorage.setItem("token", token);
+    localStorage.setItem("first_name", loggedInUser.first_name);
+    localStorage.setItem("slug", loggedInUser.link);
+    localStorage.setItem("business", loggedInUser.business_name);
+    setLoading(false);
+    setIsNotVerified(false);
+    setPendingLogin(null);
+
+    // Small delay before navigation to show success message
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 500);
+  }
+
+  function handleVerified() {
+    if (!pendingLogin) {
+      setError("Your login session expired. Please sign in again.");
+      setIsNotVerified(false);
+      return;
+    }
+
+    completeLogin(pendingLogin);
   }
 
   return (
@@ -272,6 +304,12 @@ function Login() {
           </div>
         </form>
       </div>
+      {isNotVerified && (
+        <VerifyAccount
+          phone_number={pendingLogin?.user?.phone_number}
+          onVerified={handleVerified}
+        />
+      )}
     </div>
   );
 }
