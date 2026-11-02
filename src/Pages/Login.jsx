@@ -101,6 +101,26 @@ function Login() {
       </div>
 
       <div className="relative bg-white/95 backdrop-blur-sm w-full max-w-md rounded-2xl shadow-2xl p-6 sm:p-8 transform transition-all duration-300">
+        {/* Logo/Icon */}
+        <div className="flex justify-center mb-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-10 h-10 text-white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+              />
+            </svg>
+          </div>
+        </div>
+
         <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-2">Welcome Back!</h1>
         <p className="text-center text-gray-500 text-sm mb-8">Sign in to continue to your dashboard</p>
 

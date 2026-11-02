@@ -49,8 +49,7 @@ function SuccessPage() {
       <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 sm:py-7">
         <Link
           to={storefrontPath}
-          className="text-xl font-extrabold tracking-tight text-blue-700 sm:text-2xl"
-          aria-label="Blue Space"
+          className="text-xl font-extrabold tracking-tight text-gradient sm:text-2xl"
         >
           Blue Space
         </Link>

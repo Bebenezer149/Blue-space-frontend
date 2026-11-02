@@ -108,8 +108,7 @@ function OrderConfirmation() {
         <header className="mb-8 flex items-center justify-between">
           <Link
             to="/marketplace"
-            className="text-xl font-extrabold tracking-tight text-blue-700 sm:text-2xl"
-            aria-label="Blue Space marketplace"
+            className="text-xl font-extrabold tracking-tight text-gradient sm:text-2xl"
           >
             Blue Space
           </Link>

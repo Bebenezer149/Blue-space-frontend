@@ -6,7 +6,6 @@ import cart from "../assets/buying.jpg";
 import anass from "../assets/anass.jpeg";
 import cecil from "../assets/cecil-ofori.jpeg";
 import eben from "../assets/eben.jpeg";
-import BrandLogo from "../Components/BrandLogo";
 
 import {
   HiMenu,
@@ -156,11 +155,7 @@ function Landing() {
         {/* Header bar (stays fixed height) */}
         <div className="bg-white/40 backdrop-blur-md border border-gray-200 rounded-full shadow-sm px-4 sm:px-6 py-2.5">
           <div className="flex items-center justify-between gap-2">
-            <a
-              href="/"
-              className="shrink-0 text-lg font-bold text-blue-600 sm:text-xl"
-              aria-label="Blue Space home"
-            >
+            <a href="#" className="flex shrink-0 items-center gap-2 font-bold text-blue-600">
               Blue Space
             </a>
 
@@ -631,7 +626,10 @@ function Landing() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-4">
-                <BrandLogo className="h-8 w-auto" />
+                <span className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold">
+                  B
+                </span>
+                <span className="text-lg font-bold text-white">Blue Space</span>
               </div>
               <p className="text-sm leading-relaxed">
                 Empowering Ghanaian entrepreneurs with simple technology to

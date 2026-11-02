@@ -184,7 +184,7 @@ function Marketplace() {
             <div className="flex flex-wrap items-center justify-between py-3 gap-3">
               {/* Logo Section */}
               <div className="flex flex-col flex-shrink-0">
-                <span className="text-xl font-bold text-blue-500 sm:text-2xl">
+                <span className="font-bold text-xl sm:text-2xl text-blue-500">
                   Blue Space
                 </span>
                 <h1 className="font-semibold text-xs sm:text-sm text-gray-600">
