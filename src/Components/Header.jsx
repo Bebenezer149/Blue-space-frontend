@@ -53,7 +53,7 @@ function Header() {
           to="/dashboard"
           className="flex items-center gap-2 group"
         >
-          <span className="text-xl md:text-2xl font-extrabold tracking-tight text-gradient group-hover:scale-105 transition-transform duration-300 inline-block">
+          <span className="text-xl md:text-2xl font-extrabold  text-blue-700 group-hover:scale-105  duration-300 inline-block">
             Blue Space
           </span>
         </Link>
@@ -82,7 +82,7 @@ function Header() {
         <div className="hidden md:flex gap-4 items-center">
           <button
             onClick={Logout}
-            className="px-4 py-2 rounded-md bg-blue-400 text-white cursor-pointer hover:bg-blue-500"
+            className="px-4 py-2 rounded-md bg-blue-600 text-white cursor-pointer hover:bg-blue-500"
           >
             Logout
           </button>
@@ -164,13 +164,13 @@ function Header() {
           <div className="flex items-center justify-between pt-2">
             <button
               onClick={Logout}
-              className="px-4 py-2 rounded-md bg-blue-400 hover:bg-blue-500 text-white cursor-pointer"
+              className="px-4 py-2 rounded-md shadow-md bg-blue-600 hover:bg-blue-500 text-white cursor-pointer"
             >
               Logout
             </button>
 
             <Link to={"/profile"}>
-              <div className="h-14 w-14 border rounded-full border-slate-400 text-slate-400 cursor-pointer hover:text-blue-400 hover:border-blue-400 overflow-hidden flex items-center justify-center">
+              <div className="h-14 w-14 border  rounded-full border-slate-400 text-slate-400 cursor-pointer hover:text-blue-400 hover:border-blue-400 overflow-hidden flex items-center justify-center">
                 {image ? (
                   <img
                     className="h-full w-full rounded-full object-cover"

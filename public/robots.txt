@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /dashboard
+Disallow: /products
+Disallow: /add-products
+Disallow: /order-manager
+Disallow: /transactions
+Disallow: /preview-order
+Disallow: /profile
+Disallow: /success
+Disallow: /confirm-order/
+
+Sitemap: https://www.bluespace.live/sitemap.xml

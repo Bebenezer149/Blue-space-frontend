@@ -184,9 +184,9 @@ function Marketplace() {
             <div className="flex flex-wrap items-center justify-between py-3 gap-3">
               {/* Logo Section */}
               <div className="flex flex-col flex-shrink-0">
-                <h1 className="font-bold text-xl sm:text-2xl text-blue-500">
+                <span className="font-bold text-xl sm:text-2xl text-blue-500">
                   Blue Space
-                </h1>
+                </span>
                 <h1 className="font-semibold text-xs sm:text-sm text-gray-600">
                   Marketplace
                 </h1>
@@ -359,9 +359,9 @@ function Marketplace() {
           >
             <div className="text-blue-500 flex-shrink-0">{item.icon}</div>
             <div className="flex flex-col">
-              <h1 className="font-semibold text-sm sm:text-base">
+              <h2 className="font-semibold text-sm sm:text-base">
                 {item.title}
-              </h1>
+              </h2>
               <p className="text-xs sm:text-sm text-gray-600">{item.text}</p>
             </div>
           </div>
@@ -370,7 +370,7 @@ function Marketplace() {
 
       {/* Categories Section */}
       <div className="m-4 px-4 flex items-center justify-start">
-        <h1 className="font-semibold text-xl">Shop by Categories</h1>
+        <h2 className="font-semibold text-xl">Shop by Categories</h2>
       </div>
 
       {/* Horizontal scrolling on mobile, grid on larger screens */}
@@ -387,9 +387,9 @@ function Marketplace() {
               >
                 {item.icon}
               </div>
-              <h1 className="font-semibold text-sm text-center">
+              <h3 className="font-semibold text-sm text-center">
                 {item.title}
-              </h1>
+              </h3>
             </div>
           ))}
         </div>
@@ -406,9 +406,9 @@ function Marketplace() {
               >
                 {item.icon}
               </div>
-              <h1 className="font-semibold text-sm text-center">
+              <h3 className="font-semibold text-sm text-center">
                 {item.title}
-              </h1>
+              </h3>
             </div>
           ))}
         </div>
@@ -422,7 +422,7 @@ function Marketplace() {
         return (
         <section key={item.title} className="mx-4 mt-18">
           <div className="m-3 flex items-center justify-between gap-4">
-            <h1 className="text-2xl font-semibold">{item.title}</h1>
+            <h2 className="text-2xl font-semibold">{item.title}</h2>
             {filteredProducts.length > initialProductCount && (
               <button
                 type="button"

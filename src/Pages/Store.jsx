@@ -5,6 +5,7 @@ import ViewProduct from "./ViewProduct";
 import Cart from "../Components/Cart/Cart";
 import { API_URL } from "../config";
 import { toast } from "../toast";
+import SEO from "../Components/SEO";
 
 function Store() {
   const { slug } = useParams();
@@ -53,6 +54,12 @@ function Store() {
 
   const storeInitial = (businessName || slug || "S").charAt(0).toUpperCase();
   const showProfilePicture = Boolean(profilePicture) && !profileImageFailed;
+  const storeTitle = businessName
+    ? `${businessName} Online Store | Blue Space`
+    : `${slug} Online Store | Blue Space`;
+  const storeDescription = businessName
+    ? `Browse products and shop directly from ${businessName} on Blue Space.`
+    : `Browse products and shop directly from this online store on Blue Space.`;
 
   useEffect(() => {
     function onDocMouseDown(e) {
@@ -125,6 +132,11 @@ function Store() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={storeTitle}
+        description={storeDescription}
+        image={profilePicture || banner || undefined}
+      />
       {/* Store Banner - Flex content on both mobile and desktop */}
       <div
         className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 bg-cover bg-center p-4 sm:p-6 md:p-8 min-h-[180px] sm:min-h-[200px] md:min-h-[220px] overflow-hidden flex items-center"

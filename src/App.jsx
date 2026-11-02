@@ -3,7 +3,7 @@
 // import viteLogo from './assets/vite.svg'
 // import heroImg from './assets/hero.png'
 // import './App.css'
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Login from "./Pages/Login";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
@@ -24,10 +24,81 @@ import OrderConfirmation from "./Pages/OrderConfirmation";
 import Store from "./Pages/Store";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import ToastViewport from "./Components/ToastViewport";
+import SEO from "./Components/SEO";
+
+const routeSEO = {
+  "/": {
+    title: "Blue Space | Online Store Builder and Marketplace in Ghana",
+    description:
+      "Create a free online store, share your products, and manage orders with Blue Space, a marketplace built for businesses in Ghana.",
+  },
+  "/marketplace": {
+    title: "Shop Ghanaian Stores and Products | Blue Space Marketplace",
+    description:
+      "Discover products and independent online stores across Ghana on the Blue Space marketplace.",
+  },
+  "/login": {
+    title: "Sign In | Blue Space",
+    description: "Sign in to manage your Blue Space online store.",
+    noIndex: true,
+  },
+  "/register": {
+    title: "Create Your Online Store | Blue Space",
+    description: "Create your Blue Space account and start building your online store.",
+    noIndex: true,
+  },
+  "/forgot-password": {
+    title: "Reset Your Password | Blue Space",
+    description: "Request a password reset for your Blue Space account.",
+    noIndex: true,
+  },
+  "/reset-password": {
+    title: "Choose a New Password | Blue Space",
+    description: "Set a new password for your Blue Space account.",
+    noIndex: true,
+  },
+};
+
+function RouteSEO() {
+  const { pathname } = useLocation();
+
+  if (pathname.startsWith("/store/")) return null;
+
+  const page = routeSEO[pathname];
+  const metadata = page || {
+    title: "Blue Space",
+    description: "Manage your Blue Space online store.",
+    noIndex: true,
+  };
+  const structuredData =
+    pathname === "/"
+      ? {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://www.bluespace.live/#organization",
+              name: "Blue Space",
+              url: "https://www.bluespace.live/",
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://www.bluespace.live/#website",
+              name: "Blue Space",
+              url: "https://www.bluespace.live/",
+              publisher: { "@id": "https://www.bluespace.live/#organization" },
+            },
+          ],
+        }
+      : undefined;
+
+  return <SEO {...metadata} structuredData={structuredData} />;
+}
 
 function App() {
   return (
     <>
+      <RouteSEO />
       <ToastViewport />
       {/* <Header/> */}
       <Routes>

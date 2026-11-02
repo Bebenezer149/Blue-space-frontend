@@ -23,6 +23,20 @@ form inputs, and query strings and URL fragments are removed before URL
 properties are sent. Do not put a PostHog personal API key in frontend
 environment variables; the project token is designed for client-side use.
 
+## Search engine optimization
+
+The public landing page, marketplace, and storefronts set page-specific titles,
+descriptions, canonical URLs, and social metadata. The home page also publishes
+Organization and WebSite structured data. Account, order, and dashboard routes
+are marked `noindex` and excluded from crawling.
+
+`public/robots.txt` and `public/sitemap.xml` use `https://www.bluespace.live`.
+Update both files and the canonical/social URLs if the production domain changes.
+The sitemap lists the static public pages; storefront URLs are dynamic and are
+not enumerated there. Because this app uses client-side routing, dynamic metadata
+is applied after JavaScript runs; server-side rendering or prerendering is needed
+for crawlers that do not execute JavaScript.
+
 ## React Compiler
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
