@@ -80,6 +80,7 @@ function RouteSEO() {
               "@id": "https://www.bluespace.live/#organization",
               name: "Blue Space",
               url: "https://www.bluespace.live/",
+              logo: "https://www.bluespace.live/blue-space-icon.svg",
             },
             {
               "@type": "WebSite",
