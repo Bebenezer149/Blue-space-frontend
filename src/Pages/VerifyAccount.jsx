@@ -16,7 +16,9 @@ function VerifyAccount({ phone, onVerified }) {
 
   const sendOtp = useCallback(async () => {
     if (!phone) {
-      throw new Error("A phone number is required to send a verification code.");
+      throw new Error(
+        "A phone number is required to send a verification code.",
+      );
     }
 
     const params = new URLSearchParams({ phone });
@@ -63,16 +65,17 @@ function VerifyAccount({ phone, onVerified }) {
     setLoading(true);
     let isVerified = false;
     try {
-      const params = new URLSearchParams({
+      const params = {
         otp: otpCode,
-        phone,
-      });
-      const response = await fetch(`${API_URL}/verify-otp?${params}`, {
+        phone: phone,
+      };
+      const response = await fetch(`${API_URL}/verify-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        body: JSON.stringify(params),
       });
 
       if (!response.ok) {
