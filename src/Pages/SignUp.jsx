@@ -616,7 +616,7 @@ function SignUp() {
         </form>
       </div>
       {openVerificationModal && (
-        <VerifyAccount phone_number={phoneNumber} onVerified={handleVerified} />
+        <VerifyAccount phone={phoneNumber} onVerified={handleVerified} />
       )}
     </div>
   );

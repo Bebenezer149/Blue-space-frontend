@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { API_URL } from "../config";
 import { toast } from "../toast";
 
-function VerifyAccount({ phone_number, onVerified }) {
+function VerifyAccount({ phone, onVerified }) {
   const [otpCode, setOtpCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
@@ -15,11 +15,11 @@ function VerifyAccount({ phone_number, onVerified }) {
   }
 
   const sendOtp = useCallback(async () => {
-    if (!phone_number) {
+    if (!phone) {
       throw new Error("A phone number is required to send a verification code.");
     }
 
-    const params = new URLSearchParams({ phone_number });
+    const params = new URLSearchParams({ phone });
     const response = await fetch(`${API_URL}/send-otp?${params}`, {
       method: "POST",
       headers: {
@@ -33,7 +33,7 @@ function VerifyAccount({ phone_number, onVerified }) {
     }
 
     toast.success("Verification code sent.");
-  }, [phone_number]);
+  }, [phone]);
 
   useEffect(() => {
     if (initialOtpSent.current) return;
@@ -65,7 +65,7 @@ function VerifyAccount({ phone_number, onVerified }) {
     try {
       const params = new URLSearchParams({
         otp: otpCode,
-        phone_number,
+        phone,
       });
       const response = await fetch(`${API_URL}/verify-otp?${params}`, {
         method: "POST",
