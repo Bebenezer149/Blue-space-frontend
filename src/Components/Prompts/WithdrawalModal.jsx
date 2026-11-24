@@ -60,7 +60,7 @@ function WithdrawalModal({
         //   throw new Error("Recipient name doesn't exist for this network.");
         // }
 
-        // setVerifiedName(recipientName.trim());
+        setVerifiedName(result?.data?.original?.body);
       } catch (error) {
         if (!controller.signal.aborted) {
           setVerificationError(
