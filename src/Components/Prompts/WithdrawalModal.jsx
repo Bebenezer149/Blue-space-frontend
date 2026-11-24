@@ -55,12 +55,12 @@ function WithdrawalModal({
           );
         }
 
-        const recipientName = result?.data?.original?.body;
-        if (typeof recipientName !== "string" || !recipientName.trim()) {
-          throw new Error("Recipient name doesn't exist for this network.");
-        }
+        // const recipientName = result?.data?.original?.body;
+        // if (typeof recipientName !== "string" || !recipientName.trim()) {
+        //   throw new Error("Recipient name doesn't exist for this network.");
+        // }
 
-        setVerifiedName(recipientName.trim());
+        // setVerifiedName(recipientName.trim());
       } catch (error) {
         if (!controller.signal.aborted) {
           setVerificationError(
