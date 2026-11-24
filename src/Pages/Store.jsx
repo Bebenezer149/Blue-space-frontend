@@ -324,7 +324,7 @@ function Store() {
       <div className="max-w-7xl mx-auto px-2 py-6 sm:px-4 sm:py-8">
         {filteredProducts.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6 animate-stagger">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-6 animate-stagger">
               {paginatedProducts.map((data) => (
                 <ProductCard
                   key={data.id}

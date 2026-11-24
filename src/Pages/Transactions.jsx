@@ -8,12 +8,12 @@ import {
   Banknote,
   Check,
   Clock3,
-  Download,
   LockKeyhole,
   MoreHorizontal,
   Smartphone,
 } from "lucide-react";
-import { div } from "motion/react-client";
+import WithdrawalModal from "../Components/Prompts/WithdrawalModal";
+
 // import { setWasmUrl } from "@lottiefiles/dotlottie-react/webgpu";
 
 const transactions = [
@@ -79,50 +79,32 @@ function Transactions() {
   const token = localStorage.getItem("token");
   const [islive, setIsLive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [channel,setChannel]=useState(1);
+  const [channel,setChannel]=useState("1");
   const [receiverPhone, setReceiverPhone]=useState("");
   const [amountToWithdraw,setAmountToWithdraw]=useState(0.00)
   const [state,setState]=useState(false)
+  const [openModal,setOpenModal]=useState(false)
 
-  const withdrawData={
-    channel:channel,
-    receiver:receiverPhone,
-    amount:amountToWithdraw,
-    idempotency_key:crypto.randomUUID()
-  }
+ 
   // const [status, setStatus] = useState("Inactive");
 
-  async function makeWithdrawal() {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/transfer`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(withdrawData),
-      });
-      const contentType = response.headers.get("content-type") || "";
-      const result = contentType.includes("application/json")
-        ? await response.json()
-        : null;
-
-      if (!response.ok) {
-        throw new Error(
-          result?.message || `Withdrawal failed (${response.status}).`,
-        );
-      }
-
-      console.log(result);
-      setState(true)
-      toast.success("Withdrawal successful")
-    } catch (error) {
-      toast.error(error.message || "Unable to process the withdrawal.");
-    } finally {
-      setIsLoading(false);
+  function openWithdrawalModal() {
+    if (!receiverPhone.trim()) {
+      toast.error("Enter a recipient phone number.");
+      return;
     }
+
+    if (!Number.isFinite(Number(amountToWithdraw)) || Number(amountToWithdraw) <= 0) {
+      toast.error("Enter a valid withdrawal amount.");
+      return;
+    }
+
+    setOpenModal(true);
+  }
+
+  function handleWithdrawalSuccess() {
+    setState((currentState) => !currentState);
+    setOpenModal(false);
   }
 
   function activateWallet() {
@@ -264,7 +246,7 @@ function Transactions() {
                   confirmed.
                 </p>
                 <div
-                  className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-white px-4 text-sm font-semibold ${islive ? "text-green-500" : "text-red-500"} transition hover:bg-blue-50`}
+                  className={`inline-flex min-h-8 items-center justify-center border w-1/4 gap-2 rounded-lg  px-4 text-sm font-semibold ${islive ? "text-green-500" : "text-red-500"} transition hover:bg-blue-50`}
                 >
                   {islive ? "Live" : "Inactive"}
                   <div
@@ -349,8 +331,8 @@ function Transactions() {
                   className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 />
                 <select
-                  defaultValue="1"
-                  onChange={(e)=>setChannel(e.target.value)}
+                  value={channel}
+                  onChange={(e) => setChannel(e.target.value)}
                   aria-label="Payout method"
                   className="h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white pl-9 pr-3 text-sm text-gray-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
@@ -394,17 +376,10 @@ function Transactions() {
 
             <button
               type="button"
-              onClick={makeWithdrawal}
+              onClick={openWithdrawalModal}
               className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             >
-              {
-                isLoading ? (
-                  <h1>
-                    <span>Withdrawing...</span>
-                    <span className="h-3 w-3 animate spin border-b-2 border-white"></span>
-                  </h1>
-                ):'Withdraw'
-              }
+              Withdraw
               <ArrowUpRight size={16} />
             </button>
           </div>
@@ -589,7 +564,19 @@ function Transactions() {
             </div>
           </div>
         </section>
+       
+          
+        
       </main>
+      {openModal && (
+        <WithdrawalModal
+          receiverPhone={receiverPhone}
+          channel={channel}
+          amountToWithdraw={amountToWithdraw}
+          onClose={() => setOpenModal(false)}
+          onSuccess={handleWithdrawalSuccess}
+        />
+      )}
     </div>
   );
 }
