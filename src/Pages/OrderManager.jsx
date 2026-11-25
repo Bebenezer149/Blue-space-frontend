@@ -3,19 +3,15 @@ import Header from "../Components/Header";
 import { useCallback, useEffect, useState } from "react";
 import OrderCard from "../Components/Cards/OrderCard";
 import ViewOrder from "./ViewOrder";
-import { toast } from "../toast";
 import { API_URL } from "../config";
 
 function OrderManager() {
-  const slug = localStorage.getItem("slug");
   const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [tick, setTick] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 8;
-  const [copy] = useState(`${window.location.origin}/store/${slug}`);
   const [orderDetails, setOrderDetails] = useState({
     id: "",
     customer_name: "",
@@ -82,13 +78,6 @@ const pendingOrders = orders.filter(
   ).length;
 
 
-  const copyToClipboard = async () => {
-    await navigator.clipboard.writeText(copy);
-    setTick(true);
-    toast.info("Copied to clipboard");
-   
-    
-  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -107,7 +96,7 @@ const pendingOrders = orders.filter(
           </div>
         </div>
 
-        {/* Search and Store Link */}
+        {/* Search */}
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -134,54 +123,6 @@ const pendingOrders = orders.filter(
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 bg-white"
             />
           </div>
-          
-         <div>
-           <div className="flex items-center justify-center bg-blue-50  border border-blue-200 rounded-lg sm:justify-end">
-            
-            <div className=" flex items-center overflow-auto gap-2  px-3 py-2 text-sm text-gray-600 truncate max-w-full">
-              <span className="text-blue-600">{copy}</span>
-              
-            </div>
-            <div className="flex justify-center items-center px-2 ">
-              <button onClick={copyToClipboard} className="text-center">
-                {tick ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-4.5 text-blue-400 "
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m4.5 12.75 6 6 9-13.5"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5 text-blue-400 cursor-pointer"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
-                    />
-                  </svg>
-                )}
-              </button>
-            </div>
-          </div>
-          <div className="text-xs font-semibold text-gray-500 mt-1">
-            <p>Copy the link above for advertisement</p>
-          </div>
-         </div>
         </div>
 
         {/* Statistics Cards */}

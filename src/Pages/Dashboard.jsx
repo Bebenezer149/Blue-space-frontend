@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import Header from "../Components/Header";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import StatCard from "../Components/Cards/StatCard";
 import SalesTable from "../Components/Tables/SalesTable";
 import { API_URL } from "../config";
+import { toast } from "../toast";
 
 const getDateKey = (date) =>
     `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -111,10 +113,27 @@ function WeeklyTrendChart({ title, subtitle, trend, color, loading, formatValue 
 function Dashboard() {
     const token = localStorage.getItem("token");
     const userName = localStorage.getItem("first_name");
+    const slug = localStorage.getItem("slug");
 
     const [statistics, setStatistics] = useState({});
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [copied, setCopied] = useState(false);
+    const storeUrl = slug ? `${window.location.origin}/store/${encodeURIComponent(slug)}` : "";
+    const storePath = slug ? `/store/${encodeURIComponent(slug)}` : "/profile";
+
+    const copyStoreLink = async () => {
+        if (!storeUrl) return;
+
+        try {
+            await navigator.clipboard.writeText(storeUrl);
+            setCopied(true);
+            toast.info("Store link copied to clipboard");
+            window.setTimeout(() => setCopied(false), 2000);
+        } catch {
+            toast.error("Unable to copy the store link");
+        }
+    };
 
     // Fetch once when this protected dashboard mounts.
     useEffect(() => {
@@ -175,9 +194,59 @@ function Dashboard() {
 
             <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                 {/* Header */}
-                <h1 className="font-semibold text-2xl sm:text-3xl lg:text-4xl text-gray-800 animate-fade-in-up">
-                    Welcome {userName}!
-                </h1>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between animate-fade-in-up">
+                    <h1 className="font-semibold text-2xl sm:text-3xl lg:text-4xl text-gray-800">
+                        Welcome {userName}!
+                    </h1>
+
+                    {slug && (
+                        <div className="w-full sm:w-auto sm:max-w-md">
+                            <div className="flex items-center justify-center rounded-lg border border-blue-200 bg-blue-50 sm:justify-end">
+                                <Link
+                                    to={storePath}
+                                    className="flex min-w-0 flex-1 items-center gap-2 overflow-auto px-3 py-2 text-sm text-blue-600 truncate"
+                                    title="Open your store"
+                                >
+                                    {storeUrl}
+                                </Link>
+                                <div className="flex items-center justify-center px-2">
+                                    <button type="button" onClick={copyStoreLink} className="text-center" aria-label="Copy store link">
+                                        {copied ? (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="size-4.5 text-blue-400"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                            </svg>
+                                        ) : (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="size-5 cursor-pointer text-blue-400"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
+                                                />
+                                            </svg>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="mt-1 text-xs font-semibold text-gray-500">
+                                <p>Copy the link above for advertisement</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
 
                 {/* Stats Grid */}
                 <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 animate-stagger">
