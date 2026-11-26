@@ -64,7 +64,6 @@ function EditProfileModal({ data, onClose, onUpdated }) {
       }, 1500);
     } catch (err) {
       setError(err.message || "An error occurred");
-      console.error("Profile update error:", err);
     } finally {
       setLoading(false);
     }

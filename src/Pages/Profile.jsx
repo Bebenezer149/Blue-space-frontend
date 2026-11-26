@@ -57,7 +57,6 @@ function Profile() {
         setUserData(res.user || {});
       })
       .catch((err) => {
-        console.error("Failed to fetch user data:", err);
         setUserData({});
       })
       .finally(() => setIsLoading(false));

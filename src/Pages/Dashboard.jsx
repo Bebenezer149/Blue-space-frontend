@@ -153,7 +153,6 @@ function Dashboard() {
                 setLoading(false);
             })
             .catch((error) => {
-                console.error("Error fetching dashboard data:", error);
                 setLoading(false);
             });
     }, [token]);

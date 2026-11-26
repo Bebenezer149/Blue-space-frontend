@@ -119,7 +119,6 @@ const AddProductPage = () => {
     const cloudPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
     if (!cloudName || !cloudPreset) {
-      console.error("Cloudinary configuration is missing:", { cloudName, cloudPreset });
       toast.error("Cloudinary configuration is missing. Check your .env file.");
       return;
     }
@@ -149,17 +148,14 @@ const AddProductPage = () => {
       try {
         cloudResult = JSON.parse(responseText);
       } catch (error) {
-        console.error("Cloudinary returned a non-JSON response:", responseText);
         throw new Error("Cloudinary returned an invalid response.", { cause: error });
       }
 
       if (!cloudResponse.ok) {
-        console.error("Cloudinary upload failed:", cloudResult);
         throw new Error(cloudResult?.error?.message || "Couldn't upload image to Cloudinary.");
       }
 
       if (!cloudResult?.secure_url) {
-        console.error("Cloudinary response did not contain secure_url:", cloudResult);
         throw new Error("Cloudinary did not return an image URL.");
       }
 
@@ -178,7 +174,6 @@ const AddProductPage = () => {
         );
       }
     } catch (error) {
-      console.error("Cloudinary product image upload error:", error);
       toast.error(error?.message || "Couldn't upload product pictures.");
       setLoading(false);
       return;
@@ -249,7 +244,6 @@ const AddProductPage = () => {
         navigate("/products");
       }, 500);
     } catch (error) {
-      console.error("Product creation error:", error);
       setErrorText(error?.message || "Something went wrong while creating the product.");
       toast.error(error?.message || "Something went wrong while creating the product.");
     } finally {

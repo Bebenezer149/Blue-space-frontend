@@ -37,7 +37,6 @@ function ForgotPassword() {
         }
       })
       .catch((err) => {
-        console.log(err);
         setErrorMessage("Network error. Please try again.");
         setLoading(false);
       });

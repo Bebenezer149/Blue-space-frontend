@@ -95,8 +95,7 @@ export default async function handler(req, res) {
 
 
 
-  } catch (e) {
-    console.error(e);
+  } catch {
     const ch = corsHeaders();
     for (const [k, v] of Object.entries(ch)) res.setHeader(k, v);
     return res.status(502).json({ message: 'Unable to reach API server.' });

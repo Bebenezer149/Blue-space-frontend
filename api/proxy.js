@@ -62,8 +62,7 @@ app.all('/api/*', async (req, res) => {
     });
 
     res.send(isTextual ? buf.toString('utf8') : buf);
-  } catch (e) {
-    console.error(e);
+  } catch {
     res.status(502).json({ message: 'Unable to reach API server.' });
   }
 });

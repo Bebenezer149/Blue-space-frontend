@@ -5,6 +5,9 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    sourcemap: false,
+  },
   server: {
     // Manual deployment: proxy disabled by default.
     // Configure your own API routing externally (or add a proxy for local dev).

@@ -37,13 +37,11 @@ function OrderManager() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setOrders(res.order || []);
         setIsRefreshing(false);
        
       })
       .catch((err) => {
-        console.log(err);
         setIsRefreshing(false);
       });
   }, [token]);

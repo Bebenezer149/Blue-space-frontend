@@ -21,7 +21,6 @@ function SalesTable() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         const orders = res.order || [];
         setSales(orders);
         setIsLoading(false);
@@ -39,7 +38,6 @@ function SalesTable() {
         }
       })
       .catch((err) => {
-        console.log(err);
         setIsLoading(false);
       });
   }, []);

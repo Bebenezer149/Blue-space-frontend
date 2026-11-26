@@ -112,7 +112,6 @@ function WithdrawalModal({
       }
 
       toast.success("Withdrawal successful");
-      console.log(result)
       onSuccess();
     } catch (error) {
       toast.error(error.message || "Unable to process the withdrawal.");

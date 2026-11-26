@@ -118,12 +118,11 @@ function Transactions() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res.message);
         toast.info(res.message);
         setIsLive(true);
         setIsLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {});
   }
 
  function fetchSecondaryBalance() {
@@ -136,7 +135,6 @@ function Transactions() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setPendingBalance(res.pending_payments);
         setPayoutBalance(res.total_payouts)
       });
@@ -152,7 +150,6 @@ function Transactions() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
 
         if (res.status === "live") {
           setIsLive(true);
@@ -160,7 +157,7 @@ function Transactions() {
           fetchSecondaryBalance()
         }
       })
-      .catch((err) => console.log(err));
+      .catch(() => {});
   }
 
  

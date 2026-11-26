@@ -26,7 +26,6 @@ function ViewOrder({ setIsOpen, orderDetails }) {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log("Full API Response:", res);
         setOrder(res.order_details);
         setStatus(res.order_details.status);
 
@@ -40,7 +39,6 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         }
       })
       .catch((error) => {
-        console.error("Error fetching order:", error);
       });
   }, [orderDetails.id, token]);
 
@@ -90,7 +88,6 @@ function ViewOrder({ setIsOpen, orderDetails }) {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (res.message) {
           setSuccess(true);
           setMessage(res.message || "Order Confirmed Successfully");
@@ -99,7 +96,6 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         }
       })
       .catch((err) => {
-        console.log(err);
         setError(true);
         setMessage("Something went wrong. Please try again.");
       })
@@ -129,7 +125,6 @@ function ViewOrder({ setIsOpen, orderDetails }) {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (res.message) {
           setSuccess(true);
           setMessage(res.message || "Order Cancelled Successfully");
@@ -138,7 +133,6 @@ function ViewOrder({ setIsOpen, orderDetails }) {
         }
       })
       .catch((err) => {
-        console.log(err);
         setError(true);
         setMessage("Something went wrong. Please try again.");
       })

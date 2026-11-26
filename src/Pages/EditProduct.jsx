@@ -122,7 +122,6 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
         formData.append("images[]", imageUrl);
       });
     } catch (err) {
-      console.error("Cloudinary product image upload error:", err);
       toast.error(err.message || "Couldn't upload product pictures");
       setLoading(false);
       return;
@@ -156,7 +155,6 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
         return res.json();
       })
       .then((res) => {
-        console.log(res);
         toast.success("Product updated successfully!");
         setLoading(false);
         if (onProductRefresh) {
@@ -165,7 +163,6 @@ function EditProduct({ setEditOpen, productDetails, onProductRefresh }) {
         setEditOpen(false);
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err.message || "Failed to update product");
         setLoading(false);
       });

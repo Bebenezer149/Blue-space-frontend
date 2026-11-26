@@ -51,12 +51,10 @@ function ProductPage() {
       .then((res) => res.json())
       .then((res) => {
         setProducts(res.products || []);
-        console.log(res);
         setIsRefreshing(false);
       })
       .catch((err) => {
         toast.error("Failed to fetch products");
-        console.log(err);
         setIsRefreshing(false);
       });
   }, [token]);
@@ -75,12 +73,10 @@ function ProductPage() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setProducts((prev) => prev.filter((p) => p.id !== id));
         toast.success("Product deleted successfully");
       })
       .catch((err) => {
-        console.log(err);
         toast.error("Failed to delete product");
       });
   }

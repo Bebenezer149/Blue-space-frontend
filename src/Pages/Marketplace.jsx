@@ -168,10 +168,9 @@ function Marketplace() {
         return res.json();
       })
       .then((res) => {
-        console.log(res);
         setProducts(res);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {});
   }, []);
 
   return (

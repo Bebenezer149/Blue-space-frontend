@@ -93,7 +93,6 @@ function SignUp() {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         setMessage(err.message || "Something went wrong. Please try again.");
         setErrorMessage(true);
         setLoading(false);

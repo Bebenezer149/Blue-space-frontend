@@ -41,7 +41,6 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
         return res.json();
       })
       .then((res) => {
-        console.log(res);
         if (res.message) {
           setCurrentStatus(nextStatus);
           if (onStatusUpdate) {
@@ -50,7 +49,6 @@ function OrderCard({ order, clearCard, setIsOpen, setOrderDetails, onStatusUpdat
         }
       })
       .catch((err) => {
-        console.error("Error updating status:", err);
         toast.error("Failed to update status. Please try again.");
       })
       .finally(() => {

@@ -54,7 +54,6 @@ function Login() {
         completeLogin(res);
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
         setError("Invalid email or password. Please try again.");
       });

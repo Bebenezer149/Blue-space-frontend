@@ -38,7 +38,6 @@ function Store() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setProducts(res.products || []);
         const store = res.store || null;
         setStoreData(store);
@@ -49,7 +48,7 @@ function Store() {
         setBanner(res.banner || store?.banner || store?.banner_image || null);
         setProfileImageFailed(false);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {});
   }, [slug]);
 
   const storeInitial = (businessName || slug || "S").charAt(0).toUpperCase();

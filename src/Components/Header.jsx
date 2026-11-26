@@ -43,7 +43,7 @@ function Header() {
       .then((res) => {
         setImage(res.user.profile_picture);
       })
-      .catch((err) => console.log(err));
+      .catch(() => {});
   }, [token]);
 
   return (
