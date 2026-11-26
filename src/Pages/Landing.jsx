@@ -6,6 +6,7 @@ import cart from "../assets/buying.jpg";
 import anass from "../assets/anass.jpeg";
 import cecil from "../assets/cecil-ofori.jpeg";
 import eben from "../assets/eben.jpeg";
+import stephen from "../assets/Stephen.jpeg"
 import {
   HiMenu,
   HiX,
@@ -65,6 +66,11 @@ const team = [
     role: "Chief Technology Officer",
     img: eben,
   },
+   {
+    name: "Stephen Amoateng",
+    role: "Chief Operations Officer",
+    img: stephen,
+  },
   {
     name: "Anas Abdallah",
     role: "Chief Customer Relations Officer",
@@ -94,8 +100,8 @@ const features = [
   },
   {
     icon: HiOutlineCreditCard,
-    title: "Secure Payments",
-    text: "Process customer payments safely and keep every order organised.",
+    title: "Flexible Payments",
+    text: "Mobile Money or cash on delivery- pay your way.",
   },
   {
     icon: HiOutlineSparkles,
