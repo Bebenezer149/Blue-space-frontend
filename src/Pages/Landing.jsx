@@ -6,7 +6,7 @@ import cart from "../assets/buying.jpg";
 import anass from "../assets/anass.jpeg";
 import cecil from "../assets/cecil-ofori.jpeg";
 import eben from "../assets/eben.jpeg";
-
+import stephen from "../assets/Stephen.jpeg"
 import {
   HiMenu,
   HiX,
@@ -58,17 +58,22 @@ const steps = [
 const team = [
   {
     name: "Cecil Ofori",
-    role: "Founder & COO",
+    role: "Chief Executive Officer",
     img: cecil,
   },
   {
     name: "Baidoo Ebenezer",
-    role: "Engineering Manager",
+    role: "Chief Technology Officer",
     img: eben,
+  },
+   {
+    name: "Stephen Amoateng",
+    role: "Chief Operations Officer",
+    img: stephen,
   },
   {
     name: "Anas Abdallah",
-    role: "Social Media Manager",
+    role: "Chief Customer Relations Officer",
     img: anass,
   },
 ];
