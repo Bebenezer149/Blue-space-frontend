@@ -552,13 +552,13 @@ function SignUp() {
             />
             <label htmlFor="terms" className="text-sm text-gray-600">
               I agree to the{" "}
-              <a href="#" className="text-blue-500 hover:underline">
-                Terms of Service
-              </a>{" "}
+              <Link to="/terms" target="_blank" className="text-blue-500 hover:underline">
+                Terms and Conditions
+              </Link>{" "}
               and{" "}
-              <a href="#" className="text-blue-500 hover:underline">
+              <Link to="/privacy" target="_blank" className="text-blue-500 hover:underline">
                 Privacy Policy
-              </a>
+              </Link>
             </label>
           </div>
 

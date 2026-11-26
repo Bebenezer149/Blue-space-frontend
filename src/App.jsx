@@ -25,6 +25,8 @@ import Store from "./Pages/Store";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import ToastViewport from "./Components/ToastViewport";
 import SEO from "./Components/SEO";
+import TermsAndConditions from "./Pages/TermsAndConditions";
+import PrivacyPolicy from "./Pages/PrivacyPolicy";
 
 const routeSEO = {
   "/": {
@@ -56,6 +58,14 @@ const routeSEO = {
     title: "Choose a New Password | Blue Space",
     description: "Set a new password for your Blue Space account.",
     noIndex: true,
+  },
+  "/terms": {
+    title: "Terms and Conditions | Blue Space",
+    description: "Read the terms governing use of the Blue Space marketplace.",
+  },
+  "/privacy": {
+    title: "Privacy Policy | Blue Space",
+    description: "Learn how Blue Space collects and uses personal data.",
   },
 };
 
@@ -158,6 +168,8 @@ function App() {
         <Route path="/store/:slug" element={<Store />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route
           path="/profile"
           element={
