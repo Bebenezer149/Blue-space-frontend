@@ -9,7 +9,6 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
   const [deliveryTo, setDeliveryTo] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const getAvailableQuantity = (item) =>
@@ -31,8 +30,7 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
     if (
       !customer.trim() ||
       !phone.trim() ||
-      !deliveryTo.trim() ||
-      paymentMethod === ""
+      !deliveryTo.trim()
     ) {
       toast.error("Every field must be filled");
       setLoading(false);
@@ -43,7 +41,6 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
       phone_number: phone,
       delivery_to: deliveryTo,
       additional_notes: notes,
-      payment_method: paymentMethod,
       items,
     };
     try {
@@ -131,8 +128,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
   };
 
   const subtotal = calculateSubtotal();
-  const shipping = 0;
-  const total = (parseFloat(subtotal) + parseFloat(shipping)).toFixed(2);
+  const serviceFee = (
+    Math.min(parseFloat(subtotal) * 0.02, 5)
+  ).toFixed(2);
+  const total = (parseFloat(subtotal) + parseFloat(serviceFee)).toFixed(2);
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black/50 backdrop-blur-sm z-50 p-4">
@@ -373,47 +372,6 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
                   />
                 </div>
 
-                {/* Payment Method */}
-                <div
-                  className="animate-slideInUp"
-                  style={{ animationDelay: "150ms" }}
-                >
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Payment Method <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label className="relative flex items-center justify-between p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50 hover:scale-105 active:scale-95">
-                      <input
-                        type="radio"
-                        name="payment"
-                        value="MOMO"
-                        onChange={() => setPaymentMethod("MOMO")}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="flex items-center gap-2 mr-12 sm:mr-20">
-                        <span className="font-medium text-sm sm:text-base">
-                          Mobile Money
-                        </span>
-                      </span>
-                    </label>
-                    <label className="relative flex items-center justify-between p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition has-checked:border-blue-600 has-checked:bg-blue-50 hover:scale-105 active:scale-95">
-                      <input
-                        type="radio"
-                        name="payment"
-                        value="CASH"
-                        onChange={() => setPaymentMethod("CASH")}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                        required
-                      />
-                      <span className="flex items-center gap-2 mr-12 sm:mr-20">
-                        <span className="font-medium text-sm sm:text-base">
-                          Cash on Delivery
-                        </span>
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
                 {/* Additional Notes */}
                 <div
                   className="animate-slideInUp"
@@ -441,6 +399,10 @@ const Cart = ({ setOpenCart, cart, setCart }) => {
             <div className="flex justify-between text-sm sm:text-base text-gray-600">
               <span>Subtotal</span>
               <span>GHS {subtotal}</span>
+            </div>
+            <div className="flex justify-between text-sm sm:text-base text-gray-600">
+              <span>Service fee (2%, capped at GHS 5.00)</span>
+              <span>GHS {serviceFee}</span>
             </div>
             <div className="flex justify-between text-base sm:text-lg font-bold text-gray-800 pt-2 border-t border-gray-200">
               <span>Total</span>
