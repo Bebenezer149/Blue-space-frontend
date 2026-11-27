@@ -1,5 +1,5 @@
 import Header from "../Components/Header";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { API_URL } from "../config";
 import { toast } from "../toast";
 import {
@@ -76,6 +76,8 @@ function Transactions() {
   const [withdrawalBalance, setWithdrawalBalance] = useState(0.0);
   const [pendingBalance, setPendingBalance] = useState(0.0);
   const [payoutBalance,setPayoutBalance]=useState(0.00)
+  const [isBalanceLoading, setIsBalanceLoading] = useState(true);
+  const [areBalanceDetailsLoading, setAreBalanceDetailsLoading] = useState(true);
   const token = localStorage.getItem("token");
   const [islive, setIsLive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -125,7 +127,8 @@ function Transactions() {
       .catch(() => {});
   }
 
- function fetchSecondaryBalance() {
+ const fetchSecondaryBalance = useCallback(() => {
+    setAreBalanceDetailsLoading(true);
     fetch(`${API_URL}/balance-details`, {
       method: "GET",
       headers: {
@@ -137,10 +140,16 @@ function Transactions() {
       .then((res) => {
         setPendingBalance(res.pending_payments);
         setPayoutBalance(res.total_payouts)
-      });
-  }
+      })
+      .catch(() => {
+        toast.error("Unable to load wallet balances.");
+      })
+      .finally(() => setAreBalanceDetailsLoading(false));
+  }, [token]);
 
-  function fetchBalance() {
+  const fetchBalance = useCallback(() => {
+    setIsBalanceLoading(true);
+    setAreBalanceDetailsLoading(true);
     fetch(`${API_URL}/ledger`, {
       method: "GET",
       headers: {
@@ -155,15 +164,22 @@ function Transactions() {
           setIsLive(true);
           setWithdrawalBalance(res.available_balance);
           fetchSecondaryBalance()
+        } else {
+          setAreBalanceDetailsLoading(false);
         }
       })
-      .catch(() => {});
-  }
+      .catch(() => {
+        setAreBalanceDetailsLoading(false);
+        toast.error("Unable to load wallet balance.");
+      })
+      .finally(() => setIsBalanceLoading(false));
+  }, [fetchSecondaryBalance, token]);
 
  
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchBalance();
-  }, [state]);
+  }, [fetchBalance, state]);
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -226,11 +242,13 @@ function Transactions() {
                 <p className="text-sm font-medium text-blue-100">
                   Available to withdraw
                 </p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                <p className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl" aria-busy={isBalanceLoading}>
                   <span className="mr-2 text-xl font-medium text-blue-200 sm:text-2xl">
                     GH₵
                   </span>
-                  {withdrawalBalance}
+                  {isBalanceLoading ? (
+                    <span className="inline-block h-9 w-28 animate-pulse rounded bg-white/25 align-middle sm:h-10" aria-label="Loading available balance" />
+                  ) : withdrawalBalance}
                 </p>
                 <p className="mt-2 flex items-center gap-1.5 text-xs text-blue-100">
                   <Check size={14} />
@@ -260,11 +278,13 @@ function Transactions() {
                 <p className="text-sm font-medium text-gray-500">
                   Held in escrow
                 </p>
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-gray-900">
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-gray-900" aria-busy={areBalanceDetailsLoading}>
                   <span className="mr-1 text-base font-medium text-gray-500">
                     GH₵
                   </span>
-                  {pendingBalance}
+                  {areBalanceDetailsLoading ? (
+                    <span className="inline-block h-7 w-20 animate-pulse rounded bg-gray-200 align-middle" aria-label="Loading escrow balance" />
+                  ) : pendingBalance}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
                   3 orders awaiting confirmation
@@ -278,11 +298,13 @@ function Transactions() {
             <article className="surface-card flex items-center justify-between gap-4 rounded-2xl border bg-white p-5 sm:p-6">
               <div>
                 <p className="text-sm font-medium text-gray-500">Paid out</p>
-                <p className="mt-2 text-2xl font-semibold tracking-tight text-gray-900">
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-gray-900" aria-busy={areBalanceDetailsLoading}>
                   <span className="mr-1 text-base font-medium text-gray-500">
                     GH₵
                   </span>
-                  {payoutBalance}
+                  {areBalanceDetailsLoading ? (
+                    <span className="inline-block h-7 w-20 animate-pulse rounded bg-gray-200 align-middle" aria-label="Loading paid out balance" />
+                  ) : payoutBalance}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
                   Across 12 transfers

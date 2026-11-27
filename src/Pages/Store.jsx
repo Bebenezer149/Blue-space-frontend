@@ -10,6 +10,7 @@ import SEO from "../Components/SEO";
 function Store() {
   const { slug } = useParams();
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [storeData, setStoreData] = useState(null);
   const [cart, setCart] = useState([]);
   const [openCart, setOpenCart] = useState(false);
@@ -30,6 +31,8 @@ function Store() {
   const [viewProductDetails, setViewProductDetails] = useState(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsLoading(true);
     fetch(`${API_URL}/show-products?link=${slug}`, {
       method: "GET",
       headers: {
@@ -48,7 +51,8 @@ function Store() {
         setBanner(res.banner || store?.banner || store?.banner_image || null);
         setProfileImageFailed(false);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
   }, [slug]);
 
   const storeInitial = (businessName || slug || "S").charAt(0).toUpperCase();
@@ -141,6 +145,22 @@ function Store() {
         className="relative bg-linear-to-r from-blue-600 via-blue-500 to-blue-400 bg-cover bg-center p-4 sm:p-6 md:p-8 min-h-[180px] sm:min-h-[200px] md:min-h-[220px] overflow-hidden flex items-center"
         style={banner ? { backgroundImage: `url("${banner}")` } : undefined}
       >
+        {isLoading ? (
+          <div
+            className="relative mx-2 flex w-full max-w-7xl items-center gap-3 sm:gap-4 md:gap-8 animate-pulse"
+            aria-busy="true"
+            aria-label="Loading storefront"
+          >
+            <div className="h-20 w-20 shrink-0 rounded-full bg-white/30 sm:h-26 sm:w-26 md:h-28 md:w-28" />
+            <div className="min-w-0 flex-1 space-y-3">
+              <div className="h-6 w-2/3 rounded bg-white/30 sm:h-9 sm:w-1/2" />
+              <div className="h-4 w-36 rounded-full bg-white/20" />
+              <div className="h-4 w-48 max-w-full rounded-full bg-white/20" />
+              <div className="h-4 w-24 rounded bg-white/20" />
+            </div>
+          </div>
+        ) : (
+          <>
         {banner && <div className="absolute inset-0 bg-slate-950/35" aria-hidden="true" />}
         <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -mr-48"></div>
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -ml-48"></div>
@@ -234,7 +254,9 @@ function Store() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
+            </>
+          )}
       </div>
 
       {/* Filter Navigation */}
@@ -321,7 +343,25 @@ function Store() {
 
       {/* Product Grid - Fixed Arrangement */}
       <div className="max-w-7xl mx-auto px-2 py-6 sm:px-4 sm:py-8">
-        {filteredProducts.length > 0 ? (
+        {isLoading ? (
+          <div
+            className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-6"
+            aria-busy="true"
+            aria-label="Loading products"
+          >
+            {Array.from({ length: pageSize }, (_, index) => (
+              <div
+                key={index}
+                className="overflow-hidden rounded-xl border border-gray-200 bg-white p-3 shadow-sm animate-pulse"
+              >
+                <div className="aspect-square rounded-lg bg-gray-200" />
+                <div className="mt-3 h-4 w-3/4 rounded bg-gray-200" />
+                <div className="mt-2 h-4 w-1/2 rounded bg-gray-100" />
+                <div className="mt-4 h-9 rounded-lg bg-gray-100" />
+              </div>
+            ))}
+          </div>
+        ) : filteredProducts.length > 0 ? (
           <>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-6 animate-stagger">
               {paginatedProducts.map((data) => (
