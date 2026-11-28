@@ -200,11 +200,11 @@ function SignUp() {
         )}
 
         <form
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-3 sm:gap-4"
           onSubmit={handleSubmit}
         >
           {/* First Name + Last Name */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 max-[360px]:grid-cols-1 gap-3 sm:gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-gray-700 block">
                 First Name <span className="text-red-500">*</span>
@@ -273,7 +273,7 @@ function SignUp() {
           </div>
 
           {/* Business Name + Email */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 max-[360px]:grid-cols-1 gap-3 sm:gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-gray-700 block">
                 Business Name <span className="text-red-500">*</span>
@@ -376,7 +376,7 @@ function SignUp() {
           </div>
 
           {/* Password + Confirm Password */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 max-[360px]:grid-cols-1 gap-3 sm:gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-gray-700 block">
                 Password <span className="text-red-500">*</span>
