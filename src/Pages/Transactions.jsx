@@ -7,69 +7,106 @@ import {
   ArrowUpRight,
   Banknote,
   Check,
-  Clock3,
+  Eye,
   LockKeyhole,
   MoreHorizontal,
   Smartphone,
+  X,
 } from "lucide-react";
 import WithdrawalModal from "../Components/Prompts/WithdrawalModal";
 
 // import { setWasmUrl } from "@lottiefiles/dotlottie-react/webgpu";
 
-const transactions = [
-  {
-    reference: "BS-1048",
-    description: "Order payment · Linen shirt",
-    date: "Today, 10:42 AM",
-    amount: "+ GH₵ 320.00",
-    type: "escrow",
-    status: "Held in escrow",
-  },
-  {
-    reference: "TR-0082",
-    description: "Mobile money payout · 024 ••• •• 89",
-    date: "Yesterday, 3:18 PM",
-    amount: "− GH₵ 500.00",
-    type: "payout",
-    status: "Completed",
-  },
-  {
-    reference: "BS-1041",
-    description: "Order payment · Leather sandals",
-    date: "Oct 2, 2026 · 1:06 PM",
-    amount: "+ GH₵ 185.00",
-    type: "escrow",
-    status: "Held in escrow",
-  },
-  {
-    reference: "BS-1037",
-    description: "Order payment · Beaded bag",
-    date: "Oct 1, 2026 · 9:34 AM",
-    amount: "+ GH₵ 240.00",
-    type: "payment",
-    status: "Released",
-  },
-];
-
 function StatusBadge({ status }) {
   const styles = {
-    "Held in escrow": "bg-amber-50 text-amber-700 ring-amber-200",
-    Completed: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-    Released: "bg-blue-50 text-blue-700 ring-blue-200",
+    PENDING: "bg-amber-50 text-amber-700 ring-amber-200",
+    PAID: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    REFUNDED: "bg-blue-50 text-blue-700 ring-blue-200",
+    DISPUTED: "bg-red-50 text-red-700 ring-red-200",
   };
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${styles[status]}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${styles[status] || "bg-gray-50 text-gray-700 ring-gray-200"}`}
     >
-      {status === "Held in escrow" ? (
+      {status === "PENDING" ? (
         <LockKeyhole size={12} />
+      ) : status === "DISPUTED" ? (
+        <MoreHorizontal size={12} />
       ) : (
         <Check size={12} />
       )}
       {status}
     </span>
   );
+}
+
+function extractPaymentHistory(response) {
+  if (Array.isArray(response)) return response;
+  if (Array.isArray(response?.payments)) return response.payments;
+  if (Array.isArray(response?.payment_history)) return response.payment_history;
+  if (Array.isArray(response?.history)) return response.history;
+  if (Array.isArray(response?.data)) return response.data;
+  if (Array.isArray(response?.data?.payments)) return response.data.payments;
+  if (Array.isArray(response?.data?.payment_history)) return response.data.payment_history;
+  return [];
+}
+
+function formatPaymentDate(value) {
+  if (!value) return "Date unavailable";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return new Intl.DateTimeFormat("en-GH", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
+
+function normalizePayment(payment, index) {
+  const rawStatus = String(
+    payment?.status || payment?.payment_status || "PENDING",
+  ).trim().toUpperCase();
+  const status = ["PENDING", "PAID", "REFUNDED", "DISPUTED"].includes(rawStatus)
+    ? rawStatus
+    : "PENDING";
+  const rawAmount = payment?.amount ?? payment?.total_amount ?? payment?.price ?? 0;
+  const numericAmount = Number(String(rawAmount).replace(/,/g, ""));
+  const amountValue = Number.isFinite(numericAmount) ? numericAmount : 0;
+  const rawReference =
+    payment?.reference ||
+    payment?.payment_reference ||
+    payment?.transaction_reference ||
+    payment?.order_reference ||
+    payment?.id;
+  const description =
+    payment?.order_id != null
+      ? `Order payment · #${payment.order_id}`
+      : "Seller payment";
+  const rawType = String(payment?.type || payment?.transaction_type || "").toLowerCase();
+
+  return {
+    id: payment?.id ?? null,
+    orderId: payment?.order_id ?? null,
+    paymentStatus: status,
+    createdAt: payment?.created_at ?? null,
+    updatedAt: payment?.updated_at ?? null,
+    vendorId: payment?.vendor_id ?? null,
+    reference: rawReference ? String(rawReference) : `PAY-${index + 1}`,
+    description,
+    date: formatPaymentDate(
+      payment?.created_at ||
+      payment?.payment_date ||
+      payment?.date ||
+      payment?.updated_at,
+    ),
+    amount: amountValue,
+    displayAmount: `${status === "REFUNDED" ? "−" : "+"} GH₵ ${amountValue.toLocaleString("en-GH", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`,
+    type: rawType.includes("payout") || rawType.includes("transfer") ? "payout" : "payment",
+    status,
+  };
 }
 
 function Transactions() {
@@ -86,6 +123,12 @@ function Transactions() {
   const [amountToWithdraw,setAmountToWithdraw]=useState(0.00)
   const [state,setState]=useState(false)
   const [openModal,setOpenModal]=useState(false)
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [isPaymentHistoryLoading, setIsPaymentHistoryLoading] = useState(true);
+  const [paymentHistoryError, setPaymentHistoryError] = useState("");
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState("ALL");
+  const [paymentPage, setPaymentPage] = useState(1);
+  const [selectedPayment, setSelectedPayment] = useState(null);
 
  
   // const [status, setStatus] = useState("Inactive");
@@ -175,11 +218,59 @@ function Transactions() {
       .finally(() => setIsBalanceLoading(false));
   }, [fetchSecondaryBalance, token]);
 
+  const fetchPaymentHistory = useCallback(() => {
+    setIsPaymentHistoryLoading(true);
+    setPaymentHistoryError("");
+    setPaymentPage(1);
+    fetch(`${API_URL}/payment-history`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    })
+      .then(async (res) => {
+        const response = await res.json();
+        if (!res.ok) {
+          throw new Error(response?.message || "Unable to load payment history.");
+        }
+        setPaymentHistory(
+          extractPaymentHistory(response).map(normalizePayment),
+        );
+      })
+      .catch((error) => {
+        const message =
+          error?.message || "Unable to load payment history.";
+        setPaymentHistoryError(message);
+        toast.error(message);
+      })
+      .finally(() => setIsPaymentHistoryLoading(false));
+  }, [token]);
+
  
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchBalance();
-  }, [fetchBalance, state]);
+    fetchPaymentHistory();
+  }, [fetchBalance, fetchPaymentHistory, state]);
+
+  const filteredPaymentHistory =
+    paymentStatusFilter === "ALL"
+      ? paymentHistory
+      : paymentHistory.filter(
+          (transaction) => transaction.status === paymentStatusFilter,
+        );
+  const paymentsPerPage = 5;
+  const totalPaymentPages = Math.max(
+    1,
+    Math.ceil(filteredPaymentHistory.length / paymentsPerPage),
+  );
+  const safePaymentPage = Math.min(paymentPage, totalPaymentPages);
+  const paginatedPaymentHistory = filteredPaymentHistory.slice(
+    (safePaymentPage - 1) * paymentsPerPage,
+    safePaymentPage * paymentsPerPage,
+  );
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -422,7 +513,7 @@ function Transactions() {
                   Transaction history
                 </h2>
                 <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
-                  24
+                  {isPaymentHistoryLoading ? "..." : paymentHistory.length}
                 </span>
               </div>
               <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
@@ -431,25 +522,44 @@ function Transactions() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-600"
+              <label className="sr-only" htmlFor="payment-status-filter">
+                Filter payment history
+              </label>
+              <select
+                id="payment-status-filter"
+                value={paymentStatusFilter}
+                onChange={(event) => {
+                  setPaymentStatusFilter(event.target.value);
+                  setPaymentPage(1);
+                }}
+                className="h-9 cursor-pointer rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-600"
               >
-                All transactions
-                <MoreHorizontal size={15} className="rotate-90" />
-              </button>
-              <button
-                type="button"
-                aria-label="Filter transactions"
-                className="grid h-9 w-9 place-items-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
-              >
-                <Clock3 size={16} />
-              </button>
+                <option value="ALL">All transactions</option>
+                <option value="PENDING">Pending</option>
+                <option value="PAID">Paid</option>
+                <option value="REFUNDED">Refunded</option>
+                <option value="DISPUTED">Disputed</option>
+              </select>
             </div>
           </div>
 
           <div className="divide-y divide-gray-100 md:hidden">
-            {transactions.map((transaction) => (
+            {isPaymentHistoryLoading && (
+              <p className="px-5 py-8 text-center text-sm text-gray-500">
+                Loading payment history...
+              </p>
+            )}
+            {!isPaymentHistoryLoading && paymentHistoryError && (
+              <p className="px-5 py-8 text-center text-sm text-red-600">
+                {paymentHistoryError}
+              </p>
+            )}
+            {!isPaymentHistoryLoading && !paymentHistoryError && filteredPaymentHistory.length === 0 && (
+              <p className="px-5 py-8 text-center text-sm text-gray-500">
+                No payment history found.
+              </p>
+            )}
+            {!isPaymentHistoryLoading && !paymentHistoryError && paginatedPaymentHistory.map((transaction) => (
               <article key={transaction.reference} className="px-5 py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 items-start gap-3">
@@ -477,16 +587,24 @@ function Transactions() {
                   </div>
                   <p
                     className={`shrink-0 text-sm font-semibold ${
-                      transaction.amount.startsWith("+")
-                        ? "text-gray-900"
-                        : "text-gray-700"
+                      transaction.status === "REFUNDED"
+                        ? "text-red-700"
+                        : "text-gray-900"
                     }`}
                   >
-                    {transaction.amount}
+                    {transaction.displayAmount}
                   </p>
                 </div>
                 <div className="ml-12 mt-2">
                   <StatusBadge status={transaction.status} />
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPayment(transaction)}
+                    aria-label={`View payment ${transaction.reference}`}
+                    className="ml-2 inline-grid h-8 w-8 place-items-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"
+                  >
+                    <Eye size={15} />
+                  </button>
                 </div>
               </article>
             ))}
@@ -511,10 +629,34 @@ function Transactions() {
                   <th scope="col" className="px-6 py-3.5 text-right">
                     Amount
                   </th>
+                  <th scope="col" className="px-6 py-3.5 text-right">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-sm">
-                {transactions.map((transaction) => (
+                {isPaymentHistoryLoading && (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                      Loading payment history...
+                    </td>
+                  </tr>
+                )}
+                {!isPaymentHistoryLoading && paymentHistoryError && (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-8 text-center text-red-600">
+                      {paymentHistoryError}
+                    </td>
+                  </tr>
+                )}
+                {!isPaymentHistoryLoading && !paymentHistoryError && filteredPaymentHistory.length === 0 && (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                      No payment history found.
+                    </td>
+                  </tr>
+                )}
+                {!isPaymentHistoryLoading && !paymentHistoryError && paginatedPaymentHistory.map((transaction) => (
                   <tr
                     key={transaction.reference}
                     className="hover:bg-gray-50/70"
@@ -550,12 +692,22 @@ function Transactions() {
                     </td>
                     <td
                       className={`px-6 py-4 text-right font-semibold ${
-                        transaction.amount.startsWith("+")
-                          ? "text-gray-900"
-                          : "text-gray-700"
-                      }`}
+                        transaction.status === "REFUNDED"
+                          ? "text-red-700"
+                          : "text-gray-900"
+                    }`}
                     >
-                      {transaction.amount}
+                      {transaction.displayAmount}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPayment(transaction)}
+                        aria-label={`View payment ${transaction.reference}`}
+                        className="inline-grid h-9 w-9 place-items-center rounded-lg border border-gray-300 text-gray-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                      >
+                        <Eye size={16} />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -565,20 +717,44 @@ function Transactions() {
 
           <div className="flex items-center justify-between border-t border-gray-200 px-5 py-4 sm:px-6">
             <p className="text-xs text-gray-500">
-              Showing 4 of 24 transactions
+              {filteredPaymentHistory.length === 0
+                ? "Showing 0 transactions"
+                : `Showing ${(safePaymentPage - 1) * paymentsPerPage + 1}-${Math.min(
+                    safePaymentPage * paymentsPerPage,
+                    filteredPaymentHistory.length,
+                  )} of ${filteredPaymentHistory.length} transactions`}
             </p>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                onClick={() => setPaymentPage((current) => Math.max(1, current - 1))}
+                disabled={safePaymentPage === 1}
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Previous
               </button>
+              <span className="text-xs text-gray-500">
+                {safePaymentPage} / {totalPaymentPages}
+              </span>
               <button
                 type="button"
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                onClick={() =>
+                  setPaymentPage((current) =>
+                    Math.min(totalPaymentPages, current + 1),
+                  )
+                }
+                disabled={safePaymentPage === totalPaymentPages}
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
+              </button>
+              <button
+                type="button"
+                onClick={fetchPaymentHistory}
+                disabled={isPaymentHistoryLoading}
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isPaymentHistoryLoading ? "Refreshing..." : "Refresh"}
               </button>
             </div>
           </div>
@@ -587,6 +763,90 @@ function Transactions() {
           
         
       </main>
+      {selectedPayment && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gray-950/50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="payment-details-heading"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setSelectedPayment(null);
+          }}
+        >
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-xl">
+            <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+              <div>
+                <h2
+                  id="payment-details-heading"
+                  className="text-base font-semibold text-gray-900"
+                >
+                  Payment details
+                </h2>
+                <p className="mt-1 font-mono text-xs text-gray-500">
+                  {selectedPayment.reference}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedPayment(null)}
+                aria-label="Close payment details"
+                className="grid h-9 w-9 place-items-center rounded-lg text-gray-500 hover:bg-gray-100"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="space-y-4 px-5 py-5">
+              <div className="rounded-xl bg-gray-50 p-4">
+                <p className="text-xs font-medium text-gray-500">Amount</p>
+                <p className="mt-1 text-2xl font-semibold text-gray-900">
+                  {selectedPayment.displayAmount}
+                </p>
+                <div className="mt-3">
+                  <StatusBadge status={selectedPayment.status} />
+                </div>
+              </div>
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-4 text-sm">
+                <div>
+                  <dt className="text-xs text-gray-500">Payment ID</dt>
+                  <dd className="mt-1 font-medium text-gray-900">
+                    {selectedPayment.id ?? "Unavailable"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gray-500">Order ID</dt>
+                  <dd className="mt-1 font-medium text-gray-900">
+                    {selectedPayment.orderId ?? "Unavailable"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gray-500">Vendor ID</dt>
+                  <dd className="mt-1 font-medium text-gray-900">
+                    {selectedPayment.vendorId ?? "Unavailable"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-gray-500">Payment status</dt>
+                  <dd className="mt-1 font-medium text-gray-900">
+                    {selectedPayment.paymentStatus}
+                  </dd>
+                </div>
+                <div className="col-span-2">
+                  <dt className="text-xs text-gray-500">Created</dt>
+                  <dd className="mt-1 text-gray-900">
+                    {formatPaymentDate(selectedPayment.createdAt)}
+                  </dd>
+                </div>
+                <div className="col-span-2">
+                  <dt className="text-xs text-gray-500">Updated</dt>
+                  <dd className="mt-1 text-gray-900">
+                    {formatPaymentDate(selectedPayment.updatedAt)}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      )}
       {openModal && (
         <WithdrawalModal
           receiverPhone={receiverPhone}
